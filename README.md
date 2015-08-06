@@ -1,2 +1,2 @@
-# LaSer: The **La**Tex **Se**a**r**ch Engine
+# LaSer: The LaTex Search Engine
 A search engine to search up LaTex formulae from academic articles and books.
