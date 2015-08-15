@@ -1,0 +1,58 @@
+#imaginary_container{
+    margin:5% 0 5% 0; 
+}
+.stylish-input-group .input-group-addon{
+    background: white !important; 
+}
+.stylish-input-group .form-control{
+	border-right:0; 
+	box-shadow:0 0 0; 
+	border-color:#ccc;
+}
+.stylish-input-group button{
+    border:0;
+    background:transparent;
+}
+
+body{
+	background: #908C8C;
+}
+
+.search-result {
+	margin: 2px;
+}
+
+.search-result h3 {
+    margin-bottom: 0;
+    color: #1E0FBE;
+}
+
+.search-result .search-link {
+    color: #006621;
+}
+
+.search-result p {
+    font-size: 12px;
+    margin-top: 5px; 
+}
+
+.hr-line-dashed {
+    border-top: 1px dashed #E7EAEC;
+    color: #ffffff;
+    background-color: #ffffff;
+    height: 1px;
+    margin: 20px 0;
+}
+
+.ranked-results {
+	background-color: #e7e7e7;
+	border : 2px;
+}
+
+#paginationDiv {
+	padding-bottom: 15px;
+}
+
+#navBar {
+	background-color: #e7e7e7;
+}
