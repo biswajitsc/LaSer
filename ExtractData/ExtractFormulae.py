@@ -1,5 +1,6 @@
 import os
 import re
+import codecs
 
 mmode0 = re.compile(r'\$\$.+?\$\$', flags = re.DOTALL | re.UNICODE)
 mmode1 = re.compile(r'\$.+?\$', flags = re.DOTALL | re.UNICODE)
@@ -79,7 +80,7 @@ def secondary_processing(inp):
 
 def tertiary_processing(inp):
     inp = inp.replace('\\nonumber', '')
-    inp = re.sub('&', ' ', inp)
+    inp = inp.replace('&', ' ')
     
     inp = inp.split('\\\\')
     ret = []
@@ -102,8 +103,8 @@ def full_processing(inp):
 
 
 def main():
-    out = open('../Data/Formulae', 'w')
-    metaout = open('../Data/Meta', 'w')
+    out = codecs.open('../Data/Formulae', 'w', 'cp1252')
+    metaout = codecs.open('../Data/Meta', 'w', 'cp1252')
     
     for year in xrange(1992, 2004):
         
@@ -111,11 +112,11 @@ def main():
         files = os.listdir('../../Dataset/{0}'.format(year))
         
         for afile in files:
-            text = open('../../Dataset/{0}/{1}'.format(year, afile), 'r').read()
             try:
+                text = open('../../Dataset/{0}/{1}'.format(year, afile), 'r').read().decode('cp1252', errors='ignore')
                 for form in full_processing(text):
-                    out.write('{0}\n'.format(form))
-                    metaout.write('{0} {1}\n'.format(year, afile))
+                    out.write(u'{0}\n'.format(form))
+                    metaout.write(u'{0} {1}\n'.format(year, afile))
             except Exception as obj:
                 print year, afile
                 print obj
