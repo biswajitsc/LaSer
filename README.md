@@ -10,4 +10,4 @@ Dataset
 
 Formulae Extraction
 * Run ```ExtractData/ExtractFormulae.py```. The extracted formulae will be stored in ```Data/Formulae```, one formula per line. The respective meta data for each formula would be stored in ```Data/Meta```.
-* Formulae is ```cp1252``` encoded. Make sure to decode this properly while reading from the file.
+* Formulae is ```cp1252``` encoded. Make sure to decode this properly while reading from the file. Read the wiki for info.
