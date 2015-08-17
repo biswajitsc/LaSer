@@ -103,8 +103,8 @@ def full_processing(inp):
 
 
 def main():
-    out = codecs.open('../Data/Formulae', 'w', 'cp1252')
-    metaout = codecs.open('../Data/Meta', 'w', 'cp1252')
+    out = codecs.open('../../Data/Formulae', 'w', 'cp1252')
+    metaout = codecs.open('../../Data/Meta', 'w', 'cp1252')
     
     for year in xrange(1992, 2004):
         
