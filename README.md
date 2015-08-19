@@ -18,6 +18,8 @@ MathML Extraction
 * Download latexxml by ```sudo apt-get install latexml```
 * Run ```python GenMathML.py ../../Data/Formulae ../../Data/MathML```. The xml will be stored in ```Data/MathML```, one xml per line. The line number for the formulae for which error occurred while generating xml would be stored in ```Data/error.txt```.
  
-
+Simplify MathML Extraction
+* Download and install sympy package
+* Run ```python ExtractData\SimplifyEquations.py``` . The simplified MathMLs will be stored in ```Data/SimplifiedMathML``` and the expressions will be stored in ```Data/Expressions```.
 
 
