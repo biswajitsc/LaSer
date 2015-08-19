@@ -15,6 +15,7 @@ Formulae Extraction
 
 
 MathML Extraction
+* Download latexxml by ```sudo apt-get install latexml```
 * Run ```python GenMathML.py ../../Data/Formulae ../../Data/MathML```. The xml will be stored in ```Data/MathML```, one xml per line. The line number for the formulae for which error occurred while generating xml would be stored in ```Data/error.txt```.
  
 
