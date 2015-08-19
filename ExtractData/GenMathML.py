@@ -8,6 +8,7 @@ def main():
 	tempFile = '../../Data/tmp.txt'
 	errorFile = open('../../Data/error.txt', 'w')
 	mathMLOutput.write('<?xml version="1.0" encoding="UTF-8"?>'+'\n')
+	mathMLOutput.write('<root>'+'\n')
 	
 	cnt = 0
 	for eqn in formulae:
@@ -37,6 +38,8 @@ def main():
 			
 		if cnt % 10000 == 0:
 			print cnt
+	
+	mathMLOutput.write('</root>'+'\n')
 	
 	formulae.close()
 	mathMLOutput.close()
