@@ -16,7 +16,7 @@ for token in tokens:
     normalized = False
     for iter in range(2):
         if (token.startswith(startTag)):
-            st = token.find(startTag) + 6
+            st = token.find(startTag) + len(startTag)
             en = token.find(endTag)
             symbol = unicode(token[st:en], "utf-8")
             symbol = ucode.normalize('NFKD', symbol)
