@@ -23,5 +23,5 @@ Simplify MathML Extraction
 * Run ```python ExtractData/SimplifyEquations.py``` . The simplified MathMLs will be stored in ```Data/SimplifiedMathML``` and the expressions will be stored in ```Data/Expressions```.
 
 Normalization
-*Numerical Normalization : Run ```bash Normalize.sh``` in Normalization folder. The MathMLs will be stored in ```Data/NumberNormalizedMathML```.
+* Numerical Normalization : Run ```bash Normalize.sh``` in Normalization folder. The MathMLs will be stored in ```Data/NumberNormalizedMathML```.
 
