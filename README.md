@@ -22,4 +22,6 @@ Simplify MathML Extraction
 * Download and install sympy package - ```sudo pip install sympy```
 * Run ```python ExtractData/SimplifyEquations.py``` . The simplified MathMLs will be stored in ```Data/SimplifiedMathML``` and the expressions will be stored in ```Data/Expressions```.
 
+Normalization
+*Numerical Normalization : Run ```bash Normalize.sh``` in Normalization folder. The MathMLs will be stored in ```Data/NumberNormalizedMathML```.
 
