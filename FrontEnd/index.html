@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/font-awesome.min.css">
   <link rel="stylesheet" href="css/index.css">
   <script src="js/jquery-1.11.0.min.js"></script>
+  <script src="js/genericFunctions.js"></script>
 </head>
 
 <nav id="navBar" class="navbar navbar-static" role="navigation">
@@ -128,6 +129,10 @@
 $('#submitButton').click(function() {
  	$( "#mathSnippetForm" ).submit();
 });
+
+var mathSnippet = getUrlVars()["mathSnippet"];
+if(mathSnippet != )
+    console.log(httpGet("",mathSnippet))
 
 </script>
 
