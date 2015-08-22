@@ -1,3 +1,7 @@
+<?php
+    include_once 'genericFunctions.php';
+?>
+
 <!DOCTYPE html>
 <meta charset="utf-8">
 
@@ -7,7 +11,6 @@
   <link rel="stylesheet" href="css/font-awesome.min.css">
   <link rel="stylesheet" href="css/index.css">
   <script src="js/jquery-1.11.0.min.js"></script>
-  <script src="js/genericFunctions.js"></script>
 </head>
 
 <nav id="navBar" class="navbar navbar-static" role="navigation">
@@ -18,13 +21,13 @@
 		  <span class="icon-bar"></span>
 		  <span class="icon-bar"></span>
 		</button>
-		<a class="navbar-brand" href="index.html">LaSer</a>
+		<a class="navbar-brand" href="index.php">LaSer</a>
 	</div>
 
 	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		<ul class="nav navbar-nav">
-		  <li class= "active" ><a href="index.html">Home</a></li>
-		  <li class= "" ><a href="about.html">About</a></li>
+		  <li class= "active" ><a href="index.php">Home</a></li>
+		  <li class= "" ><a href="about.php">About</a></li>
 		</ul>
 	</div>
 </nav>
@@ -37,7 +40,7 @@
 	        <div class="col-sm-6 col-sm-offset-3">
 	            <div id="imaginary_container"> 
 	                <div class="input-group stylish-input-group">
-	                <form id="mathSnippetForm" action="index.html">
+	                <form id="mathSnippetForm" action="index.php">
 	                    <input type="text" name = 'mathSnippet' class="form-control" placeholder="Search" >
 	                </form>    
 	                <span class="input-group-addon">
@@ -124,15 +127,13 @@
 
     </div>
 
-<script type="text/javascript">
-	
-$('#submitButton').click(function() {
- 	$( "#mathSnippetForm" ).submit();
-});
-
-var mathSnippet = getUrlVars()["mathSnippet"];
-if(mathSnippet != undefined) console.log(httpGet("",mathSnippet))
-
-</script>
-
+    <?php    
+        $url = ""; //Put the url here
+        $mathSnippet = $_GET['mathSnippet'];
+        $mathSnippet = urlencode($mathSnippet);
+        $mathSnippet = str_replace('+', '%20', $mathSnippet);
+        $result = httpGet($url,$mathSnippet);
+        echo $result;
+    ?>
+    
 </body>
