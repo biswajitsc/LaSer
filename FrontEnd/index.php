@@ -136,11 +136,13 @@
     </script>
 
     <?php    
-        $url = ""; //Put the url here
+        $url = "localhost:8080"; //Put the url here
         $mathSnippet = $_GET['mathSnippet'];
         $mathSnippet = urlencode($mathSnippet);
         $mathSnippet = str_replace('+', '%20', $mathSnippet);
-        $result = httpGet($url,$mathSnippet);
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url . '/' . $mathSnippet);
+        $result = curl_exec($curl);
         echo $result;
     ?>
     
