@@ -1,7 +1,8 @@
 import re
+import sys
 
 def main() :
-	input_file = open("../../Data/NumberNormalizedMathML","r")
+	input_file = open(sys.argv[1],"r")
 	output_file_unigrams = open("../../Data/UnigramFeatures","w")
 	output_file_bigrams = open("../../Data/BigramFeatures","w")
 	output_file_trigrams = open("../../Data/TrigramFeatures","w")

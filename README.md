@@ -25,3 +25,5 @@ Simplify MathML Extraction
 Normalization
 * Numerical Normalization : Run ```bash Normalize.sh``` in Normalization folder. The MathMLs will be stored in ```Data/NumberNormalizedMathML```.
 
+Feature Extraction
+* Run ```python extractFeatures.py ../../Data/NumberNormalizedMathML```. The unigram, bigram and trigram features will be stored in ```Data/UnigramFeatures```, ```Data/BigramFeatures``` and ```Data/TrigramFeatures``` respectively.
