@@ -54,8 +54,9 @@ def main() :
 	for line in mathML :
 		i += 1
 		for unigram in unigrams :
-			if unigram in line :
-				unigrams_postinglist[unigram].append(i)
+			string = str(unigram)
+			if string in line :
+				unigrams_postinglist[unigram].append((i, line.count(string)))
 	print "Unigram Features Postings List created"
 	bigrams_postinglist = {}
 	for bigram in bigrams :
@@ -66,8 +67,9 @@ def main() :
 		if (i % 100 == 0) :
 			print str(i) + "th xml checked for bigrams"
 		for bigram in bigrams :
-			if (str(bigram[0]) + ' ' + str(bigram[1])) in line :
-				bigrams_postinglist[bigram].append(i)
+			string = (str(bigram[0]) + ' ' + str(bigram[1]))
+			if string in line :
+				bigrams_postinglist[bigram].append((i, line.count(string)))
 	print "Bigram Features Postings List created"
 	trigrams_postinglist = {}
 	for trigram in trigrams :
@@ -78,8 +80,9 @@ def main() :
 		if (i % 100 == 0) :
 			print str(i) + "th xml checked for trigrams"
 		for trigram in trigrams :
-			if (str(trigram[0]) + ' ' + str(trigram[1]) + ' ' + str(trigram[2])) in line :
-				trigrams_postinglist[trigram].append(i)
+			string = (str(trigram[0]) + ' ' + str(trigram[1]) + ' ' + str(trigram[2]))
+			if string in line :
+				trigrams_postinglist[trigram].append((i, line.count(string)))
 	print "Trigram Features Postings List created"	
 	for unigram in unigrams :
 		output_file_unigrams.write("{" + str(unigram) + " : " + str(unigrams_postinglist[unigram]) + "}" + '\n')
