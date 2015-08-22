@@ -55,11 +55,11 @@ def main() :
 	mathml_eqns = data.split('\n')
 	i = 0
 	for mathml_eqn in mathml_eqns :
+		temp_mathml_eqn = mathml_eqn
 		i += 1
 		if (i % 100 == 0) :
 			print i, 'done'
-		try :	
-			temp_mathml_eqn = mathml_eqn
+		try :
 			mathml_eqn = mathml_eqn.replace("<m:mo><U+2062></m:mo>","")
 			(expr, symbvars) = parseMML(mathml_eqn)
 			simp_expr = sympy.simplify(expr)
@@ -67,12 +67,15 @@ def main() :
 			c_mathml = sympy.printing.mathml(simp_expr)
 			from sympy.utilities.mathml import c2p
 			p_mathml = c2p(c_mathml)
-			output_file.write(str(temp_mathml_eqn) + '\n' + str(p_mathml) + '\n')
+			p_mathml = str(p_mathml)
+			p_mathml = p_mathml.replace('\n',' ')
+			output_file.write(str(temp_mathml_eqn) + '\n' + p_mathml + '\n')
 		except Exception :
+			output_file.write(str(temp_mathml_eqn) + '\n')	
 			continue		
 		
 	in_file.close()
 	out_file.close()
 
 if __name__ == "__main__" :
-	main()	
+	main()
