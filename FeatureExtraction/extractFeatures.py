@@ -114,6 +114,7 @@ def main() :
 		feature_numDocs[features] = (1 + math.log(numDocs/feature_numDocs[features]))
 
 	i = 0
+	weight_matrix = []
 	for line in mathML :
 		values = {}
 		i += 1
@@ -134,7 +135,10 @@ def main() :
 				values[trigram] = (feature_numDocs[trigram] * (1 + math.log(trigrams_postinglist[trigram][1])))
 			else :
 				values[trigram] = feature_numDocs[trigram]
-		output_file_weights.write(str(values) + '\n')						
+		weight_matrix.append(values)		
+		output_file_weights.write(str(values) + '\n')
+
+	return weight_matrix						
 
 if __name__ == "__main__" :
 	main()
