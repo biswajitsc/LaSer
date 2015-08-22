@@ -127,6 +127,14 @@
 
     </div>
 
+    <script type="text/javascript">
+    
+    $('#submitButton').click(function() {
+    $( "#mathSnippetForm" ).submit();
+    });
+
+    </script>
+
     <?php    
         $url = ""; //Put the url here
         $mathSnippet = $_GET['mathSnippet'];
