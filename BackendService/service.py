@@ -1,5 +1,9 @@
+import os
+import re
+import sys
 import web
 import json
+import urllib
 import mimerender
 
 mimerender = mimerender.WebPyMimeRender()
@@ -16,7 +20,20 @@ app = web.application(urls, globals())
 val = 0
 
 def generateRankedLists(query) :
-    return query
+    query = urllib.unquote(query).decode('utf8')
+    mathml_representation = generateMathml(query)
+    return mathml_representation
+
+def generateMathml(eqn) :
+    cleanEqn = eqn.strip('\n').strip()
+    cleanEqn = re.sub('\\\\','\\\\\\\\',cleanEqn)
+    cleanEqn = re.sub('\)','\\\\)',cleanEqn)
+    cleanEqn = re.sub('\(','\\\\(',cleanEqn)
+    # print cleanEqn
+    oscommand = 'latexmlmath --pmml=- ' + cleanEqn + ' > temp.txt'
+    # print oscommand
+    os.system(oscommand)
+    return open('temp.txt','r').read()
 
 class greet:
 
@@ -29,7 +46,8 @@ class greet:
         # txt  = render_txt
     )
     def GET(self, query):
-        generateRankedLists(query)
+        ans = generateRankedLists(query)
+        print "ans is", ans
         latex_formulae = []
         latex_formulae.append("a = b")
         latex_formulae.append("b = c")
@@ -39,7 +57,7 @@ class greet:
         archive_links = []
         archive_links.append('https//papers.com/1')
         archive_links.append('https//papers.com/2') 
-        return {'query': query, 'latex_formulae' : latex_formulae, 'archive_id' : archive_id, 'archive_links' : archive_links}
+        return {'query': ans}#, 'latex_formulae' : latex_formulae, 'archive_id' : archive_id, 'archive_links' : archive_links}
 
     def PUT(self,value):
         val = value
