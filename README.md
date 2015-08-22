@@ -27,3 +27,7 @@ Normalization
 
 Feature Extraction
 * Run ```python extractFeatures.py ../../Data/UnicodeNormalizedMathML```. The unigram, bigram and trigram features will be stored in ```Data/UnigramFeatures```, ```Data/BigramFeatures``` and ```Data/TrigramFeatures``` respectively.
+
+FrontEnd prerequisites
+*Install ```apache server```
+*Install ```php5```,```php5-curl```
