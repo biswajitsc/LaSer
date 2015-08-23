@@ -10,6 +10,7 @@ def main() :
 	output_file_idfs = open("../../Data/IDF-Scores","w")
 	output_file_weights = open("../../Data/Weight-Scores","w")
 	data = input_file.read()
+	data = data.replace("\n"," ")
 	lines = data.split('<m:math xmlns:m="http://www.w3.org/1998/Math/MathML" display="block">')
 	mathML = []
 	for line in lines :

@@ -1,3 +1,5 @@
+rm ../../Data/NumberNormalizedMathML
+touch ../../Data/NumberNormalizedMathML
 python NumericalNormalization.py
 echo "Normalizing Unicodes. Output will be stored in ../../Data/UnicodeNormalizedMathML"
 rm ../../Data/UnicodeNormalizedMathML
