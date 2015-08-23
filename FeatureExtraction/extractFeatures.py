@@ -138,7 +138,6 @@ def main() :
 				values[trigram] = feature_numDocs[trigram]
 		weight_matrix.append(values)		
 		output_file_weights.write(str(values) + '\n')
-
 	return weight_matrix						
 
 if __name__ == "__main__" :
