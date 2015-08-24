@@ -65,7 +65,7 @@ manuscript=article]{achemso}
 
 
 \title[\texttt{achemso} demonstration]
-{LaSer : search engine for mathematical formulae}
+{LaSer : A search engine for mathematical formulae}
 
 \begin{document}
 
@@ -73,7 +73,7 @@ manuscript=article]{achemso}
 We present a search engine for mathematical formulae. The
 MathWebSearch system harvests the web for content representations
 (currently MathML) of formulae and indexes them using unigrams, 
-bigrams and trigrams. The query for now is limited to Latex format only and can and will be extended to free form queries.
+bigrams and trigrams. The query for now is limited to Latex format only and can and will be extended to free form queries. Our Project can be found at \url{https://github.com/biswajitsc/LaSer}
 
 \end{abstract}
 
@@ -142,12 +142,11 @@ xmls of the equations that help in increasing the efficiency of the system, as d
 	   $</math>$\\
 
 	  \subsubsection{Unicode Normalization}
-	  Here we are coverting all unicode variants of a letter back to the same letter to increase search results. \\ 
-	  Add description and examples.
+	  Here we are normalizing the unicode characters to increase the match. We use NFKD: Normalization Form Compatibility Decomposition of the unicodes. Each unicode is converted into its NFKD form using python library unicodedata. So, if the base form of two unicode characters are same, they can still be matched.
 	
-	\subsection{Operator Grouping }
+	%\subsection{Operator Grouping }
 	
-	Add description
+	%Add description
 	
 	\subsection{Unigram + Bigram + Trigram Feature Extraction}
 	
@@ -175,19 +174,18 @@ xmls of the equations that help in increasing the efficiency of the system, as d
 	
 	\subsection{Backend and frontend}
 	
-	The Backend is running on a python server and html and php are used as the frontend
+	The Backend is running on a python server and webpage is used as the frontend
 
 
 
-\section{The LaSer Application}
+%\section{The LaSer Application}
 
-Add snapshots of UI here
+%Add snapshots of UI here
 
 \section {Conclusions and Future Work}
 \begin{itemize}
 	\item Support free form queries as input.
 	\item Retrieve on basis of structural similarity, for example: $x + y = 1$ and $a + b$ and $(2*X - 1) + (2*Y)$ are all structurally similar. 
-	\item Currently, n-gram features are supported where n <= 3, we will also support normalization and structural features in future.
 	\item Retrieve on simplification for example $x*x = 1$ and $x^2 = 1$ are same after simplification.
 	\item Support search by names of popular equations.	
 
