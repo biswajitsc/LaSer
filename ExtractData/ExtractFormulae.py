@@ -15,8 +15,8 @@ clean1 = re.compile(r'%.*')
 clean2 = re.compile(r'.*\\def.*', flags = re.IGNORECASE)
 clean3 = re.compile(r'.*#.*')
 clean4 = re.compile(r'\\title', flags = re.IGNORECASE)
-clean5 = re.compile(r'\\maketitle', flags = re.IGNORECASE)
-clean6 = re.compile(r'\\titlepage', flags = re.IGNORECASE)
+clean5 = re.compile(r'maketitle', flags = re.IGNORECASE)
+clean6 = re.compile(r'titlepage', flags = re.IGNORECASE)
 
 def primary_processing(inp):
     inp = clean0.sub('', inp)
@@ -113,7 +113,7 @@ def tertiary_processing(inp):
         if i != '\\':
             ret.append(i.strip())
     
-    ret = [i for i in ret if len(i) <= 500 and len(i) > 1]
+    ret = [i for i in ret if len(i) <= 500 and len(i) > 2]
     ret = [i for i in ret if not i.startswith('^')]
 
     return ret
