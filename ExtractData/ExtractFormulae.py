@@ -113,8 +113,8 @@ def tertiary_processing(inp):
         if i != '\\':
             ret.append(i.strip())
     
-    ret = ret[i for i in ret if len(i) <= 500 and len(i) > 1]
-    ret = ret[i for i in ret if  !i.startswith('^')]
+    ret = [i for i in ret if len(i) <= 500 and len(i) > 1]
+    ret = [i for i in ret if not i.startswith('^')]
 
     return ret
 
@@ -125,7 +125,6 @@ def full_processing(inp):
     
     processed = []
     [processed.extend(tertiary_processing(i)) for i in inp]
-    processed = [i for i in processed if len(i) <= 600 and len(i) > 0]
     
     return processed
 
