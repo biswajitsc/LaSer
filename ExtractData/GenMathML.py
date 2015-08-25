@@ -17,7 +17,7 @@ def main():
 		# cleanEqn = re.sub('\)','\\\\)',cleanEqn)
 		# cleanEqn = re.sub('\(','\\\\(',cleanEqn)
 		# print cleanEqn
-		oscommand = "latexmlmath --pmml=- '" + cleanEqn + "' > '" + tempFile
+		oscommand = "latexmlmath --pmml=- '" + cleanEqn + "' > " + tempFile
 		# print oscommand
 		os.system(oscommand)
 		

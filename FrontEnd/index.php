@@ -54,68 +54,26 @@
 		</div>
 
 		<div class="ranked-results">
-			<div class="hr-line-dashed"></div>
-	        <div class="search-result">
-		            <?php    
-                    $url = "localhost:8080"; //Put the url here
-                    $mathSnippet = $_GET['mathSnippet'];
-                    $mathSnippet = urlencode($mathSnippet);
-                    $mathSnippet = str_replace('+', '%20', $mathSnippet);
-                    //$curl = curl_init();
-                    //curl_setopt($curl, CURLOPT_URL, $url . '/' . $mathSnippet);
-                    $resultJson = httpGet($Url,$mathSnippet);
-                    echo $resultJson['equation'];
-                    echo '<center><a href="http://www.google.com" target="_blank">'.$resultJson['docID'].'</a></center>';
-                    ?>
-                <!-- <h3><a href="#">Bootdey</a></h3>
-		        <a href="#" class="search-link">www.bootdey.com</a>
-		        <p>
 
-		        </p> -->
-			</div>
+            <?php
+                $url = "localhost:8080"; //Put the url here
+                $mathSnippet = $_GET['mathSnippet'];
+                $mathSnippet = urlencode($mathSnippet);
+                $mathSnippet = str_replace('+', '%20', $mathSnippet);
+                $resultJson = httpGet($url,$mathSnippet);
+                    
+                foreach ($resultJson as $key => $value) {
+                    echo '<div class="hr-line-dashed"></div>';
+                    echo '<div class="search-result">';
+                    //echo $value['docID'];
+                    echo '<center><a href='.$value['docLink'].' target="_blank">'.$value['docID'].'</a></center>';
+                    echo $value['equation'];
+                    echo '</div>';
+                }
+
+                echo '<div class="hr-line-dashed"></div>';
+            ?>
 			
-			<div class="hr-line-dashed"></div>
-
-            <div class="search-result">
-                <h3><a href="#">Bootdey</a></h3>
-                <a href="#" class="search-link">https://bootdey.com/</a>
-                <p>
-                  Bootdey is a gallery of free snippets resources templates and utilities for bootstrap css hmtl js framework.Codes for developers and web designers
-                </p>
-            </div>
-            
-            <div class="hr-line-dashed"></div>
-
-            <div class="search-result">
-                <h3><a href="#">Bootdey | Facebook</a></h3>
-                <a href="#" class="search-link">https://www.facebook.com/bootdey</a>
-                <p>
-                    Bootdey is a gallery of free snippets resources templates and utilities for bootstrap css hmtl js framework. Codes for developers and web designers
-                </p>
-            </div>
-
-            <div class="hr-line-dashed"></div>
-
-            <div class="search-result">
-                <h3><a href="#">Bootdey | Twitter</a></h3>
-                <a href="#" class="search-link">www.twitter.com/bootdey</a>
-                <p>
-                    Bootdey is a gallery of free snippets resources templates and utilities for bootstrap css hmtl js framework. Codes for developers and web designers
-                </p>
-            </div>
-            
-            <div class="hr-line-dashed"></div>
-
-            <div class="search-result">
-                <h3><a href="#">Bootdey | Twitter</a></h3>
-                <a href="#" class="search-link">www.twitter.com/bootdey</a>
-                <p>
-                    Bootdey is a gallery of free snippets resources templates and utilities for bootstrap css hmtl js framework. Codes for developers and web designers
-                </p>
-            </div>
-
-            <div class="hr-line-dashed"></div>
-
 		</div>
 
 		<div id="paginationDiv" class="text-center">
