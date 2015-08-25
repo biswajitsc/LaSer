@@ -17,7 +17,8 @@ def main():
 		# cleanEqn = re.sub('\)','\\\\)',cleanEqn)
 		# cleanEqn = re.sub('\(','\\\\(',cleanEqn)
 		# print cleanEqn
-		oscommand = "latexmlmath --pmml=- '" + cleanEqn + "' > " + tempFile
+
+		oscommand = "latexmlmath --pmml=- \"" + cleanEqn + "\" > " + tempFile
 		# print oscommand
 		os.system(oscommand)
 		
@@ -38,7 +39,7 @@ def main():
 		if cnt % 10000 == 0:
 			print cnt
 
-		if cnt > 20:
+		if cnt > 0:
 			break
 	
 	
