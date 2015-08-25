@@ -56,11 +56,22 @@
 		<div class="ranked-results">
 			<div class="hr-line-dashed"></div>
 	        <div class="search-result">
-		        <h3><a href="#">Bootdey</a></h3>
+		            <?php    
+                    $url = "localhost:8080"; //Put the url here
+                    $mathSnippet = $_GET['mathSnippet'];
+                    $mathSnippet = urlencode($mathSnippet);
+                    $mathSnippet = str_replace('+', '%20', $mathSnippet);
+                    //$curl = curl_init();
+                    //curl_setopt($curl, CURLOPT_URL, $url . '/' . $mathSnippet);
+                    $resultJson = httpGet($Url,$mathSnippet);
+                    echo $resultJson['equation'];
+                    echo '<center><a href="http://www.google.com" target="_blank">'.$resultJson['docID'].'</a></center>';
+                    ?>
+                <!-- <h3><a href="#">Bootdey</a></h3>
 		        <a href="#" class="search-link">www.bootdey.com</a>
 		        <p>
 
-		        </p>
+		        </p> -->
 			</div>
 			
 			<div class="hr-line-dashed"></div>
@@ -135,15 +146,6 @@
 
     </script>
 
-    <?php    
-        $url = "localhost:8080"; //Put the url here
-        $mathSnippet = $_GET['mathSnippet'];
-        $mathSnippet = urlencode($mathSnippet);
-        $mathSnippet = str_replace('+', '%20', $mathSnippet);
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url . '/' . $mathSnippet);
-        $result = curl_exec($curl);
-        echo $result;
-    ?>
+
     
 </body>
