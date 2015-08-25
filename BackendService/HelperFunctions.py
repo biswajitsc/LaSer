@@ -8,6 +8,7 @@ import re
 import decimal
 import unicodedata as ucode
 import sys
+import math
 
 def generateMathML(latex_eqn) :
     cleanEqn = eqn.strip('\n').strip()

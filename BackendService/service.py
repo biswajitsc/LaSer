@@ -123,13 +123,13 @@ def generateRankedLists(query) :
 
 	while(iter_1 != len(sorted_cosine_similarity) and iter_2 != len(sorted_simplified_cosine_similarity)):
 		if iter_1 < len(sorted_cosine_similarity) and iter_2 < len(sorted_simplified_cosine_similarity):
-			if sorted_cosine_similarity[iter_1][1] < sorted_simplified_cosine_similarity[iter_2][1]
+			if sorted_cosine_similarity[iter_1][1] < sorted_simplified_cosine_similarity[iter_2][1]:
 				ranked_list.append((sorted_simplified_cosine_similarity[iter_2][0],sorted_simplified_cosine_similarity[iter_2][1]))
 				iter_2 += 1
 			else:
 				ranked_list.append((sorted_cosine_similarity[iter_1][0],sorted_cosine_similarity[iter_1][1]))
 				iter_1 += 1
-		elif iter_1 != len(sorted_cosine_similarity)
+		elif iter_1 != len(sorted_cosine_similarity):
 			ranked_list.append((sorted_cosine_similarity[iter_1][0],sorted_cosine_similarity[iter_1][1]))
 			iter_1 += 1
 		else:
@@ -179,5 +179,5 @@ trigrams_postinglist = {}
 weight_matrix = []
 
 if __name__ == "__main__":
-	(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, weight_matrix) = generateIndex(sys.argv[1])
+	(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, weight_matrix) = generateIndex(sys.argv[2])
 	app.run()
