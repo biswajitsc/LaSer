@@ -3,8 +3,8 @@ from StringIO import *
 import re
 import sys
 
-def main() :
-	input_file = open(sys.argv[1],"r")
+def convertEquation(filename) :
+	input_file = open(filename,"r")
 	data = input_file.read()
 	data = data.replace("\n"," ")
 	lines = data.split('<m:math')
