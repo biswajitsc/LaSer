@@ -1,3 +1,7 @@
+<?php
+    include_once 'genericFunctions.php';
+?>
+
 <!DOCTYPE html>
 <meta charset="utf-8">
 
@@ -17,13 +21,13 @@
 		  <span class="icon-bar"></span>
 		  <span class="icon-bar"></span>
 		</button>
-		<a class="navbar-brand" href="index.html">LaSer</a>
+		<a class="navbar-brand" href="index.php">LaSer</a>
 	</div>
 
 	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		<ul class="nav navbar-nav">
-		  <li class= "active" ><a href="index.html">Home</a></li>
-		  <li class= "" ><a href="about.html">About</a></li>
+		  <li class= "active" ><a href="index.php">Home</a></li>
+		  <li class= "" ><a href="about.php">About</a></li>
 		</ul>
 	</div>
 </nav>
@@ -36,7 +40,7 @@
 	        <div class="col-sm-6 col-sm-offset-3">
 	            <div id="imaginary_container"> 
 	                <div class="input-group stylish-input-group">
-	                <form id="mathSnippetForm" action="index.html">
+	                <form id="mathSnippetForm" action="index.php">
 	                    <input type="text" name = 'mathSnippet' class="form-control" placeholder="Search" >
 	                </form>    
 	                <span class="input-group-addon">
@@ -50,57 +54,26 @@
 		</div>
 
 		<div class="ranked-results">
-			<div class="hr-line-dashed"></div>
-	        <div class="search-result">
-		        <h3><a href="#">Bootdey</a></h3>
-		        <a href="#" class="search-link">www.bootdey.com</a>
-		        <p>
 
-		        </p>
-			</div>
+            <?php
+                $url = "localhost:8080"; //Put the url here
+                $mathSnippet = $_GET['mathSnippet'];
+                $mathSnippet = urlencode($mathSnippet);
+                $mathSnippet = str_replace('+', '%20', $mathSnippet);
+                $resultJson = httpGet($url,$mathSnippet);
+                    
+                foreach ($resultJson as $key => $value) {
+                    echo '<div class="hr-line-dashed"></div>';
+                    echo '<div class="search-result">';
+                    //echo $value['docID'];
+                    echo '<center><a href='.$value['docLink'].' target="_blank">'.$value['docID'].'</a></center>';
+                    echo $value['equation'];
+                    echo '</div>';
+                }
+
+                echo '<div class="hr-line-dashed"></div>';
+            ?>
 			
-			<div class="hr-line-dashed"></div>
-
-            <div class="search-result">
-                <h3><a href="#">Bootdey</a></h3>
-                <a href="#" class="search-link">https://bootdey.com/</a>
-                <p>
-                  Bootdey is a gallery of free snippets resources templates and utilities for bootstrap css hmtl js framework.Codes for developers and web designers
-                </p>
-            </div>
-            
-            <div class="hr-line-dashed"></div>
-
-            <div class="search-result">
-                <h3><a href="#">Bootdey | Facebook</a></h3>
-                <a href="#" class="search-link">https://www.facebook.com/bootdey</a>
-                <p>
-                    Bootdey is a gallery of free snippets resources templates and utilities for bootstrap css hmtl js framework. Codes for developers and web designers
-                </p>
-            </div>
-
-            <div class="hr-line-dashed"></div>
-
-            <div class="search-result">
-                <h3><a href="#">Bootdey | Twitter</a></h3>
-                <a href="#" class="search-link">www.twitter.com/bootdey</a>
-                <p>
-                    Bootdey is a gallery of free snippets resources templates and utilities for bootstrap css hmtl js framework. Codes for developers and web designers
-                </p>
-            </div>
-            
-            <div class="hr-line-dashed"></div>
-
-            <div class="search-result">
-                <h3><a href="#">Bootdey | Twitter</a></h3>
-                <a href="#" class="search-link">www.twitter.com/bootdey</a>
-                <p>
-                    Bootdey is a gallery of free snippets resources templates and utilities for bootstrap css hmtl js framework. Codes for developers and web designers
-                </p>
-            </div>
-
-            <div class="hr-line-dashed"></div>
-
 		</div>
 
 		<div id="paginationDiv" class="text-center">
@@ -123,12 +96,14 @@
 
     </div>
 
-<script type="text/javascript">
-	
-$('#submitButton').click(function() {
- 	$( "#mathSnippetForm" ).submit();
-});
+    <script type="text/javascript">
+    
+    $('#submitButton').click(function() {
+    $( "#mathSnippetForm" ).submit();
+    });
 
-</script>
+    </script>
 
+
+    
 </body>

@@ -10,9 +10,34 @@ mmode4 = re.compile(r'\\begin{eqnarray}.+?\\end{eqnarray}', flags = re.DOTALL | 
 mmode5 = re.compile(r'\\begin{equation\*}.+?\\end{equation\*}', flags = re.DOTALL | re.UNICODE)
 mmode6 = re.compile(r'\\begin{eqnarray\*}.+?\\end{eqnarray\*}', flags = re.DOTALL | re.UNICODE)
 
+clean0 = re.compile(r'.*\\newcommand.*', flags = re.IGNORECASE)
+clean1 = re.compile(r'%.*')
+clean2 = re.compile(r'.*\\def.*', flags = re.IGNORECASE)
+clean3 = re.compile(r'.*#.*')
+clean4 = re.compile(r'\\title', flags = re.IGNORECASE)
+clean5 = re.compile(r'maketitle', flags = re.IGNORECASE)
+clean6 = re.compile(r'titlepage', flags = re.IGNORECASE)
+
 def primary_processing(inp):
-    inp = re.sub(r'.*\\newcommand.*', '', inp)
+    inp = clean0.sub('', inp)
+    inp = clean1.sub('', inp)
+    inp = clean2.sub('', inp)
+    inp = clean3.sub('', inp)
     
+    m = clean4.search(inp)
+    if m is not None:
+    	inp = inp[m.end():]
+
+    m = clean5.search(inp)
+    if m is not None:
+    	inp = inp[m.end():]
+
+    m = clean6.search(inp)
+    if m is not None:
+    	inp = inp[m.end():]
+
+    # print inp
+
     s0 = mmode0.findall(inp)
     inp = mmode0.sub('', inp)
 
@@ -81,6 +106,9 @@ def secondary_processing(inp):
 def tertiary_processing(inp):
     inp = inp.replace('\\nonumber', '')
     inp = inp.replace('&', ' ')
+
+    inp = re.sub(r'\\\(.*?\)', '', inp)
+    inp = inp.replace('"', '')
     
     inp = inp.split('\\\\')
     ret = []
@@ -88,6 +116,9 @@ def tertiary_processing(inp):
         if i != '\\':
             ret.append(i.strip())
     
+    ret = [i for i in ret if len(i) <= 500 and len(i) > 2]
+    ret = [i for i in ret if not i.startswith('^')]
+
     return ret
 
 
@@ -97,21 +128,30 @@ def full_processing(inp):
     
     processed = []
     [processed.extend(tertiary_processing(i)) for i in inp]
-    processed = [i for i in processed if len(i) <= 600]
     
     return processed
 
 
 def main():
+
+	# x = full_processing(open('../../Dataset/1992/9206040', 'r').read().decode('cp1252', errors='ignore'));
+	# for i in x:
+	# 	print i
+
     out = codecs.open('../../Data/Formulae', 'w', 'cp1252')
     metaout = codecs.open('../../Data/Meta', 'w', 'cp1252')
     
+    cnt = 0
     for year in xrange(1992, 2004):
-        
+
         print 'Processing year {0}'.format(year)
         files = os.listdir('../../Dataset/{0}'.format(year))
         
         for afile in files:
+            cnt += 1
+            if cnt % 100 == 0:
+                print "Done ", cnt
+
             try:
                 text = open('../../Dataset/{0}/{1}'.format(year, afile), 'r').read().decode('cp1252', errors='ignore')
                 for form in full_processing(text):

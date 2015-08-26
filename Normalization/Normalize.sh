@@ -1,3 +1,5 @@
+rm ../../Data/NumberNormalizedMathML
+touch ../../Data/NumberNormalizedMathML
 python NumericalNormalization.py
 echo "Operator Grouping. Output will be stored in ../../Data/OperatorGroupedMathML"
 rm ../../Data/OperatorGroupedMathML

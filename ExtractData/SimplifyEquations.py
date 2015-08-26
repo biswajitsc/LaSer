@@ -55,6 +55,9 @@ def main() :
 	mathml_eqns = data.split('\n')
 	i = 0
 	for mathml_eqn in mathml_eqns :
+		if (str(mathml_eqn) == '<?xml version="1.0" encoding="UTF-8"?>' or len(mathml_eqn) == 0) :
+			continue
+		mathml_eqn = mathml_eqn.replace('\n',' ')
 		temp_mathml_eqn = mathml_eqn
 		i += 1
 		if (i % 100 == 0) :
