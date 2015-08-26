@@ -17,12 +17,15 @@ render_json = lambda **args: json.dumps(args)
 # render_txt = lambda message: message
 
 urls = (
-    '/(.*)', 'greet'
+	'/(.*)', 'greet'
 )
+
 app = web.application(urls, globals())
+
 val = 0
 
 def generateRankedLists(query) :
+
 	global unigrams
 	global bigrams
 	global trigrams
@@ -33,19 +36,41 @@ def generateRankedLists(query) :
 	global weight_matrix
 
 	latex_eqn = urllib.unquote(query).decode('utf8')
+
+	# print "#############"
+	# print "in generateRankedLists : latex_eqn is ",latex_eqn
+	# print "#############"
+
 	mathML_eqn = generateMathML(latex_eqn)
+
+	# print "#############"
+	# print "in generateRankedLists : mathML_eqn is ",mathML_eqn
+	# print "#############"
+
 
 	# work with both the simplified eqn as well as the original eqn
 
-	simplfied_mathML_eqn = simplifyMathML(mathML_eqn)
-	simplfied_mathML_eqn = numberNormalize(mathML_eqn)
-	simplfied_mathML_eqn = unicodeNormalize(mathML_eqn)
+	simplified_mathML_eqn = simplifyMathML(mathML_eqn)
+	simplified_mathML_eqn = numberNormalize(mathML_eqn)
+	simplified_mathML_eqn = unicodeNormalize(mathML_eqn)
 
 	mathML_eqn = numberNormalize(mathML_eqn)
+
+	# print "#############"
+	# print "in generateRankedLists : number normalized mathml is ",mathML_eqn
+	# print "#############"
+
+
 	mathML_eqn = unicodeNormalize(mathML_eqn)
 
-	query_vector = extractWeights(simplified_mathML_eqn, idf_scores, unigrams, bigrams, trigrams)
-	simplified_query_vector = extractWeights(mathML_eqn, idf_scores, unigrams, bigrams, trigrams)
+	# print "#############"
+	# print "in generateRankedLists : unicode normalized mathml is ",mathML_eqn
+	# print "#############"
+
+
+
+	query_vector = extractWeights(mathML_eqn, idf_scores, unigrams, bigrams, trigrams)
+	simplified_query_vector = extractWeights(simplified_mathML_eqn, idf_scores, unigrams, bigrams, trigrams)
 
 
 	# Matching
@@ -54,6 +79,11 @@ def generateRankedLists(query) :
 
 	matched_docs = set()
 	simplified_matched_docs = set()
+
+	print "features in query are"
+	for feature in query_vector:
+		print feature
+
 
 	for feature in query_vector:
 		# identify the type of feature
@@ -100,14 +130,23 @@ def generateRankedLists(query) :
 	for doc_id in matched_docs:
 		dot_product = 0.0
 		for feature in query_vector:
-			dot_product += query_vector[feature]*weight_matrix[doc_id][feature]
-		cosine_similarity[doc_id] = dot_product;
+			dot_product += query_vector[feature]*weight_matrix[doc_id-1][feature]
+		normalized_value = 0.0
+		for feature,val in weight_matrix[doc_id-1].items():
+			normalized_value += val*val
+		normalized_value = math.sqrt(normalized_value)
+		cosine_similarity[doc_id-1] = dot_product/normalized_value;
 
 	for doc_id in simplified_matched_docs:
 		dot_product = 0.0
 		for feature in simplified_query_vector:
-			dot_product += simplified_query_vector[feature]*weight_matrix[doc_id][feature]
-		simplified_cosine_similarity[doc_id] = dot_product;
+			dot_product += simplified_query_vector[feature]*weight_matrix[doc_id-1][feature]
+		normalized_value = 0.0
+		for feature,val in weight_matrix[doc_id-1].items():
+			normalized_value += val*val
+		normalized_value = math.sqrt(normalized_value)
+		simplified_cosine_similarity[doc_id-1] = dot_product/normalized_value;
+
 
 	sorted_cosine_similarity = sorted(cosine_similarity.items(), key=operator.itemgetter(1))
 	sorted_simplified_cosine_similarity = sorted(simplified_cosine_similarity.items(), key=operator.itemgetter(1))
@@ -136,7 +175,7 @@ def generateRankedLists(query) :
 			ranked_list.append((sorted_simplified_cosine_similarity[iter_2][0],sorted_simplified_cosine_similarity[iter_2][1]))
 			iter_2 += 1
 
-	ranked_result = JSONEncoder().encode(ranked_list)
+	ranked_result = json.JSONEncoder().encode(ranked_list)
 
 	return ranked_result
 
@@ -169,15 +208,5 @@ class greet:
         val = value
         print "PUT",val
 
-unigrams = set()
-bigrams = set()
-trigrams = set()
-idf_scores = {}
-unigrams_postinglist = {}
-bigrams_postinglist = {}
-trigrams_postinglist = {}
-weight_matrix = []
-
 if __name__ == "__main__":
-	(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, weight_matrix) = generateIndex(sys.argv[2])
 	app.run()
