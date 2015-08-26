@@ -3,23 +3,8 @@ from StringIO import *
 import re
 import sys
 
-def convertEquation(filename) :
-	input_file = open(filename,"r")
-	data = input_file.read()
-	data = data.replace("\n"," ")
-	lines = data.split('<m:math')
-	mathML = []
-	for line in lines :
-		line = line.replace('\n', ' ')
-		if len(line) == 0 :
-			continue
-		line = '<m:math' + line
-		xml = line.split('<?xml version="1.0"?>')
-		for xmls in xml :
-			xmls = re.sub(' +',' ',xmls)
-			xmls = xmls.replace('\t', ' ')
-			mathML.append(xmls)
-	
+def convertEquation(mathML) :
+	expressions = []
 	for eqn in mathML :
 		try :
 			string = eqn.replace(' xmlns="', ' xmlnamespace="')
@@ -29,14 +14,16 @@ def convertEquation(filename) :
 			tags = root.findall('.//')
 			strng = ""
 			for tag in tags :
-				if len(tag.text) == 0 :
+				if tag.text == None or len(tag.text) == 0 :
 					continue
 				text = tag.text.strip()
 				if len(text) != 0 :
 					strng += text + " "
-			print strng
+			expressions.append(strng)
 		except Exception :
+			print eqn
 			continue
+	return expressions
 
 if __name__ == "__main__" :
 	main()
