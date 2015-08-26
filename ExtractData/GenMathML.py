@@ -16,6 +16,7 @@ def main():
 	for eqn in formulae:
 		cnt += 1
 		cleanEqn = eqn.strip('\n').strip()
+		cleanEqn = re.sub('"','',cleanEqn)
 		# cleanEqn = re.sub('\\\\','\\\\\\\\',cleanEqn)
 		# cleanEqn = re.sub('\)','\\\\)',cleanEqn)
 		# cleanEqn = re.sub('\(','\\\\(',cleanEqn)
