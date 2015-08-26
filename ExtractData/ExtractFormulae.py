@@ -107,7 +107,7 @@ def tertiary_processing(inp):
     inp = inp.replace('\\nonumber', '')
     inp = inp.replace('&', ' ')
 
-    inp = re.sub(r'\\\(.*\)', '', inp)
+    inp = re.sub(r'\\\(.*?\)', '', inp)
     
     inp = inp.split('\\\\')
     ret = []
