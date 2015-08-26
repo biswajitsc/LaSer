@@ -3,21 +3,25 @@ import sys
 import re
 
 def main():
-	formulae = open(sys.argv[1], 'r')
-	mathMLOutput = open(sys.argv[2], 'w')
+	formulae = open('../../Data/Formulae', 'r')
+	meta = open('../../Data/Meta', 'r').readlines()
+	mathMLOutput = open('../../Data/MathML.xml', 'w')
+	metaOutput = open('../../Data/MathMLMeta.xml', 'w')
 	tempFile = '../../Data/tmp.txt'
 	errorFile = open('../../Data/error.txt', 'w')
 	# mathMLOutput.write('<?xml version="1.0" encoding="UTF-8"?>'+'\n')
+
 	
-	cnt = 0
+	cnt = -1
 	for eqn in formulae:
 		cnt += 1
 		cleanEqn = eqn.strip('\n').strip()
-		cleanEqn = re.sub('\\\\','\\\\\\\\',cleanEqn)
-		cleanEqn = re.sub('\)','\\\\)',cleanEqn)
-		cleanEqn = re.sub('\(','\\\\(',cleanEqn)
+		# cleanEqn = re.sub('\\\\','\\\\\\\\',cleanEqn)
+		# cleanEqn = re.sub('\)','\\\\)',cleanEqn)
+		# cleanEqn = re.sub('\(','\\\\(',cleanEqn)
 		# print cleanEqn
-		oscommand = 'latexmlmath --pmml=- ' + cleanEqn + ' > ' + tempFile
+
+		oscommand = "latexmlmath --pmml=- \"" + cleanEqn + "\" > " + tempFile
 		# print oscommand
 		os.system(oscommand)
 		
@@ -30,18 +34,21 @@ def main():
 			 		tempString += line.strip('\n') + ' '
 			 	linecnt += 1
 			mathMLOutput.write(tempString+'\n')
+			metaOutput.write(meta[cnt])
 			mathmlOutTemp.close()
 			os.remove(tempFile)
 		except Exception as e:
 			errorFile.write( str(cnt) + '\n' )
-			
+		
+
 		if cnt % 10000 == 0:
 			print cnt
-	
+
 	
 	formulae.close()
 	mathMLOutput.close()
 	errorFile.close()	
+	metaOutput.close()
 
 if __name__ == '__main__':
 	main()
