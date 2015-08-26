@@ -12,7 +12,6 @@ import math
 import os
 import ast
 
-
 def generateMathML(latex_eqn) :
     cleanEqn = latex_eqn.strip('\n').strip()
     cleanEqn = re.sub('\\\\','\\\\\\\\',cleanEqn)
@@ -142,6 +141,25 @@ def unicodeNormalize(mathml_eqn) :
 	        normalizedString += token + " "
 	return normalizedString
 
+def convertEquation(mathml_eqn) :
+	try :
+		string = mathml_eqn.replace(' xmlns="', ' xmlnamespace="')
+		parser = etree.XMLParser(ns_clean=True,remove_pis=True,remove_comments=True)
+		tree   = etree.parse(StringIO(string), parser)
+		root = tree.getroot()
+		tags = root.findall('.//')
+		expression = ""
+		for tag in tags :
+			if tag.text == None or len(tag.text) == 0 :
+				continue
+			text = tag.text.strip()
+			if len(text) != 0 :
+				expression += text + " "
+		return expression
+	except Exception :
+		print "Error parsing", mathml_eqn
+		return mathml_eqn
+
 def extractWeights(mathml_eqn, idf_scores, unigrams, bigrams, trigrams) :
 	mathml_eqn = mathml_eqn.replace('\n', ' ')
 	mathml_eqn = mathml_eqn.replace('<?xml version="1.0"?>', '')
@@ -159,14 +177,22 @@ def extractWeights(mathml_eqn, idf_scores, unigrams, bigrams, trigrams) :
 		string = str(unigram)
 		if string in mathml_eqn :
 			weight_score[unigram] = ((1 + math.log(mathml_eqn.count(string))) * idf_scores[unigram])
+
+	expression = convertEquation(mathml_eqn)
+
+	for unigram in unigrams :
+		string = str(unigram)
+		if string in expression :
+			weight_score[unigram] = ((1 + math.log(mathml_eqn.count(string))) * idf_scores[unigram])
+
 	for bigram in bigrams :
 		string = (str(bigram[0]) + ' ' + str(bigram[1]))
-		if string in mathml_eqn :
+		if string in expression :
 			weight_score[bigram] = ((1 + math.log(mathml_eqn.count(string))) * idf_scores[bigram])
 	
 	for trigram in trigrams :
 		string = (str(trigram[0]) + ' ' + str(trigram[1]) + ' ' + str(trigram[2]))
-		if string in mathml_eqn :
+		if string in expression :
 			weight_score[trigram] = ((1 + math.log(mathml_eqn.count(string))) * idf_scores[trigram])
 
 	# print "in extractWeights : weight_score is ",weight_score
@@ -209,16 +235,18 @@ def generateIndex(NormalizedMathML):
 	input_file = open(NormalizedMathML,"r")
 	data = input_file.read()
 	data = data.replace("\n"," ")
-	lines = data.split('<m:math xmlns:m="http://www.w3.org/1998/Math/MathML" display="block">')
+	lines = data.split('<m:math')
 	mathML = []
 	for line in lines :
 		line = line.replace('\n', ' ')
-		xml = line.split('<?xml version="1.0"?> <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/1998/Math/MathML         http://www.w3.org/Math/XMLSchema/mathml2/mathml2.xsd">')
-		for xmls in xml :
-			xmls = re.sub(' +',' ',xmls)
-			xmls = xmls.replace('\t', ' ')
-			# print xmls
-			mathML.append(xmls)
+		if len(line) == 0 :
+			continue
+		line = '<m:math' + line
+		xmls = line.split('<?xml version="1.0"?>')
+		for xml in xmls :
+			xml = re.sub(' +',' ',xml)
+			xml = xml.replace('\t', ' ')
+			mathML.append(xml)
 
 	i = 0
 	weight_matrix = []

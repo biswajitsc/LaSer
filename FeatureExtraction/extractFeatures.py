@@ -11,16 +11,19 @@ def main() :
 	output_file_weights = open("../../Data/Weight-Scores","w")
 	data = input_file.read()
 	data = data.replace("\n"," ")
-	lines = data.split('<m:math xmlns:m="http://www.w3.org/1998/Math/MathML" display="block">')
+	lines = data.split('<m:math')
 	mathML = []
 	for line in lines :
 		line = line.replace('\n', ' ')
-		xml = line.split('<?xml version="1.0"?> <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/1998/Math/MathML         http://www.w3.org/Math/XMLSchema/mathml2/mathml2.xsd">')
-		for xmls in xml :
-			xmls = re.sub(' +',' ',xmls)
-			xmls = xmls.replace('\t', ' ')
-			# print xmls
-			mathML.append(xmls)
+		if len(line) == 0 :
+			continue
+		line = '<m:math' + line
+		xmls = line.split('<?xml version="1.0"?>')
+		for xml in xmls :
+			xml = re.sub(' +',' ',xml)
+			xml = xml.replace('\t', ' ')
+			mathML.append(xml)
+			
 	unigrams = set()
 	bigrams = set()
 	trigrams = set()
