@@ -23,7 +23,7 @@ Simplify MathML Extraction
 * Run ```python ExtractData/SimplifyEquations.py``` . The simplified MathMLs will be stored in ```Data/SimplifiedMathML``` and the expressions will be stored in ```Data/Expressions```.
 
 Normalization
-* Numerical & Unicode Normalization : Run ```bash Normalize.sh``` in Normalization folder. The number normalized MathML will be stored in ```../../Data/NumberNormalizedMathML```. The unicode normalized MathML will be stored in ```../../Data/UnicodeNormalizedMathML```
+* Unicode, Operator and Numerical Normalization : Run ```python Normalize.py filename << ../../Data/NormalizedMathML``` in Normalization folder. The normalized MathML will be stored in ```../../Data/NormalizedMathML```.
 
 Feature Extraction
 * Run ```python extractExpressionFeatures.py ../../Data/UnicodeNormalizedMathML```. The unigram, bigram and trigram features will be stored in ```Data/UnigramFeatures```, ```Data/BigramFeatures``` and ```Data/TrigramFeatures``` respectively. The idf scores for each feature will be stored in ```Data/IDF-Scores```
