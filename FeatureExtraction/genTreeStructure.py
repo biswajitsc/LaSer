@@ -21,6 +21,8 @@ def reduceExpression(terminalXml):
 		variations.append('<'+'mi'+'>'+'Variable'+'</'+'mi'+'>')
 		variations.append('<'+terminalXml.tag+'>'+terminalXml.text+'</'+terminalXml.tag+'>')
 
+	variations.append('</Expression>')
+
 	return variations
 
 def genTreeStructureUtil(rawXml):
