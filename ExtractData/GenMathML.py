@@ -3,7 +3,7 @@ import sys
 import re
 
 def main():
-	formulae = open('../../Data/Formulae', 'r')
+	formulae = open('../../Data/temp', 'r')
 	meta = open('../../Data/Meta', 'r').readlines()
 	mathMLOutput = open('../../Data/MathML.xml', 'w')
 	metaOutput = open('../../Data/MathMLMeta.xml', 'w')

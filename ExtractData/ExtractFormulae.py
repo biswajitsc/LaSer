@@ -108,6 +108,7 @@ def tertiary_processing(inp):
     inp = inp.replace('&', ' ')
 
     inp = re.sub(r'\\\(.*?\)', '', inp)
+    inp = inp.replace('"', '')
     
     inp = inp.split('\\\\')
     ret = []
