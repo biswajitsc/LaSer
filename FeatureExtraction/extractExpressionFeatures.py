@@ -2,35 +2,79 @@ import re
 import sys
 import math
 
-def main() :
+def extract_MathMLUnigrams() :
 	input_file = open(sys.argv[1],"r")
 	output_file_unigrams = open("../../Data/UnigramFeatures","w")
-	output_file_bigrams = open("../../Data/BigramFeatures","w")
-	output_file_trigrams = open("../../Data/TrigramFeatures","w")
-	output_file_idfs = open("../../Data/IDF-Scores","w")
-	output_file_weights = open("../../Data/Weight-Scores","w")
-	data = input_file.read()
 	data = data.replace("\n"," ")
-	lines = data.split('<m:math xmlns:m="http://www.w3.org/1998/Math/MathML" display="block">')
+	lines = data.split('<m:math')
 	mathML = []
 	for line in lines :
 		line = line.replace('\n', ' ')
-		xml = line.split('<?xml version="1.0"?> <math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/1998/Math/MathML         http://www.w3.org/Math/XMLSchema/mathml2/mathml2.xsd">')
+		if len(line) == 0 :
+			continue
+		line = '<m:math' + line
+		xml = line.split('<?xml version="1.0"?>')
 		for xmls in xml :
 			xmls = re.sub(' +',' ',xmls)
 			xmls = xmls.replace('\t', ' ')
-			# print xmls
 			mathML.append(xmls)
+
 	unigrams = set()
-	bigrams = set()
-	trigrams = set()
+	
 	for line in mathML :
 		words = line.split(' ')
-		# print line, len(words)
 		for word in words :
 			if (len(word) > 0) :
 				unigrams.add(word)
 	print "Unigrams Extracted"
+
+	numDocs = len(mathML)
+	idf_scores = {}
+
+	unigrams_postinglist = {}
+	for unigram in unigrams :
+		unigrams_postinglist[unigram] = []
+		idf_scores[unigram] = 0
+
+	i = 0
+	for line in mathML :
+		i += 1
+		for unigram in unigrams :
+			string = str(unigram)
+			if string in line :
+				unigrams_postinglist[unigram].append((i, line.count(string)))
+				idf_scores[unigram] += 1
+	print "Unigram Features Postings List created"	
+
+
+def main() :
+	
+	
+	output_file_idfs = open("../../Data/IDF-Scores","w")
+	
+	data = data.replace("\n"," ")
+	lines = data.split('<m:math')
+	mathML = []
+	for line in lines :
+		line = line.replace('\n', ' ')
+		if len(line) == 0 :
+			continue
+		line = '<m:math' + line
+		xml = line.split('<?xml version="1.0"?>')
+		for xmls in xml :
+			xmls = re.sub(' +',' ',xmls)
+			xmls = xmls.replace('\t', ' ')
+			mathML.append(xmls)
+
+	unigrams = set()
+	
+	for line in mathML :
+		words = line.split(' ')
+		for word in words :
+			if (len(word) > 0) :
+				unigrams.add(word)
+	print "Unigrams Extracted"
+	
 	for line in mathML :
 		words = line.split(' ')
 		# print line, len(words)
@@ -107,9 +151,17 @@ def main() :
 	output_file_unigrams.write(str(unigrams_postinglist))
 	output_file_bigrams.write(str(bigrams_postinglist))
 	output_file_trigrams.write(str(trigrams_postinglist))
+
+	# for unigram in unigrams :
+	# 	output_file_unigrams.write("{" + str(unigram) + " : " + str(unigrams_postinglist[unigram]) + "}" + '\n')
+	# for bigram in bigrams :
+	# 	output_file_bigrams.write("{" + str(bigram) + " : " + str(bigrams_postinglist[bigram]) + "}" + '\n')
+	# for trigram in trigrams :
+	# 	output_file_trigrams.write("{" + str(trigram) + " : " + str(trigrams_postinglist[trigram]) + "}" + '\n')
 	for features in feature_numDocs :
+		# output_file_idfs.write(str(features) + " : " + str(1 + math.log(numDocs/feature_numDocs[features])) + '\n')
 		feature_numDocs[features] = (1 + math.log(numDocs/feature_numDocs[features]))
-	output_file_idfs.write(str(feature_numDocs))	
+	output_file_idfs.write(str(feature_numDocs))
 
 	i = 0
 	weight_matrix = []
@@ -141,4 +193,4 @@ def main() :
 	return weight_matrix
 
 if __name__ == "__main__" :
-	main()		
+	main()
