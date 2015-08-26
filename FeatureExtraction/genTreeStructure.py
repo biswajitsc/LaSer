@@ -58,14 +58,14 @@ def genTreeStructure(mathmlXml,mathmlMeta):
 		cnt += 1
 		variations = genTreeStructureUtil(rawEquation)
 		for variation in variations:
-			structureMathML.write(variation.encode('utf-8') + '\n')
+			structureMathML.write(str(cnt+1) + ' ' + variation.encode('utf-8') + '\n')
 			structureMathMLMeta.write(meta[cnt].strip('\n')+'\n')
 	
 	structureMathML.close()
 	structureMathMLMeta.close()
 
 def main():
-	genTreeStructure('../../Data/MathML.xml','../../Data/MathMLMeta.xml')
+	genTreeStructure('../../Data/sampleMathML.xml','../../Data/sampleMathMLMeta.xml')
 	
 
 if __name__ == '__main__':
