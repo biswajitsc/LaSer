@@ -31,3 +31,8 @@ Feature Extraction
 FrontEnd prerequisites 
 * Install ```apache server```
 * Install ```php5```,```php5-curl```
+
+Structural Properties
+* Just a basic structural generation
+* Run ```python genTreeStructure.py``` and the different variations will be generated in ```../../Data/StructureMathML.xml``` in line separated way and their metapath will be generated in ```../../Data/StructureMathMLMeta.xml``` in line separated way. 
+* Also the equations in ```../../Data/StructureMathML.xml``` will be in this format ```<line number of the original equation> <space> <xml of the variation>```
