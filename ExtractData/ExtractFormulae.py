@@ -106,6 +106,8 @@ def secondary_processing(inp):
 def tertiary_processing(inp):
     inp = inp.replace('\\nonumber', '')
     inp = inp.replace('&', ' ')
+
+    inp = re.sub(r'\\\(.*?\)', '', inp)
     
     inp = inp.split('\\\\')
     ret = []
@@ -131,7 +133,9 @@ def full_processing(inp):
 
 def main():
 
-	# primary_processing(open('../../Dataset/1992/9211086', 'r').read().decode('cp1252', errors='ignore'));
+	# x = full_processing(open('../../Dataset/1992/9206040', 'r').read().decode('cp1252', errors='ignore'));
+	# for i in x:
+	# 	print i
 
     out = codecs.open('../../Data/Formulae', 'w', 'cp1252')
     metaout = codecs.open('../../Data/Meta', 'w', 'cp1252')
