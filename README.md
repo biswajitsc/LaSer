@@ -26,7 +26,7 @@ Normalization
 * Numerical & Unicode Normalization : Run ```bash Normalize.sh``` in Normalization folder. The number normalized MathML will be stored in ```../../Data/NumberNormalizedMathML```. The unicode normalized MathML will be stored in ```../../Data/UnicodeNormalizedMathML```
 
 Feature Extraction
-* Run ```python extractFeatures.py ../../Data/UnicodeNormalizedMathML```. The unigram, bigram and trigram features will be stored in ```Data/UnigramFeatures```, ```Data/BigramFeatures``` and ```Data/TrigramFeatures``` respectively. The idf scores for each feature will be stored in ```Data/IDF-Scores```
+* Run ```python extractExpressionFeatures.py ../../Data/UnicodeNormalizedMathML```. The unigram, bigram and trigram features will be stored in ```Data/UnigramFeatures```, ```Data/BigramFeatures``` and ```Data/TrigramFeatures``` respectively. The idf scores for each feature will be stored in ```Data/IDF-Scores```
 
 FrontEnd prerequisites 
 * Install ```apache server```
