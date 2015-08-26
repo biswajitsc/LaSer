@@ -65,7 +65,7 @@ def genTreeStructure(mathmlXml,mathmlMeta):
 	structureMathMLMeta.close()
 
 def main():
-	genTreeStructure('../../Data/sampleMathML.xml','../../Data/sampleMathMLMeta.xml')
+	genTreeStructure('../../Data/MathML.xml','../../Data/MathMLMeta.xml')
 	
 
 if __name__ == '__main__':
