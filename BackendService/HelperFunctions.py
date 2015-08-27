@@ -118,28 +118,33 @@ def numberNormalize(mathml_eqn) :
 	return mathml_eqn
 	
 def unicodeNormalize(mathml_eqn) :
-	normalized = ''
-	tokens = mathml_eqn.split()
-	normalizedString = ""
-	for token in tokens:
-	    startTag = '<m:mi>';
-	    endTag = '</m:mi>'
-	    normalized = False
-	    for iter in range(2):
-	        if (token.startswith(startTag)):
-	            st = token.find(startTag) + len(startTag)
-	            en = token.find(endTag)
-	            symbol = unicode(token[st:en], "utf-8")
-	            symbol = ucode.normalize('NFKD', symbol)
-	            symbol = symbol.encode('ascii', 'backslashreplace')
-	            normalizedString += startTag + symbol + endTag + " "
-	            normalized = True
-	            break
-	        startTag = '<mi>'
-	        endTag = '</mi>'
-	    if not normalized:
-	        normalizedString += token + " "
-	return normalizedString
+	lines = mathml_eqn.split('\n')
+    normalizedString = ""
+    for line in lines:
+        tokens = line.split(' ')
+        for token in tokens:
+            startTag = '<m:mi>';
+            endTag = '</m:mi>'
+            normalized = False
+            for iter in range(2):
+                if (token.startswith(startTag)):
+                    st = token.find(startTag) + len(startTag)
+                    en = token.find(endTag)
+                    symbol = unicode(token[st:en], "utf-8")
+                    symbol = ucode.normalize('NFKD', symbol)
+                    symbol = symbol.encode('ascii', 'backslashreplace')
+                    normalizedString += startTag + symbol + endTag
+                    normalized = True
+                    break
+                startTag = '<mi>'
+                endTag = '</mi>'
+            if not normalized:
+                normalizedString += token
+
+            normalizedString += ' '
+        normalizedString += '\n'
+
+    return normalizedString
 
 map = {}
 
@@ -259,8 +264,10 @@ def normalizeQuery(mathml_eqn) :
 	# simplifiedMathML = simplifyMathML(mathml_eqn)
 	# if simplifiedMathML = "" :
 	# 	simplifiedMathML = mathml_eqn
-	mathml_eqn = numberNormalize(mathml_eqn)
+
 	mathml_eqn = unicodeNormalize(mathml_eqn)
+	mathml_eqn = operatorNormalize(mathml_eqn)
+	mathml_eqn = numberNormalize(mathml_eqn)
 	return mathml_eqn
 
 def generateIndex(NormalizedMathML):
