@@ -141,6 +141,62 @@ def unicodeNormalize(mathml_eqn) :
 	        normalizedString += token + " "
 	return normalizedString
 
+map = {}
+
+def initMap():
+    fileName = "../Normalization/operator_groups.txt"
+    data = open(fileName,'r').read()
+    tokens = data.split('\n')
+    id = 1
+
+    for token in tokens:
+        # print token
+        operators = token.split(' ')
+        for c in operators:
+            map[c] = "OP" + str(id)
+        id += 1
+
+    # for key in map:
+    #     print key, map[key]
+
+def addGroups(data):
+    normalized = ''
+    lines = data.split('\n')
+
+    for line in lines:
+        tokens = line.split(' ')
+        for token in tokens:
+            s1 = '<m:mo>'
+            e1 = '</m:mo>'
+            s2 = '<mo>'
+            e2 = '</mo>'
+            found = False
+            if token.startswith(s1):
+                st = token.find(s1) + len(s1)
+                en = token.find(e1)
+                op = token[st:en]
+                if (op in map):
+                    normalized += token + s1 + map[op] + e1
+                    found = True
+            elif token.startswith('<mo>'):
+                st = token.find(s2) + len(s2)
+                en = token.find(e2)
+                op = token[st:en]
+                if (op in map):
+                    normalized += token + s2 + map[op] + e2
+                    found = True
+
+            if not found:
+                normalized += token
+
+            normalized += ' '
+        normalized += '\n'
+    return normalized
+
+def operatorNormalize(mathml_eqn):
+    initMap()
+    return addGroups(mathml_eqn)
+
 def convertEquation(mathml_eqn) :
 	try :
 		string = mathml_eqn.replace(' xmlns="', ' xmlnamespace="')
