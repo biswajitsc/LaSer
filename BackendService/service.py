@@ -49,18 +49,14 @@ def generateRankedLists(query) :
 
 	# work with both the simplified eqn as well as the original eqn
 
-	simplified_mathML_eqn = simplifyMathML(mathML_eqn)
-	simplified_mathML_eqn = numberNormalize(mathML_eqn)
-	simplified_mathML_eqn = unicodeNormalize(mathML_eqn)
+	simplified_mathML_eqn = simplifyMathML(mathML_eqn)	
+	simplified_mathML_eqns = normalizeQuery(mathML_eqn)
 
-	mathML_eqn = numberNormalize(mathML_eqn)
+	mathML_eqns = normalizeQuery(mathML_eqn)
 
 	# print "#############"
 	# print "in generateRankedLists : number normalized mathml is ",mathML_eqn
 	# print "#############"
-
-
-	mathML_eqn = unicodeNormalize(mathML_eqn)
 
 	# print "#############"
 	# print "in generateRankedLists : unicode normalized mathml is ",mathML_eqn
