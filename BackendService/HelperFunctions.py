@@ -248,35 +248,37 @@ def generateIndex(NormalizedMathML):
 			xml = xml.replace('\t', ' ')
 			mathML.append(xml)
 
-	i = 0
-	weight_matrix = []
-	for line in mathML :
-		values = {}
-		i += 1
-		if (i % 100 == 0) :
-			print str(i) + "th xml's weights written"
-		if (i % 100 == 0) :
-			break
-		for unigram in unigrams :
-			for doc_id_weight_pair in unigrams_postinglist[unigram] :
-				if doc_id_weight_pair[0] == i :	
-					values[unigram] = (idf_scores[unigram] * (1 + math.log(doc_id_weight_pair[1])))
-				else :
-					values[unigram] = idf_scores[unigram]
-		for bigram in bigrams :
-			for doc_id_weight_pair in bigrams_postinglist[bigram] :
-				if doc_id_weight_pair[0] == i :	
-					values[bigram] = (idf_scores[bigram] * (1 + math.log(doc_id_weight_pair[1])))
-				else :
-					values[bigram] = idf_scores[bigram]
-		for trigram in trigrams :
-			for doc_id_weight_pair in trigrams_postinglist[trigram] :
-				if doc_id_weight_pair[0] == i :	
-					values[trigram] = (idf_scores[trigram] * (1 + math.log(doc_id_weight_pair[1])))
-				else :
-					values[trigram] = idf_scores[trigram]
-		weight_matrix.append(values)
+	# Weight matrix computation
 
-	return (unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, weight_matrix)
+	# i = 0
+	# weight_matrix = []
+	# for line in mathML :
+	# 	values = {}
+	# 	i += 1
+	# 	if (i % 100 == 0) :
+	# 		print str(i) + "th xml's weights written"
+	# 	if (i % 100 == 0) :
+	# 		break
+	# 	for unigram in unigrams :
+	# 		for doc_id_weight_pair in unigrams_postinglist[unigram] :
+	# 			if doc_id_weight_pair[0] == i :	
+	# 				values[unigram] = (idf_scores[unigram] * (1 + math.log(doc_id_weight_pair[1])))
+	# 			else :
+	# 				values[unigram] = idf_scores[unigram]
+	# 	for bigram in bigrams :
+	# 		for doc_id_weight_pair in bigrams_postinglist[bigram] :
+	# 			if doc_id_weight_pair[0] == i :	
+	# 				values[bigram] = (idf_scores[bigram] * (1 + math.log(doc_id_weight_pair[1])))
+	# 			else :
+	# 				values[bigram] = idf_scores[bigram]
+	# 	for trigram in trigrams :
+	# 		for doc_id_weight_pair in trigrams_postinglist[trigram] :
+	# 			if doc_id_weight_pair[0] == i :	
+	# 				values[trigram] = (idf_scores[trigram] * (1 + math.log(doc_id_weight_pair[1])))
+	# 			else :
+	# 				values[trigram] = idf_scores[trigram]
+	# 	weight_matrix.append(values)
 
-(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, weight_matrix) = generateIndex("../../Data/UnicodeNormalizedMathML.xml")
+	return (unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist)
+
+(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist) = generateIndex("../../Data/UnicodeNormalizedMathML.xml")

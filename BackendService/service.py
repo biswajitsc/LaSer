@@ -33,7 +33,6 @@ def generateRankedLists(query) :
 	global unigrams_postinglist
 	global bigrams_postinglist
 	global trigrams_postinglist
-	global weight_matrix
 
 	latex_eqn = urllib.unquote(query).decode('utf8')
 
@@ -80,6 +79,10 @@ def generateRankedLists(query) :
 	matched_docs = set()
 	simplified_matched_docs = set()
 
+	cosine_similarity = {}
+	simplified_cosine_similarity = {}
+
+
 	print "features in query are"
 	for feature in query_vector:
 		print feature
@@ -89,15 +92,24 @@ def generateRankedLists(query) :
 		# identify the type of feature
 		if feature in unigrams:
 			for doc_id, frequency in unigrams_postinglist[feature]:
-				matched_docs.add(doc_id)
+				if doc_id not in cosine_similarity:
+					cosine_similarity[doc_id] = 0.0
+					matched_docs.add(doc_id)
+				cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*query_vector[feature] - idf_scores[feature]*query_vector[feature]
 
 		elif feature in bigrams:
 			for doc_id, frequency in bigrams_postinglist[feature]:
-				matched_docs.add(doc_id)
+				if doc_id not in cosine_similarity:
+					cosine_similarity[doc_id] = 0.0
+					matched_docs.add(doc_id)
+				cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*query_vector[feature] - idf_scores[feature]*query_vector[feature]
 
 		elif feature in trigrams:
 			for doc_id, frequency in trigrams_postinglist[feature]:
-				matched_docs.add(doc_id)
+				if doc_id not in cosine_similarity:
+					cosine_similarity[doc_id] = 0.0
+					matched_docs.add(doc_id)
+				cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*query_vector[feature] - idf_scores[feature]*query_vector[feature]
 		
 		else:
 			print "This should not have happened"
@@ -106,46 +118,85 @@ def generateRankedLists(query) :
 		# identify the type of feature
 		if feature in unigrams:
 			for doc_id, frequency in unigrams_postinglist[feature]:
-				simplified_matched_docs.add(doc_id)
+				if doc_id not in simplified_cosine_similarity:
+					simplified_cosine_similarity[doc_id] = 0.0
+					simplified_matched_docs.add(doc_id)
+				simplified_cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*simplified_query_vector[feature] - idf_scores[feature]*simplifiedquery_vector[feature]
 
 		elif feature in bigrams:
 			for doc_id, frequency in bigrams_postinglist[feature]:
-				simplified_matched_docs.add(doc_id)
+				if doc_id not in simplified_cosine_similarity:
+					simplified_cosine_similarity[doc_id] = 0.0
+					simplified_matched_docs.add(doc_id)
+				simplified_cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*simplified_query_vector[feature] - idf_scores[feature]*simplified_query_vector[feature]
 
 		elif feature in trigrams:
 			for doc_id, frequency in trigrams_postinglist[feature]:
-				simplified_matched_docs.add(doc_id)
+				if doc_id not in simplified_cosine_similarity:
+					simplified_cosine_similarity[doc_id] = 0.0
+					simplified_matched_docs.add(doc_id)
+				simplified_cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*simplified_query_vector[feature] - idf_scores[feature]*simplified_query_vector[feature]
 		
 		else:
 			print "This should not have happened"
 
 
+	for feature in query_vector:
+		for doc_id in matched_docs:
+			cosine_similarity[doc_id] += idf_scores[feature]*query_vector[feature];
+		for doc_id in simplified_matched_docs:
+			simplified_cosine_similarity[doc_id] += idf_scores[feature]*simplified_query_vector[feature];
+
+	# we have the numerators
+	# traverse the entire postings list to compute the denominator
+
 	# Matching docs computed
 
 	# determine the cosine similarity with each matched doc
 
-	cosine_similarity = {}
-	simplified_cosine_similarity = {}
+	mod_weight = {}
+	simplified_mod_weight = {}
 
 	for doc_id in matched_docs:
-		dot_product = 0.0
-		for feature in query_vector:
-			dot_product += query_vector[feature]*weight_matrix[doc_id-1][feature]
-		normalized_value = 0.0
-		for feature,val in weight_matrix[doc_id-1].items():
-			normalized_value += val*val
-		normalized_value = math.sqrt(normalized_value)
-		cosine_similarity[doc_id-1] = dot_product/normalized_value;
+		mod_weight[doc_id] = 0.0
 
 	for doc_id in simplified_matched_docs:
-		dot_product = 0.0
-		for feature in simplified_query_vector:
-			dot_product += simplified_query_vector[feature]*weight_matrix[doc_id-1][feature]
-		normalized_value = 0.0
-		for feature,val in weight_matrix[doc_id-1].items():
-			normalized_value += val*val
-		normalized_value = math.sqrt(normalized_value)
-		simplified_cosine_similarity[doc_id-1] = dot_product/normalized_value;
+		simplified_mod_weight[doc_id] = 0.0
+
+	for feature in unigrams_postinglist:
+		for doc_id, frequency in unigrams_postinglist[feature]:
+			if doc_id in matched_docs:
+				mod_weight[doc_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
+			if doc_id in simplified_matched_docs:
+				simplified_mod_weight[doc_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
+
+
+	for feature in bigrams_postinglist:
+		for doc_id, frequency in unigrams_postinglist[feature]:
+			if doc_id in matched_docs:
+				mod_weight[doc_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
+			if doc_id in simplified_matched_docs:
+				simplified_mod_weight[doc_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
+
+	for feature in trigrams_postinglist:
+		for doc_id, frequency in unigrams_postinglist[feature]:
+			if doc_id in matched_docs:
+				mod_weight[doc_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
+			if doc_id in simplified_matched_docs:
+				simplified_mod_weight[doc_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
+
+	for doc_id in matched_docs:
+		mod_weight[doc_id] = math.sqrt(mod_weight[doc_id])
+
+	for doc_id in simplified_matched_docs:
+		simplified_mod_weight[doc_id] = math.sqrt(simplified_mod_weight[doc_id])
+
+	for doc_id in cosine_similarity:
+		cosine_similarity[doc_id] = cosine_similarity[doc_id]/mod_weight[doc_id]
+
+	for doc_id in simplified_cosine_similarity:
+		simplified_cosine_similarity[doc_id] = simplified_cosine_similarity[doc_id]/simplified_mod_weight[doc_id]
+
 
 
 	sorted_cosine_similarity = sorted(cosine_similarity.items(), key=operator.itemgetter(1))
