@@ -47,6 +47,8 @@ def main() :
 	mathML = []
 	for line in lines :
 		line = line.replace('\n', ' ')
+		symbol = unicode(line, "utf-8")
+		line = symbol.encode('ascii', 'backslashreplace')
 		if len(line) == 0 :
 			continue
 		line = '<m:math' + line
