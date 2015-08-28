@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import codecs
 
@@ -13,26 +14,24 @@ mmode6 = re.compile(r'\\begin{eqnarray\*}.+?\\end{eqnarray\*}', flags = re.DOTAL
 clean0 = re.compile(r'.*\\newcommand.*', flags = re.IGNORECASE)
 clean1 = re.compile(r'%.*')
 clean2 = re.compile(r'.*\\def.*', flags = re.IGNORECASE)
-clean3 = re.compile(r'.*#.*')
-clean4 = re.compile(r'\\title', flags = re.IGNORECASE)
-clean5 = re.compile(r'maketitle', flags = re.IGNORECASE)
-clean6 = re.compile(r'titlepage', flags = re.IGNORECASE)
+clean3 = re.compile(r'\\begin{document}', flags = re.IGNORECASE)
+clean4 = re.compile(r'maketitle', flags = re.IGNORECASE)
+clean5 = re.compile(r'\\end{titlepage}', flags = re.IGNORECASE)
 
 def primary_processing(inp):
 	inp = clean0.sub('', inp)
 	inp = clean1.sub('', inp)
 	inp = clean2.sub('', inp)
-	inp = clean3.sub('', inp)
 	
+	m = clean3.search(inp)
+	if m is not None:
+		inp = inp[m.end():]
+
 	m = clean4.search(inp)
 	if m is not None:
 		inp = inp[m.end():]
 
 	m = clean5.search(inp)
-	if m is not None:
-		inp = inp[m.end():]
-
-	m = clean6.search(inp)
 	if m is not None:
 		inp = inp[m.end():]
 
@@ -138,33 +137,43 @@ def full_processing(inp):
 
 def main():
 
-	# x = full_processing(open('../../Dataset/1992/9206040', 'r').read().decode('cp1252', errors='ignore'));
+	# x = full_processing(open('../../Dataset/1992/9208037', 'r').read().decode('cp1252', errors='ignore'));
 	# for i in x:
 	# 	print i
+
+	# sys.exit()
 
 	out = codecs.open('../../Data/Formulae', 'w', 'cp1252')
 	metaout = codecs.open('../../Data/Meta', 'w', 'cp1252')
 	
 	cnt = 0
+	skipped = 0
+
 	for year in xrange(1992, 2004):
 
-	    print 'Processing year {0}'.format(year)
-	    files = os.listdir('../../Dataset/{0}'.format(year))
+		print 'Processing year {0}'.format(year)
+		files = os.listdir('../../Dataset/{0}'.format(year))
 		
-	    for afile in files:
-	        cnt += 1
-	        if cnt % 100 == 0:
-	            print "Done ", cnt
+		for afile in files:
+			cnt += 1
+			if cnt % 100 == 0:
+				print "Done ", cnt, "Skipped ", skipped
 
-	        try:
-	            text = open('../../Dataset/{0}/{1}'.format(year, afile), 'r').read().decode('cp1252', errors='ignore')
-	            for form in full_processing(text):
-	                out.write(u'{0}\n'.format(form))
-	                metaout.write(u'{0} {1}\n'.format(year, afile))
-	        except Exception as obj:
-	            print year, afile
-	            print obj
-	            raise
+			try:
+				text = open('../../Dataset/{0}/{1}'.format(year, afile), 'r').read().decode('cp1252', errors='ignore')
+				allform = full_processing(text)
+				
+				if len(allform) == 0:
+					skipped += 1
+
+				for form in allform:
+					out.write(u'{0}\n'.format(form))
+					metaout.write(u'{0} {1}\n'.format(year, afile))
+				
+			except Exception as obj:
+				print year, afile
+				print obj
+				raise
 
 				
 	out.close()
