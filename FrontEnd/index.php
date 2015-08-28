@@ -56,7 +56,7 @@
 		<div class="ranked-results">
 
             <?php
-                $url = "localhost:8080"; //Put the url here
+                $url = ""; //Put the url here
                 $mathSnippet = $_GET['mathSnippet'];
                 $mathSnippet = urlencode($mathSnippet);
                 $mathSnippet = str_replace('+', '%20', $mathSnippet);
