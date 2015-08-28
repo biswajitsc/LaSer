@@ -168,6 +168,7 @@ def initMap():
 def addGroups(data):
     normalized = ''
     lines = data.split('\n')
+    changed = False
 
     for line in lines:
         tokens = line.split(' ')
@@ -184,6 +185,7 @@ def addGroups(data):
                 if (op in map):
                     normalized += s1 + map[op] + e1
                     found = True
+                    changed = True
             elif token.startswith('<mo>'):
                 st = token.find(s2) + len(s2)
                 en = token.find(e2)
@@ -191,14 +193,19 @@ def addGroups(data):
                 if (op in map):
                     normalized += s2 + map[op] + e2
                     found = True
+                    changed = True
 
             if not found:
                 normalized += token
 
             normalized += ' '
             normalized = normalized[:-1]
-        normalized = normalized[:-1]
-    return normalized
+        normalized += '\n'
+    normalized = normalized[:-1]
+    if changed:
+        return normalized
+    else:
+        return data
 
 def operatorNormalize(mathml_eqn):
     initMap()

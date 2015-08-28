@@ -72,6 +72,7 @@ def addGroups(equations, metadata):
     normalized = []
     new_metadata = []
     index = 0
+    changed = False
     for equation in equations:
         normalized.append([equation, index])
         tokens = equation.split(' ')
@@ -90,6 +91,7 @@ def addGroups(equations, metadata):
                 if (op in operator_map):
                     currentEquation += s1 + operator_map[op] + e1
                     found = True
+                    changed = True
             elif token.startswith('<mo>'):
                 st = token.find(s2) + len(s2)
                 en = token.find(e2)
@@ -97,6 +99,7 @@ def addGroups(equations, metadata):
                 if (op in operator_map):
                     currentEquation += s2 + operator_map[op] + e2
                     found = True
+                    changed = True
 
             if not found:
                 currentEquation += token
@@ -108,7 +111,10 @@ def addGroups(equations, metadata):
             new_metadata.append(metadata[index])
 
         index += 1
-    return (normalized, new_metadata)
+    if changed:
+        return (normalized, new_metadata)
+    else:
+        return (equations, metadata)
 
 def operatorNormalize(data, metadata):
     initMap()
