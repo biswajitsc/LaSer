@@ -146,6 +146,8 @@ def unicodeNormalize(data) :
 def main():
     dataFile = "../../Data/SimplifiedMathML.xml"
     metaFile = "../../Data/SimplifiedMathMLMeta.xml"
+    normalizedFile = "../../Data/NormalizedMathML.xml"
+    metaOutFile = "../../Data/NormalizedMathMLMeta.xml"
 
     data = open(dataFile,'r').read()
     metadata = open(metaFile, 'r').read()
@@ -164,8 +166,11 @@ def main():
     # Operator Grouping
     (operator_normalized, metadata) = operatorNormalize(number_normalized, metadata)
 
-    for x in operator_normalized:
-        print x
+    for x in operator_normalized :
+        normalizedFile.write(x + '\n')
+
+    for y in metadata :
+        metaOutFile.write(y + '\n')
 
 if __name__ == '__main__':
     main()
