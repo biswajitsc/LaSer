@@ -149,7 +149,7 @@ def main():
 	cnt = 0
 	skipped = 0
 
-	for year in xrange(1992, 2004):
+	for year in reversed(xrange(1992, 2004)):
 
 		print 'Processing year {0}'.format(year)
 		files = os.listdir('../../Dataset/{0}'.format(year))
