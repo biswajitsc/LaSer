@@ -74,7 +74,8 @@ def addGroups(equations, metadata):
     index = 0
     changed = False
     for equation in equations:
-        normalized.append([equation, index])
+        normalized.append(equation)
+        new_metadata.append(metadata[index])
         tokens = equation.split(' ')
         currentEquation = ''
 
@@ -152,8 +153,8 @@ def unicodeNormalize(data) :
 def main():
     dataFile = "../../Data/SimplifiedMathML.xml"
     metaFile = "../../Data/SimplifiedMathMLMeta.xml"
-    normalizedFile = "../../Data/NormalizedMathML.xml"
-    metaOutFile = "../../Data/NormalizedMathMLMeta.xml"
+    normalizedFile = open("../../Data/NormalizedMathML.xml", "w")
+    metaOutFile = open("../../Data/NormalizedMathMLMeta.xml", "w")
 
     data = open(dataFile,'r').read()
     metadata = open(metaFile, 'r').read()

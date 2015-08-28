@@ -5,7 +5,9 @@ import sys
 
 def convertEquation(mathML) :
 	expressions = []
+	j = 0
 	for eqn in mathML :
+		j += 1
 		try :
 			string = eqn.replace(' xmlns="', ' xmlnamespace="')
 			parser = etree.XMLParser(ns_clean=True,remove_pis=True,remove_comments=True)
@@ -20,8 +22,8 @@ def convertEquation(mathML) :
 				if len(text) != 0 :
 					strng += text + " "
 			expressions.append(strng)
-		except Exception :
-			print eqn
+		except Exception as ex :
+			print j, ex
 			continue
 	return expressions
 

@@ -78,7 +78,7 @@
 
 		<div id="paginationDiv" class="text-center">
             <div class="btn-group">
-                <button id = "testing" class="btn btn-white">First</button>
+                <button class="btn btn-white">First</button>
                 <button class="btn btn-white" type="button"><i class="glyphicon glyphicon-backward"></i></button>
                 <button class="btn btn-white" type="button"><i class="glyphicon glyphicon-chevron-left"></i></button>
                 <button class="btn btn-white">1</button>
@@ -100,10 +100,6 @@
     
     $('#submitButton').click(function() {
     $( "#mathSnippetForm" ).submit();
-    });
-
-    $('#testing').click(function(){
-        window.location.href = 'file:///home/prithwish/Desktop/iitsem7/NLP/TermProject/Dataset/1992/9207024';
     });
 
     </script>
