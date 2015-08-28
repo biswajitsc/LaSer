@@ -119,7 +119,7 @@ def numberNormalize(mathml_eqn) :
 	return normalizedLines
 	
 def unicodeNormalize(mathml_eqn) :
-	lines = mathml_eqn.split('\n')
+    lines = mathml_eqn.split('\n')
     normalizedString = ""
     for line in lines:
         tokens = line.split(' ')
