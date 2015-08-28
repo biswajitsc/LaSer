@@ -1,0 +1,67 @@
+Unigrams Extracted
+Unigrams are
+Bigrams Extracted
+Trigrams Extracted
+Unigram Features Postings List created
+Bigram Features Postings List created
+Trigram Features Postings List created
+http://0.0.0.0:8080/
+Unigrams Extracted
+Unigrams are
+Bigrams Extracted
+Trigrams Extracted
+Unigram Features Postings List created
+Bigram Features Postings List created
+Trigram Features Postings List created
+query is ^a
+#############
+in generateRankedLists : latex_eqn is  ^a
+#############
+#############
+in generateRankedLists : mathML_eqn is  <?xml version="1.0" encoding="UTF-8"?>
+<math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{}^{a}" display="block">
+  <msup>
+    <mi/>
+    <mi>a</mi>
+  </msup>
+</math>
+
+#############
+#############
+in generateRankedLists : number normalized mathml is  <?xml version="1.0" encoding="UTF-8"?>
+<math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{}^{a}" display="block">
+  <msup>
+    <mi/>
+    <mi>a</mi>
+  </msup>
+</math>
+
+#############
+#############
+in generateRankedLists : unicode normalized mathml is  <?xml version="1.0" encoding="UTF-8"?> <math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{}^{a}" display="block"> <msup> <mi/> <mi>a</mi> </msup> </math> 
+#############
+in extractWeights : equation is  <?xml version="1.0" encoding="UTF-8"?> <math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{}^{a}" display="block"> <msup> <mi/> <mi>a</mi> </msup> </math> 
+in extractWeights : unigrams are  set(['<mi/>', '</math>', '</msup>', '<msup>', 'display="block">', '<math', '<mi>a</mi>', 'xmlns:m="http://www.w3.org/1998/Math/MathML"'])
+in extractWeights : idf_scores are  {'<mi/>': 1.0, ('display="block">', '<msup>', '<mi/>'): 1.0, '</math>': 1.0, ('<mi>a</mi>', '</msup>', '</math>'): 1.0, ('xmlns:m="http://www.w3.org/1998/Math/MathML"', 'display="block">'): 1.0, ('xmlns:m="http://www.w3.org/1998/Math/MathML"', 'display="block">', '<msup>'): 1.0, ('<mi/>', '<mi>a</mi>'): 1.0, ('</msup>', '</math>'): 1.0, '</msup>': 1.0, '<msup>': 1.0, ('<mi/>', '<mi>a</mi>', '</msup>'): 1.0, ('<mi>a</mi>', '</msup>'): 1.0, ('<math', 'xmlns:m="http://www.w3.org/1998/Math/MathML"'): 1.0, ('<math', 'xmlns:m="http://www.w3.org/1998/Math/MathML"', 'display="block">'): 1.0, 'display="block">': 1.0, '<math': 1.0, '<mi>a</mi>': 1.0, ('<msup>', '<mi/>', '<mi>a</mi>'): 1.0, 'xmlns:m="http://www.w3.org/1998/Math/MathML"': 1.0, ('display="block">', '<msup>'): 1.0, ('<msup>', '<mi/>'): 1.0}
+in extractWeights : weight_score is  {'<mi/>': 1.0, ('display="block">', '<msup>', '<mi/>'): 1.0, '</math>': 1.0, ('<mi>a</mi>', '</msup>', '</math>'): 1.0, ('<mi/>', '<mi>a</mi>'): 1.0, ('</msup>', '</math>'): 1.0, '</msup>': 1.0, '<msup>': 1.0, ('<mi/>', '<mi>a</mi>', '</msup>'): 1.0, ('<mi>a</mi>', '</msup>'): 1.0, ('<msup>', '<mi/>', '<mi>a</mi>'): 1.0, 'display="block">': 1.0, '<math': 1.0, '<mi>a</mi>': 1.0, ('display="block">', '<msup>'): 1.0, ('<msup>', '<mi/>'): 1.0}
+in extractWeights : equation is  <?xml version="1.0" encoding="UTF-8"?> <math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{}^{a}" display="block"> <msup> <mi/> <mi>a</mi> </msup> </math> 
+in extractWeights : unigrams are  set(['<mi/>', '</math>', '</msup>', '<msup>', 'display="block">', '<math', '<mi>a</mi>', 'xmlns:m="http://www.w3.org/1998/Math/MathML"'])
+in extractWeights : idf_scores are  {'<mi/>': 1.0, ('display="block">', '<msup>', '<mi/>'): 1.0, '</math>': 1.0, ('<mi>a</mi>', '</msup>', '</math>'): 1.0, ('xmlns:m="http://www.w3.org/1998/Math/MathML"', 'display="block">'): 1.0, ('xmlns:m="http://www.w3.org/1998/Math/MathML"', 'display="block">', '<msup>'): 1.0, ('<mi/>', '<mi>a</mi>'): 1.0, ('</msup>', '</math>'): 1.0, '</msup>': 1.0, '<msup>': 1.0, ('<mi/>', '<mi>a</mi>', '</msup>'): 1.0, ('<mi>a</mi>', '</msup>'): 1.0, ('<math', 'xmlns:m="http://www.w3.org/1998/Math/MathML"'): 1.0, ('<math', 'xmlns:m="http://www.w3.org/1998/Math/MathML"', 'display="block">'): 1.0, 'display="block">': 1.0, '<math': 1.0, '<mi>a</mi>': 1.0, ('<msup>', '<mi/>', '<mi>a</mi>'): 1.0, 'xmlns:m="http://www.w3.org/1998/Math/MathML"': 1.0, ('display="block">', '<msup>'): 1.0, ('<msup>', '<mi/>'): 1.0}
+in extractWeights : weight_score is  {'<mi/>': 1.0, ('display="block">', '<msup>', '<mi/>'): 1.0, '</math>': 1.0, ('<mi>a</mi>', '</msup>', '</math>'): 1.0, ('<mi/>', '<mi>a</mi>'): 1.0, ('</msup>', '</math>'): 1.0, '</msup>': 1.0, '<msup>': 1.0, ('<mi/>', '<mi>a</mi>', '</msup>'): 1.0, ('<mi>a</mi>', '</msup>'): 1.0, ('<msup>', '<mi/>', '<mi>a</mi>'): 1.0, 'display="block">': 1.0, '<math': 1.0, '<mi>a</mi>': 1.0, ('display="block">', '<msup>'): 1.0, ('<msup>', '<mi/>'): 1.0}
+features in query are
+<mi/>
+('display="block">', '<msup>', '<mi/>')
+</math>
+('<mi>a</mi>', '</msup>', '</math>')
+('<mi/>', '<mi>a</mi>')
+('</msup>', '</math>')
+</msup>
+<msup>
+('<mi/>', '<mi>a</mi>', '</msup>')
+('<mi>a</mi>', '</msup>')
+('<msup>', '<mi/>', '<mi>a</mi>')
+display="block">
+<math
+<mi>a</mi>
+('display="block">', '<msup>')
+('<msup>', '<mi/>')

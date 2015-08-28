@@ -235,6 +235,28 @@ def convertEquation(mathml_eqn) :
 		print "Error parsing", mathml_eqn
 		return mathml_eqn
 
+def extract_MathMLUnigrams(mathML, idf_scores) :
+	unigrams = set()
+	
+	words = mathML.split(' ')
+	for word in words :
+		if (len(word) > 0) :
+			unigrams.add(word)
+	print "Unigrams of MathML equations Extracted"
+
+	weight_score = {}
+
+	for unigram in unigrams :
+		if '<mi>' in unigram :
+			if unigram in idf_scores.keys() :
+				print "Present"
+			else :
+				print "Not Present"
+		if unigram in idf_scores.keys():
+			weight_score[unigram] = ((1 + math.log(mathML.count(unigram))) * idf_scores[unigram])
+				
+	return weight_score
+
 def extractWeights(mathml_eqn, idf_scores, unigrams, bigrams, trigrams) :
 	mathml_eqn = mathml_eqn.replace('\n', ' ')
 	mathml_eqn = mathml_eqn.replace('<?xml version="1.0"?>', '')
@@ -246,31 +268,61 @@ def extractWeights(mathml_eqn, idf_scores, unigrams, bigrams, trigrams) :
 	# print "in extractWeights : idf_scores are ",idf_scores
 
 
-	weight_score = {}
-	
-	for unigram in unigrams :
-		string = str(unigram)
-		if string in mathml_eqn :
-			weight_score[unigram] = ((1 + math.log(mathml_eqn.count(string))) * idf_scores[unigram])
+	unigrams_query = set()
+	bigrams_query = set()
+	trigrams_query = set()
 
+	weight_score = extract_MathMLUnigrams(mathml_eqn, idf_scores)
 	expression = convertEquation(mathml_eqn)
+	expression = expression.encode('utf-8')
 
-	for unigram in unigrams :
-		string = str(unigram)
-		if string in expression :
-			weight_score[unigram] = ((1 + math.log(mathml_eqn.count(string))) * idf_scores[unigram])
-
-	for bigram in bigrams :
-		string = (str(bigram[0]) + ' ' + str(bigram[1]))
-		if string in expression :
-			weight_score[bigram] = ((1 + math.log(mathml_eqn.count(string))) * idf_scores[bigram])
+	words = expression.split(' ')
+	for word in words :
+		if (len(word) > 0) :
+			unigrams_query.add(word)
+	print "Unigrams_query of expressions Extracted"
 	
-	for trigram in trigrams :
-		string = (str(trigram[0]) + ' ' + str(trigram[1]) + ' ' + str(trigram[2]))
-		if string in expression :
-			weight_score[trigram] = ((1 + math.log(mathml_eqn.count(string))) * idf_scores[trigram])
+	words = expression.split(' ')
+	if len(words) >= 2 :
+		i = 0
+		while (i < (len(words) - 1)) :
+			if (len(words[i]) > 0 and len(words[i + 1]) > 0) :
+				bigrams_query.add((words[i],words[i + 1]))
+			i += 1
+	print "Bigrams_query of expressions Extracted"
+	
+	words = expression.split(' ')
+	if len(words) > 2 :
+		i = 0
+		while (i < (len(words) - 2)) :
+			if (len(words[i]) > 0 and len(words[i + 1]) > 0 and len(words[i + 2]) > 0) :	
+				trigrams_query.add((words[i],words[i + 1],words[i + 2]))
+			i += 1
+	print "Trigrams_query of expressions Extracted"
+	
+	print "Mathml extract weight : ", mathml_eqn
 
-	# print "in extractWeights : weight_score is ",weight_score
+	print "Expression : ", expression
+
+	for unigram in unigrams_query :
+		string = str(unigram)
+		if string in expression and unigram in idf_scores.keys():
+			print string, "occured"
+			weight_score[unigram] = ((1 + math.log(expression.count(string))) * idf_scores[unigram])
+
+	for bigram in bigrams_query :
+		string = (str(bigram[0]) + ' ' + str(bigram[1]))
+		if string in expression and bigram in idf_scores.keys():
+			print string, "occured"
+			weight_score[bigram] = ((1 + math.log(expression.count(string))) * idf_scores[bigram])
+	
+	for trigram in trigrams_query :
+		string = (str(trigram[0]) + ' ' + str(trigram[1]) + ' ' + str(trigram[2]))
+		if string in expression and trigram in idf_scores.keys():
+			print string, "occured"
+			weight_score[trigram] = ((1 + math.log(expression.count(string))) * idf_scores[trigram])
+
+	print "in extractWeights : weight_score is ",weight_score
 
 	return weight_score
 
@@ -279,12 +331,19 @@ def normalizeQuery(mathml_eqn) :
 	# if simplifiedMathML = "" :
 	# 	simplifiedMathML = mathml_eqn
 
-	mathml_eqn = unicodeNormalize(mathml_eqn)
+	print "#########"
+	print "in function normalizeQuery"
+	print "the argument mathml_eqn is ", mathml_eqn
+	print "#########"
+
+	# mathml_eqn = unicodeNormalize(mathml_eqn)
 	mathml_eqns = operatorNormalize(mathml_eqn)
 	normalized_eqns = []
 	for eqn in mathml_eqns :
-		curr_normalized_eqns = numberNormalize(mathml_eqn)
-		normalized_eqns = normalized_eqns.extend(curr_normalized_eqns)
+		curr_normalized_eqns = numberNormalize(eqn)
+		normalized_eqns += curr_normalized_eqns
+	print "normalized_eqns are ", mathml_eqn
+	print "#########"
 	return normalized_eqns
 
 def generateIndex(NormalizedMathML):
@@ -359,6 +418,10 @@ def generateIndex(NormalizedMathML):
 	# 				values[trigram] = idf_scores[trigram]
 	# 	weight_matrix.append(values)
 
-	return (unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist)
+	metadata = open("../../Data/NormalizedMathMLMeta.xml","r").readlines()
 
-(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist) = generateIndex("../../Data/UnicodeNormalizedMathML.xml")
+	original_eqns = open("../../Data/MathML.xml","r").readlines()
+
+	return (unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns)
+
+(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns) = generateIndex("../../Data/NormalizedMathML.xml")
