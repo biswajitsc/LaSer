@@ -51,14 +51,17 @@ def main() :
 	in_file = open("../../Data/MathML.xml","r")
 	in_meta_file = open("../../Data/MathMLMeta.xml","r")
 	out_file = open("../../Data/Expressions","w")
-	output_file = open("../../Data/SimplifiedMathML","w")
-	out_meta_file = open("../../Data/SimplifiedMathMLMeta","w")
+	output_file = open("../../Data/SimplifiedMathML.xml","w")
+	out_meta_file = open("../../Data/SimplifiedMathMLMeta.xml","w")
 	data = in_file.read()
 	metadata = in_meta_file.read()
 	mathml_eqns = data.split('\n')
 	metadata_eqns = metadata.split('\n')
+	print len(mathml_eqns), len(metadata_eqns)
 	i = 0
+	j = 0
 	for mathml_eqn in mathml_eqns :
+		j += 1
 		if (str(mathml_eqn) == '<?xml version="1.0" encoding="UTF-8"?>' or len(mathml_eqn) == 0) :
 			continue
 		mathml_eqn = mathml_eqn.replace('\n',' ')
@@ -76,10 +79,10 @@ def main() :
 			p_mathml = str(p_mathml)
 			p_mathml = p_mathml.replace('\n',' ')
 			output_file.write(str(temp_mathml_eqn) + '\n' + p_mathml + '\n')
-			out_meta_file.write(str(metadata_eqns[i]) + " " + str(i + 1) + '\n' + str(metadata_eqns[i]) + " " + str(i + 1) + '\n')
+			out_meta_file.write(str(metadata_eqns[i]) + " " + str(j) + '\n' + str(metadata_eqns[i]) + " " + str(j) + '\n')
 		except Exception :
 			output_file.write(str(temp_mathml_eqn) + '\n')
-			out_meta_file.write(str(metadata_eqns[i]) + " " + str(i + 1) + '\n')
+			out_meta_file.write(str(metadata_eqns[i]) + " " + str(j) + '\n')
 		i += 1
 
 	in_file.close()

@@ -88,6 +88,7 @@ def numberNormalize(mathml_eqn) :
 	matches = re.findall(r'<mn>[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?</mn>', mathml_eqn)
 	already_matched = set()
 	normalizedLines = []
+	normalizedLines.append(mathml_eqn)
 	for match in matches :
 		if len(match) > 0 :
 			if match[0] not in already_matched :
@@ -119,7 +120,7 @@ def numberNormalize(mathml_eqn) :
 	return normalizedLines
 	
 def unicodeNormalize(mathml_eqn) :
-	lines = mathml_eqn.split('\n')
+    lines = mathml_eqn.split('\n')
     normalizedString = ""
     for line in lines:
         tokens = line.split(' ')
@@ -168,6 +169,7 @@ def initMap():
 def addGroups(data):
     normalized = ''
     lines = data.split('\n')
+    changed = False
 
     for line in lines:
         tokens = line.split(' ')
@@ -184,6 +186,7 @@ def addGroups(data):
                 if (op in map):
                     normalized += s1 + map[op] + e1
                     found = True
+                    changed = True
             elif token.startswith('<mo>'):
                 st = token.find(s2) + len(s2)
                 en = token.find(e2)
@@ -191,14 +194,19 @@ def addGroups(data):
                 if (op in map):
                     normalized += s2 + map[op] + e2
                     found = True
+                    changed = True
 
             if not found:
                 normalized += token
 
             normalized += ' '
             normalized = normalized[:-1]
-        normalized = normalized[:-1]
-    return normalized
+        normalized += '\n'
+    normalized = normalized[:-1]
+    if changed:
+        return normalized
+    else:
+        return data
 
 def operatorNormalize(mathml_eqn):
     initMap()
@@ -272,8 +280,11 @@ def normalizeQuery(mathml_eqn) :
 	# 	simplifiedMathML = mathml_eqn
 
 	mathml_eqn = unicodeNormalize(mathml_eqn)
-	mathml_eqn = operatorNormalize(mathml_eqn)
-	normalized_eqns = numberNormalize(mathml_eqn)
+	mathml_eqns = operatorNormalize(mathml_eqn)
+	normalized_eqns = []
+	for eqn in mathml_eqns :
+		curr_normalized_eqns = numberNormalize(mathml_eqn)
+		normalized_eqns = normalized_eqns.extend(curr_normalized_eqns)
 	return normalized_eqns
 
 def generateIndex(NormalizedMathML):
