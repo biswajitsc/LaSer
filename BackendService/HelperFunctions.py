@@ -88,6 +88,7 @@ def numberNormalize(mathml_eqn) :
 	matches = re.findall(r'<mn>[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?</mn>', mathml_eqn)
 	already_matched = set()
 	normalizedLines = []
+	normalizedLines.append(mathml_eqn)
 	for match in matches :
 		if len(match) > 0 :
 			if match[0] not in already_matched :
