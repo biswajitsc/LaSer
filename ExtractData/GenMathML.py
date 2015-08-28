@@ -24,7 +24,10 @@ def main():
 		# print cleanEqn
 
 		oscommand = "latexmlmath --pmml=- \"" + cleanEqn + "\" > " + tempFile
-		# print oscommand
+		print "*********************************************"
+		print oscommand
+		print "*********************************************"
+
 		os.system(oscommand)
 		
 		try:
@@ -45,6 +48,11 @@ def main():
 
 		if cnt % 10000 == 0:
 			print cnt
+
+
+		mathMLOutput.flush()
+		metaOutput.flush()
+		errorFile.flush()
 
 
 	
