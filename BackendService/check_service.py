@@ -8,19 +8,6 @@ import urllib
 import operator
 from HelperFunctions import *
 
-
-# render_xml = lambda message: '<message>%s</message>'%message
-# render_html = lambda message: '<html><body>%s</body></html>'%message
-# render_txt = lambda message: message
-
-urls = (
-	'/(.*)', 'greet'
-)
-
-app = web.application(urls, globals())
-
-val = 0
-
 def generateRankedLists(query) :
 
 	global unigrams
@@ -252,7 +239,7 @@ def generateRankedLists(query) :
 		if doc_id not in ranked_docs:
 			i += 1
 			ranked_docs.add(doc_id)
-			original_doc_id = metadata[int(doc_id)-1]
+			original_doc_id = metadata[int(doc_id) - 1]
 			original_eqn = original_eqns[int(original_doc_id.split(" ")[2]) - 1]
 			original_doc_id = original_doc_id.split(" ")[1]
 			tempDict = {}
@@ -267,26 +254,8 @@ def generateRankedLists(query) :
 
 	return ranked_list
 
-class greet:
+def main() :
+	print generateRankedLists('\Lambda = 1')
 
-    def GET(self, query):
-        ans = generateRankedLists(query)
-        latex_formulae = []
-        latex_formulae.append("a = b")
-        latex_formulae.append("b = c")
-        archive_id = []
-        archive_id.append("1")
-        archive_id.append("2")
-        archive_links = []
-        archive_links.append('https//papers.com/1')
-        archive_links.append('https//papers.com/2')
-        web.header('Content-Type', 'application/json') 
-        print ans
-        return json.dumps(ans)#, 'latex_formulae' : latex_formulae, 'archive_id' : archive_id, 'archive_links' : archive_links}
-
-    def PUT(self,value):
-        val = value
-        print "PUT",val
-
-if __name__ == "__main__":
-	app.run()
+if __name__ == "__main__" :
+	main()
