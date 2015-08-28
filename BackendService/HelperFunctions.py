@@ -195,12 +195,17 @@ def addGroups(data):
                 normalized += token
 
             normalized += ' '
-        normalized += '\n'
+            normalized = normalized[:-1]
+        normalized = normalized[:-1]
     return normalized
 
 def operatorNormalize(mathml_eqn):
     initMap()
-    return [mathml_eqn, addGroups(mathml_eqn)]
+    normalized = addGroups(mathml_eqn)
+    if mathml_eqn != normalized:
+        return [mathml_eqn, addGroups(mathml_eqn)]
+    else:
+        return [mathml_eqn]
 
 def convertEquation(mathml_eqn) :
 	try :

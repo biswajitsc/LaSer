@@ -4,14 +4,18 @@ import decimal
 import sys
 import unicodedata as ucode
 
-def numberNormalize(data) : 
+def numberNormalize(data, metadata) : 
     lines = data.split('\n')
     # lines = ['<mn>2.45</mn>   <m:mn>2.45646</m:mn> <mn>2</mn>   <mn>2.45</mn>']
     normalizedLines = []
+    new_metadata = []
+    i = 0
+    j = 0
     for line in lines :
         matches = re.findall(r'<mn>[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?</mn>', line)
         already_matched = set()
         normalizedLines.append(line)
+        new_metadata.append(metadata[j])
         for match in matches :
             if len(match) > 0 :
                 if match[0] not in already_matched :
@@ -24,6 +28,7 @@ def numberNormalize(data) :
                         strng = '<mn>' + str(round(d, i)) + '</mn>'
                         temp_line = line.replace(orig_string, strng)
                         normalizedLines.append(temp_line)
+                        new_metadata.append(metadata[j])
                         i += 1
         matches = re.findall(r'<m:mn>[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?</m:mn>', line)
         already_matched = set()
@@ -39,9 +44,11 @@ def numberNormalize(data) :
                         strng = '<m:mn>' + str(round(d, i)) + '</m:mn>'
                         temp_line = line.replace(orig_string, strng)
                         normalizedLines.append(temp_line)
+                        new_metadata.append(metadata[j])
                         i += 1
-                                
-    return normalizedLines
+        j += 1
+
+    return (normalizedLines, new_metadata)
 
 map = {}
 
@@ -61,9 +68,9 @@ def initMap():
     # for key in map:
     #     print key, map[key]
 
-def addGroups(equations):
+def addGroups(equations, metadata):
     normalized = []
-    indices = []
+    new_metadata = []
     index = 0
     for equation in equations:
         normalized.append([equation, index])
@@ -97,13 +104,15 @@ def addGroups(equations):
             currentEquation += ' '
         currentEquation = currentEquation[:-1]
         if currentEquation != equation:
-            normalized.append([currentEquation, index])
-        index += 1
-    return [normalized, indices]
+            normalized.append(currentEquation)
+            new_metadata.append(metadata[index])
 
-def operatorNormalize(data):
+        index += 1
+    return (normalized, new_metadata)
+
+def operatorNormalize(data, metadata):
     initMap()
-    return addGroups(data)
+    return addGroups(data, metadata)
 
 def unicodeNormalize(data) :
     lines = data.split('\n')
@@ -135,24 +144,28 @@ def unicodeNormalize(data) :
     return normalizedString
 
 def main():
-    fileName = sys.argv[1]
-    data = open(fileName,'r').read()
-    data = "<mo>∬</mo> <mo>⩽</mo>"
+    dataFile = "../../Data/SimplifiedMathML.xml"
+    metaFile = "../../Data/SimplifiedMathMLMeta.xml"
+
+    data = open(dataFile,'r').read()
+    metadata = open(metaFile, 'r').read()
+    metadata = metadata.split('\n')
+
+    # data = "<mo>∬</mo> <mo>⩽</mo>"
+
     # Unicode Normalization (Disabled for now)
     unicode_normalized = data
     # unicode_normalized = unicodeNormalize(data)
 
     
     # Number Normalization
-    number_normalized = numberNormalize(unicode_normalized)
+    (number_normalized, metadata) = numberNormalize(unicode_normalized, metadata)
 
     # Operator Grouping
-    operator_normalized = operatorNormalize(number_normalized)
+    (operator_normalized, metadata) = operatorNormalize(number_normalized, metadata)
 
     for x in operator_normalized:
         print x
-    # print operator_normalized
-    
 
 if __name__ == '__main__':
     main()
