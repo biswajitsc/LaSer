@@ -267,6 +267,8 @@ def extractWeights(mathml_eqn, idf_scores, unigrams, bigrams, trigrams) :
 	# print "in extractWeights : unigrams are ",unigrams
 	# print "in extractWeights : idf_scores are ",idf_scores
 
+	symbol = unicode(mathml_eqn, "utf-8")
+	mathml_eqn = symbol.encode('ascii', 'backslashreplace')
 
 	unigrams_query = set()
 	bigrams_query = set()
