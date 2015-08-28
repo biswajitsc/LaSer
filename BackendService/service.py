@@ -282,7 +282,8 @@ class greet:
         archive_links.append('https//papers.com/2')
         web.header('Content-Type', 'application/json') 
         print ans
-        return json.dumps(ans)#, 'latex_formulae' : latex_formulae, 'archive_id' : archive_id, 'archive_links' : archive_links}
+        # return str(ans).decode('utf-8')
+        return json.dumps(ans,ensure_ascii=False)#, 'latex_formulae' : latex_formulae, 'archive_id' : archive_id, 'archive_links' : archive_links}
 
     def PUT(self,value):
         val = value
