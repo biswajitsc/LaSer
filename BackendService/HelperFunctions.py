@@ -272,8 +272,11 @@ def normalizeQuery(mathml_eqn) :
 	# 	simplifiedMathML = mathml_eqn
 
 	mathml_eqn = unicodeNormalize(mathml_eqn)
-	mathml_eqn = operatorNormalize(mathml_eqn)
-	normalized_eqns = numberNormalize(mathml_eqn)
+	mathml_eqns = operatorNormalize(mathml_eqn)
+	normalized_eqns = []
+	for eqn in mathml_eqns :
+		curr_normalized_eqns = numberNormalize(mathml_eqn)
+		normalized_eqns = normalized_eqns.extend(curr_normalized_eqns)
 	return normalized_eqns
 
 def generateIndex(NormalizedMathML):
