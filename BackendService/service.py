@@ -6,13 +6,10 @@ import web
 import json
 import urllib
 import operator
-import mimerender
 from HelperFunctions import *
 
-mimerender = mimerender.WebPyMimeRender()
 
 # render_xml = lambda message: '<message>%s</message>'%message
-render_json = lambda **args: json.dumps(args)
 # render_html = lambda message: '<html><body>%s</body></html>'%message
 # render_txt = lambda message: message
 
@@ -244,7 +241,7 @@ def generateRankedLists(query) :
 
 	# get the best score corresponding to each doc
 
-	ranked_list = [];
+	ranked_list = {};
 	ranked_docs = set()
 
 	# Limit the returned results to 50
@@ -264,28 +261,16 @@ def generateRankedLists(query) :
 			tempDict['doc_id'] = doc_id
 			tempDict['score'] = score
 			# ranked_list.append((doc_id,score,int(original_doc_id),original_eqn))
-			ranked_list.append(tempDict)
+			ranked_list[i] = tempDict
 		if i == 50:
 			break
 
-	ranked_result = json.JSONEncoder().encode(ranked_list)
-
-	return ranked_result
+	return ranked_list
 
 class greet:
 
-    @mimerender(
-        default = 'json',
-        json = render_json
-        # html = render_html,
-        # xml  = render_xml,
-        # json = render_json,
-        # txt  = render_txt
-    )
     def GET(self, query):
-        print "query is", query
         ans = generateRankedLists(query)
-        print "ans is", ans
         latex_formulae = []
         latex_formulae.append("a = b")
         latex_formulae.append("b = c")
@@ -294,8 +279,10 @@ class greet:
         archive_id.append("2")
         archive_links = []
         archive_links.append('https//papers.com/1')
-        archive_links.append('https//papers.com/2') 
-        return {'query': ans}#, 'latex_formulae' : latex_formulae, 'archive_id' : archive_id, 'archive_links' : archive_links}
+        archive_links.append('https//papers.com/2')
+        web.header('Content-Type', 'application/json') 
+        print ans
+        return json.dumps(ans)#, 'latex_formulae' : latex_formulae, 'archive_id' : archive_id, 'archive_links' : archive_links}
 
     def PUT(self,value):
         val = value

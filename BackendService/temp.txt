@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<math xmlns="http://www.w3.org/1998/Math/MathML" alttext="\pi" display="block">
-  <mi>π</mi>
+<math xmlns="http://www.w3.org/1998/Math/MathML" alttext="\Lambda=1" display="block">
+  <mrow>
+    <mi mathvariant="normal">Λ</mi>
+    <mo>=</mo>
+    <mn>1</mn>
+  </mrow>
 </math>
