@@ -76,7 +76,7 @@ def main() :
 			p_mathml = str(p_mathml)
 			p_mathml = p_mathml.replace('\n',' ')
 			output_file.write(str(temp_mathml_eqn) + '\n' + p_mathml + '\n')
-			out_meta_file.write(str(metadata_eqns[i]) + '\n' + str(metadata_eqns[i]) + '\n')
+			out_meta_file.write(str(metadata_eqns[i]) + " " + str(i + 1) + '\n' + str(metadata_eqns[i]) + " " + str(i + 1) + '\n')
 		except Exception :
 			output_file.write(str(temp_mathml_eqn) + '\n')
 			out_meta_file.write(str(metadata_eqns[i]) + " " + str(i + 1) + '\n')
