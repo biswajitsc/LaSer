@@ -46,12 +46,15 @@ def main() :
 	lines = data.split('<m:math')
 	mathML = []
 	for line in lines :
+		temp_line = line
+		line = line.replace("<m:","<")
+		line = line.replace("</m:","</")
 		line = line.replace('\n', ' ')
 		symbol = unicode(line, "utf-8")
 		line = symbol.encode('ascii', 'backslashreplace')
 		if len(line) == 0 :
 			continue
-		line = '<m:math' + line
+		line = '<math' + line
 		xmls = line.split('<?xml version="1.0"?>')
 		for xml in xmls :
 			xml = re.sub(' +',' ',xml)

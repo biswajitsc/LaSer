@@ -68,8 +68,9 @@
                     echo '<div class="search-result">';
                     //echo $value['docID'];
                     echo '<center><a href='.'http://arxiv.org/abs/hep-th/'.$value['original_doc_id'].' target="_blank">'.$value['original_doc_id'].'</a></center>';
-                    echo '<center><div>'.$value['original_eqn'].'</div></center>';
-                    echo '<center><div>'.$value['score'].'</div></center>';
+                    echo '<center><div><?xml version="1.0" encoding="UTF-8"?>'.$value['original_eqn'].'</div></center>';
+
+                    // echo '<center><div>'.$value['score'].'</div></center>';
                     echo '</div>';
                 }
  
@@ -78,8 +79,8 @@
                        
                 </div>
  
-                <div id="paginationDiv" class="text-center">
-            <div class="btn-group">
+            <!-- <div id="paginationDiv" class="text-center">
+                <div class="btn-group">
                 <button class="btn btn-white">First</button>
                 <button class="btn btn-white" type="button"><i class="glyphicon glyphicon-backward"></i></button>
                 <button class="btn btn-white" type="button"><i class="glyphicon glyphicon-chevron-left"></i></button>
@@ -93,8 +94,8 @@
                 <button class="btn btn-white" type="button"><i class="glyphicon glyphicon-chevron-right"></i> </button>
                 <button class="btn btn-white" type="button"><i class="glyphicon glyphicon-forward"></i></button>
                 <button class="btn btn-white">Last</button>
-            </div>
-        </div>
+                </div>
+            </div> -->
  
     </div>
  
