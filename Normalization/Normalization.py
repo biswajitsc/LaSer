@@ -50,7 +50,7 @@ def numberNormalize(data, metadata) :
 
     return (normalizedLines, new_metadata)
 
-map = {}
+operator_map = {}
 
 def initMap():
     fileName = "operator_groups.txt"
@@ -62,11 +62,11 @@ def initMap():
         # print token
         operators = token.split(' ')
         for c in operators:
-            map[c] = "OP" + str(id)
+            operator_map[c] = "OP" + str(id)
         id += 1
 
-    # for key in map:
-    #     print key, map[key]
+    # for key in operator_map:
+    #     print key, operator_map[key]
 
 def addGroups(equations, metadata):
     normalized = []
@@ -87,15 +87,15 @@ def addGroups(equations, metadata):
                 st = token.find(s1) + len(s1)
                 en = token.find(e1)
                 op = token[st:en]
-                if (op in map):
-                    currentEquation += s1 + map[op] + e1
+                if (op in operator_map):
+                    currentEquation += s1 + operator_map[op] + e1
                     found = True
             elif token.startswith('<mo>'):
                 st = token.find(s2) + len(s2)
                 en = token.find(e2)
                 op = token[st:en]
-                if (op in map):
-                    currentEquation += s2 + map[op] + e2
+                if (op in operator_map):
+                    currentEquation += s2 + operator_map[op] + e2
                     found = True
 
             if not found:
