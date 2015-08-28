@@ -2,7 +2,8 @@
 
 function httpGet($theUrl,$mathSnippet)
 {
-    $curl = curl_init(theUrl.mathSnippet);
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL, $theUrl.'/'.$mathSnippet);
     $result2 = curl_exec($curl);
     $result = '[';
     for($i = 0; $i < 4; $i ++) {
