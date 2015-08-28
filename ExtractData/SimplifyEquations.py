@@ -63,7 +63,6 @@ def main() :
 			continue
 		mathml_eqn = mathml_eqn.replace('\n',' ')
 		temp_mathml_eqn = mathml_eqn
-		i += 1
 		if (i % 100 == 0) :
 			print i, 'done'
 		try :
@@ -80,9 +79,9 @@ def main() :
 			out_meta_file.write(str(metadata_eqns[i]) + '\n' + str(metadata_eqns[i]) + '\n')
 		except Exception :
 			output_file.write(str(temp_mathml_eqn) + '\n')
-			out_meta_file.write(str(metadata_eqns[i]) + '\n')
-			continue		
-		
+			out_meta_file.write(str(metadata_eqns[i]) + " " + str(i + 1) + '\n')
+		i += 1
+
 	in_file.close()
 	out_file.close()
 
