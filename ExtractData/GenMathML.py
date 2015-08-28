@@ -17,6 +17,7 @@ def main():
 		cnt += 1
 		cleanEqn = eqn.strip('\n').strip()
 		cleanEqn = re.sub('"','',cleanEqn)
+		# print cleanEqn
 		# cleanEqn = re.sub('\\\\','\\\\\\\\',cleanEqn)
 		# cleanEqn = re.sub('\)','\\\\)',cleanEqn)
 		# cleanEqn = re.sub('\(','\\\\(',cleanEqn)
@@ -44,6 +45,7 @@ def main():
 
 		if cnt % 10000 == 0:
 			print cnt
+
 
 	
 	formulae.close()

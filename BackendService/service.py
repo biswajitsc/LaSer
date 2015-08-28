@@ -49,38 +49,40 @@ def generateRankedLists(query) :
 
 	# work with both the simplified eqn as well as the original eqn
 
-	simplified_mathML_eqn = simplifyMathML(mathML_eqn)
-	simplified_mathML_eqn = numberNormalize(mathML_eqn)
-	simplified_mathML_eqn = unicodeNormalize(mathML_eqn)
+	mathML_eqns = normalizeQuery(mathML_eqn)
 
-	mathML_eqn = numberNormalize(mathML_eqn)
+	simplified_mathML_eqn = simplifyMathML(mathML_eqn)	
+	simplified_mathML_eqns = normalizeQuery(mathML_eqn)
 
 	# print "#############"
 	# print "in generateRankedLists : number normalized mathml is ",mathML_eqn
 	# print "#############"
 
-
-	mathML_eqn = unicodeNormalize(mathML_eqn)
-
 	# print "#############"
 	# print "in generateRankedLists : unicode normalized mathml is ",mathML_eqn
 	# print "#############"
 
+	query_vectors = []
+	simplified_query_vectors = []
 
+	for eqn in mathML_eqns:
+		query_vectors.append(extractWeights(mathML_eqn, idf_scores, unigrams, bigrams, trigrams))
 
-	query_vector = extractWeights(mathML_eqn, idf_scores, unigrams, bigrams, trigrams)
-	simplified_query_vector = extractWeights(simplified_mathML_eqn, idf_scores, unigrams, bigrams, trigrams)
+	for eqn in simplified_mathML_eqns:
+		simplified_query_vectors.append(extractWeights(simplified_mathML_eqn, idf_scores, unigrams, bigrams, trigrams))
 
 
 	# Matching
 
 	# Determine the matching docs
 
-	matched_docs = set()
-	simplified_matched_docs = set()
+	# list of sets
+	matched_docs_list = []
+	simplified_matched_docs_list = []
 
-	cosine_similarity = {}
-	simplified_cosine_similarity = {}
+	# list of dictionaries
+	cosine_similarities = []
+	simplified_cosine_similarities = []
 
 
 	print "features in query are"
@@ -88,64 +90,84 @@ def generateRankedLists(query) :
 		print feature
 
 
-	for feature in query_vector:
-		# identify the type of feature
-		if feature in unigrams:
-			for doc_id, frequency in unigrams_postinglist[feature]:
-				if doc_id not in cosine_similarity:
-					cosine_similarity[doc_id] = 0.0
-					matched_docs.add(doc_id)
-				cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*query_vector[feature] - idf_scores[feature]*query_vector[feature]
+	for x in range(len(query_vectors)):
+		query_vector = query_vectors[x]
+		cosine_similarity = {}
+		matched_docs = set()
+		for feature in query_vector:
+			# identify the type of feature
+			if feature in unigrams:
+				for doc_id, frequency in unigrams_postinglist[feature]:
+					if doc_id not in cosine_similarity:
+						cosine_similarity[doc_id] = 0.0
+						matched_docs.add(doc_id)
+					cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*query_vector[feature] - idf_scores[feature]*query_vector[feature]
 
-		elif feature in bigrams:
-			for doc_id, frequency in bigrams_postinglist[feature]:
-				if doc_id not in cosine_similarity:
-					cosine_similarity[doc_id] = 0.0
-					matched_docs.add(doc_id)
-				cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*query_vector[feature] - idf_scores[feature]*query_vector[feature]
+			elif feature in bigrams:
+				for doc_id, frequency in bigrams_postinglist[feature]:
+					if doc_id not in cosine_similarity:
+						cosine_similarity[doc_id] = 0.0
+						matched_docs.add(doc_id)
+					cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*query_vector[feature] - idf_scores[feature]*query_vector[feature]
 
-		elif feature in trigrams:
-			for doc_id, frequency in trigrams_postinglist[feature]:
-				if doc_id not in cosine_similarity:
-					cosine_similarity[doc_id] = 0.0
-					matched_docs.add(doc_id)
-				cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*query_vector[feature] - idf_scores[feature]*query_vector[feature]
-		
-		else:
-			print "This should not have happened"
+			elif feature in trigrams:
+				for doc_id, frequency in trigrams_postinglist[feature]:
+					if doc_id not in cosine_similarity:
+						cosine_similarity[doc_id] = 0.0
+						matched_docs.add(doc_id)
+					cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*query_vector[feature] - idf_scores[feature]*query_vector[feature]
+			
+			else:
+				print "This should not have happened"
+		cosine_similarities.append(cosine_similarity)
+		matched_docs_list.append(matched_docs)
 
-	for feature in simplified_query_vector:
-		# identify the type of feature
-		if feature in unigrams:
-			for doc_id, frequency in unigrams_postinglist[feature]:
-				if doc_id not in simplified_cosine_similarity:
-					simplified_cosine_similarity[doc_id] = 0.0
-					simplified_matched_docs.add(doc_id)
-				simplified_cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*simplified_query_vector[feature] - idf_scores[feature]*simplifiedquery_vector[feature]
+	for x in range(len(simplified_query_vectors)):
+		simplified_query_vector = simplified_query_vectors[x]
+		simplified_cosine_similarity = {}
+		simplified_matched_docs = set()
+		for feature in simplified_query_vector:
+			# identify the type of feature
+			if feature in unigrams:
+				for doc_id, frequency in unigrams_postinglist[feature]:
+					if doc_id not in simplified_cosine_similarity:
+						simplified_cosine_similarity[doc_id] = 0.0
+						simplified_matched_docs.add(doc_id)
+					simplified_cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*simplified_query_vector[feature] - idf_scores[feature]*simplifiedquery_vector[feature]
 
-		elif feature in bigrams:
-			for doc_id, frequency in bigrams_postinglist[feature]:
-				if doc_id not in simplified_cosine_similarity:
-					simplified_cosine_similarity[doc_id] = 0.0
-					simplified_matched_docs.add(doc_id)
-				simplified_cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*simplified_query_vector[feature] - idf_scores[feature]*simplified_query_vector[feature]
+			elif feature in bigrams:
+				for doc_id, frequency in bigrams_postinglist[feature]:
+					if doc_id not in simplified_cosine_similarity:
+						simplified_cosine_similarity[doc_id] = 0.0
+						simplified_matched_docs.add(doc_id)
+					simplified_cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*simplified_query_vector[feature] - idf_scores[feature]*simplified_query_vector[feature]
 
-		elif feature in trigrams:
-			for doc_id, frequency in trigrams_postinglist[feature]:
-				if doc_id not in simplified_cosine_similarity:
-					simplified_cosine_similarity[doc_id] = 0.0
-					simplified_matched_docs.add(doc_id)
-				simplified_cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*simplified_query_vector[feature] - idf_scores[feature]*simplified_query_vector[feature]
-		
-		else:
-			print "This should not have happened"
+			elif feature in trigrams:
+				for doc_id, frequency in trigrams_postinglist[feature]:
+					if doc_id not in simplified_cosine_similarity:
+						simplified_cosine_similarity[doc_id] = 0.0
+						simplified_matched_docs.add(doc_id)
+					simplified_cosine_similarity[doc_id] += (idf_scores[feature] * (1 + math.log(frequency)))*simplified_query_vector[feature] - idf_scores[feature]*simplified_query_vector[feature]
+			
+			else:
+				print "This should not have happened"
+		simplified_cosine_similarities.append(simplified_cosine_similarity)
+		simplified_matched_docs_list.append(simplified_matched_docs)
 
 
-	for feature in query_vector:
-		for doc_id in matched_docs:
-			cosine_similarity[doc_id] += idf_scores[feature]*query_vector[feature];
-		for doc_id in simplified_matched_docs:
-			simplified_cosine_similarity[doc_id] += idf_scores[feature]*simplified_query_vector[feature];
+	for x in range(len(query_vectors)):
+		query_vector = query_vectors[x]
+		matched_docs = matched_docs_list[x]
+		for feature in query_vector:
+			for doc_id in matched_docs:
+				cosine_similarities[x][doc_id] += idf_scores[feature]*query_vector[feature]
+
+	for x in range(len(simplified_query_vectors)):
+		simplified_query_vector = simplified_query_vectors[x]
+		simplified_matched_docs = simplified_matched_docs_list[x]
+		for feature in simplified_query_vector:
+			for doc_id in simplified_matched_docs:
+				simplified_cosine_similarity[x][doc_id] += idf_scores[feature]*simplified_query_vector[feature]
 
 	# we have the numerators
 	# traverse the entire postings list to compute the denominator
@@ -154,77 +176,71 @@ def generateRankedLists(query) :
 
 	# determine the cosine similarity with each matched doc
 
+	# set denoting the docs to be considered
+	docs = set()
 	mod_weight = {}
-	simplified_mod_weight = {}
 
-	for doc_id in matched_docs:
+	for doc_ids in matched_docs_list:
+		for doc_id in doc_ids:
+			docs.add(doc_id)
+
+	for doc_ids in simplified_matched_docs_list:
+		for doc_id in doc_ids:
+			docs.add(doc_id);
+
+	for doc_id in docs:
 		mod_weight[doc_id] = 0.0
-
-	for doc_id in simplified_matched_docs:
-		simplified_mod_weight[doc_id] = 0.0
 
 	for feature in unigrams_postinglist:
 		for doc_id, frequency in unigrams_postinglist[feature]:
-			if doc_id in matched_docs:
+			if doc_id in docs:
 				mod_weight[doc_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
-			if doc_id in simplified_matched_docs:
-				simplified_mod_weight[doc_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
 
 
 	for feature in bigrams_postinglist:
 		for doc_id, frequency in unigrams_postinglist[feature]:
-			if doc_id in matched_docs:
+			if doc_id in docs:
 				mod_weight[doc_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
-			if doc_id in simplified_matched_docs:
-				simplified_mod_weight[doc_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
 
 	for feature in trigrams_postinglist:
 		for doc_id, frequency in unigrams_postinglist[feature]:
-			if doc_id in matched_docs:
+			if doc_id in docs:
 				mod_weight[doc_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
-			if doc_id in simplified_matched_docs:
-				simplified_mod_weight[doc_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
 
-	for doc_id in matched_docs:
+	for doc_id in docs:
 		mod_weight[doc_id] = math.sqrt(mod_weight[doc_id])
 
-	for doc_id in simplified_matched_docs:
-		simplified_mod_weight[doc_id] = math.sqrt(simplified_mod_weight[doc_id])
+	for x in range(len(cosine_similarities)):
+		for doc_id in cosine_similarities[x]:
+			cosine_similarities[x][doc_id] = cosine_similarities[x][doc_id]/mod_weight[doc_id]
 
-	for doc_id in cosine_similarity:
-		cosine_similarity[doc_id] = cosine_similarity[doc_id]/mod_weight[doc_id]
+	for x in range(len(simplified_cosine_similarities)):
+		for doc_id in simplified_cosine_similarities[x]:
+			simplified_cosine_similarities[x][doc_id] = simplified_cosine_similarities[x][doc_id]/simplified_mod_weight[doc_id]
 
-	for doc_id in simplified_cosine_similarity:
-		simplified_cosine_similarity[doc_id] = simplified_cosine_similarity[doc_id]/simplified_mod_weight[doc_id]
+	# sort the cosine similarity vales corresponding to each query variant and store in a list
 
-
-
-	sorted_cosine_similarity = sorted(cosine_similarity.items(), key=operator.itemgetter(1))
-	sorted_simplified_cosine_similarity = sorted(simplified_cosine_similarity.items(), key=operator.itemgetter(1))
-
-	# cosine similariy determined
-
-	# generate the json
+	sorted_cosine_similarities_list = []
 	
+	for x in cosine_similarities:
+		for doc_id, score in cosine_similarities[x]:
+			sorted_cosine_similarities_list.append((doc_id,score))
+	
+	for x in simplified_cosine_similarities:
+		for doc_id, score in simplified_cosine_similarities[x]:
+			sorted_cosine_similarities_list.append((doc_id,score))
+
+	sorted_cosine_similarities_list = sorted(sorted_cosine_similarities_list, key=lambda tup: tup[1], reverse=True)
+
+	# get the best score corresponding to each doc
+
 	ranked_list = [];
+	ranked_docs = set()
 
-	iter_1 = 0
-	iter_2 = 0
-
-	while(iter_1 != len(sorted_cosine_similarity) and iter_2 != len(sorted_simplified_cosine_similarity)):
-		if iter_1 < len(sorted_cosine_similarity) and iter_2 < len(sorted_simplified_cosine_similarity):
-			if sorted_cosine_similarity[iter_1][1] < sorted_simplified_cosine_similarity[iter_2][1]:
-				ranked_list.append((sorted_simplified_cosine_similarity[iter_2][0],sorted_simplified_cosine_similarity[iter_2][1]))
-				iter_2 += 1
-			else:
-				ranked_list.append((sorted_cosine_similarity[iter_1][0],sorted_cosine_similarity[iter_1][1]))
-				iter_1 += 1
-		elif iter_1 != len(sorted_cosine_similarity):
-			ranked_list.append((sorted_cosine_similarity[iter_1][0],sorted_cosine_similarity[iter_1][1]))
-			iter_1 += 1
-		else:
-			ranked_list.append((sorted_simplified_cosine_similarity[iter_2][0],sorted_simplified_cosine_similarity[iter_2][1]))
-			iter_2 += 1
+	for doc_id, score in sorted_cosine_similarities_list:
+		if doc_id not in ranked_docs:
+			ranked_docs.add(doc_id)
+			ranked_list.append((doc_id,score))
 
 	ranked_result = json.JSONEncoder().encode(ranked_list)
 

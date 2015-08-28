@@ -48,18 +48,21 @@ def parseMML(mmlinput):
 	return (exppy, symvars)
 
 def main() :
-	in_file = open("../../Data/MathML","r")
+	in_file = open("../../Data/MathML.xml","r")
+	in_meta_file = open("../../Data/MathMLMeta.xml","r")
 	out_file = open("../../Data/Expressions","w")
 	output_file = open("../../Data/SimplifiedMathML","w")
+	out_meta_file = open("../../Data/SimplifiedMathMLMeta","w")
 	data = in_file.read()
+	metadata = in_meta_file.read()
 	mathml_eqns = data.split('\n')
+	metadata_eqns = metadata.split('\n')
 	i = 0
 	for mathml_eqn in mathml_eqns :
 		if (str(mathml_eqn) == '<?xml version="1.0" encoding="UTF-8"?>' or len(mathml_eqn) == 0) :
 			continue
 		mathml_eqn = mathml_eqn.replace('\n',' ')
 		temp_mathml_eqn = mathml_eqn
-		i += 1
 		if (i % 100 == 0) :
 			print i, 'done'
 		try :
@@ -73,10 +76,12 @@ def main() :
 			p_mathml = str(p_mathml)
 			p_mathml = p_mathml.replace('\n',' ')
 			output_file.write(str(temp_mathml_eqn) + '\n' + p_mathml + '\n')
+			out_meta_file.write(str(metadata_eqns[i]) + " " + str(i + 1) + '\n' + str(metadata_eqns[i]) + " " + str(i + 1) + '\n')
 		except Exception :
-			output_file.write(str(temp_mathml_eqn) + '\n')	
-			continue		
-		
+			output_file.write(str(temp_mathml_eqn) + '\n')
+			out_meta_file.write(str(metadata_eqns[i]) + " " + str(i + 1) + '\n')
+		i += 1
+
 	in_file.close()
 	out_file.close()
 

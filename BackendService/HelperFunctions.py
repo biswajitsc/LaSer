@@ -87,19 +87,20 @@ def numberNormalize(mathml_eqn) :
 	# line = '<mn>2.45</mn>   <m:mn>2.45646</m:mn> <mn>2</mn>   <mn>2.45</mn>'
 	matches = re.findall(r'<mn>[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?</mn>', mathml_eqn)
 	already_matched = set()
+	normalizedLines = []
 	for match in matches :
 		if len(match) > 0 :
 			if match[0] not in already_matched :
 				already_matched.add(match[0])
 				d = decimal.Decimal(match[0])
 				exp = abs(d.as_tuple().exponent)
-				strng = '<mn>' + str(match[0]) + '</mn>'
 				i = 0
-				while i < exp :
-					strng += '<mn>' + str(round(d, i)) + '</mn>'
-					i += 1
 				orig_string = '<mn>' + str(match[0]) + '</mn>'
-				mathml_eqn = mathml_eqn.replace(orig_string, strng)
+                while i < exp :
+                    strng = '<mn>' + str(round(d, i)) + '</mn>'
+                    temp_line = mathml_eqn.replace(orig_string, strng)
+                    normalizedLines.append(temp_line)
+                    i += 1
 	matches = re.findall(r'<m:mn>[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?</m:mn>', mathml_eqn)
 	already_matched = set()
 	for match in matches :
@@ -108,14 +109,14 @@ def numberNormalize(mathml_eqn) :
 				already_matched.add(match[0])
 				d = decimal.Decimal(match[0])
 				exp = abs(d.as_tuple().exponent)
-				strng = '<m:mn>' + str(match[0]) + '</m:mn>'
 				i = 0
-				while i < exp :
-					strng += '<m:mn>' + str(round(d, i)) + '</m:mn>'
-					i += 1
 				orig_string = '<m:mn>' + str(match[0]) + '</m:mn>'
-				mathml_eqn = mathml_eqn.replace(orig_string, strng)
-	return mathml_eqn
+                while i < exp :
+                    strng += '<m:mn>' + str(round(d, i)) + '</m:mn>'
+                    temp_line = mathml_eqn.replace(orig_string, strng)
+                    normalizedLines.append(temp_line)
+                    i += 1
+	return normalizedLines
 	
 def unicodeNormalize(mathml_eqn) :
 	lines = mathml_eqn.split('\n')
@@ -272,8 +273,8 @@ def normalizeQuery(mathml_eqn) :
 
 	mathml_eqn = unicodeNormalize(mathml_eqn)
 	mathml_eqn = operatorNormalize(mathml_eqn)
-	mathml_eqn = numberNormalize(mathml_eqn)
-	return mathml_eqn
+	normalized_eqns = numberNormalize(mathml_eqn)
+	return normalized_eqns
 
 def generateIndex(NormalizedMathML):
 	print "generateIndex invoked"
