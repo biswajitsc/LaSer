@@ -16,9 +16,9 @@ def reduceExpression(terminalXml):
 	if terminalXml.tag == 'mo':
 		tempString = '<'+terminalXml.tag+'>'
 		if terminalXml.text.strip() == '':
-			tempString += '*'
+			tempString += ' * '
 		else:
-			tempString += terminalXmlText
+			tempString += ' ' + terminalXmlText + ' '
 		tempString = '</'+terminalXml.tag+'>'
 		variations.append(tempString)
 
