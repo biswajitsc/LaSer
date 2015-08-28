@@ -181,14 +181,14 @@ def addGroups(data):
                 en = token.find(e1)
                 op = token[st:en]
                 if (op in map):
-                    normalized += token + s1 + map[op] + e1
+                    normalized += s1 + map[op] + e1
                     found = True
             elif token.startswith('<mo>'):
                 st = token.find(s2) + len(s2)
                 en = token.find(e2)
                 op = token[st:en]
                 if (op in map):
-                    normalized += token + s2 + map[op] + e2
+                    normalized += s2 + map[op] + e2
                     found = True
 
             if not found:
@@ -200,7 +200,7 @@ def addGroups(data):
 
 def operatorNormalize(mathml_eqn):
     initMap()
-    return addGroups(mathml_eqn)
+    return [mathml_eqn, addGroups(mathml_eqn)]
 
 def convertEquation(mathml_eqn) :
 	try :

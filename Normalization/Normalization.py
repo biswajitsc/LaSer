@@ -61,12 +61,15 @@ def initMap():
     # for key in map:
     #     print key, map[key]
 
-def addGroups(data):
-    normalized = ''
-    lines = data.split('\n')
+def addGroups(equations):
+    normalized = []
+    indices = []
+    index = 0
+    for equation in equations:
+        normalized.append([equation, index])
+        tokens = equation.split(' ')
+        currentEquation = ''
 
-    for line in lines:
-        tokens = line.split(' ')
         for token in tokens:
             s1 = '<m:mo>'
             e1 = '</m:mo>'
@@ -78,22 +81,25 @@ def addGroups(data):
                 en = token.find(e1)
                 op = token[st:en]
                 if (op in map):
-                    normalized += token + s1 + map[op] + e1
+                    currentEquation += s1 + map[op] + e1
                     found = True
             elif token.startswith('<mo>'):
                 st = token.find(s2) + len(s2)
                 en = token.find(e2)
                 op = token[st:en]
                 if (op in map):
-                    normalized += token + s2 + map[op] + e2
+                    currentEquation += s2 + map[op] + e2
                     found = True
 
             if not found:
-                normalized += token
+                currentEquation += token
 
-            normalized += ' '
-        normalized += '\n'
-    return normalized
+            currentEquation += ' '
+        currentEquation = currentEquation[:-1]
+        if currentEquation != equation:
+            normalized.append([currentEquation, index])
+        index += 1
+    return [normalized, indices]
 
 def operatorNormalize(data):
     initMap()
@@ -129,27 +135,24 @@ def unicodeNormalize(data) :
     return normalizedString
 
 def main():
-    numArgs = len(sys.argv)
-    if (numArgs != 2):
-        print "Usage: python Normalization.py filename"
-        sys.exit();
-
     fileName = sys.argv[1]
     data = open(fileName,'r').read()
-
+    data = "<mo>∬</mo> <mo>⩽</mo>"
     # Unicode Normalization (Disabled for now)
     unicode_normalized = data
     # unicode_normalized = unicodeNormalize(data)
 
-    # Operator Grouping
-    operator_normalized = operatorNormalize(unicode_normalized)
-
-    print operator_normalized
     
     # Number Normalization
-    number_normalized = numberNormalize(operator_normalized)
+    number_normalized = numberNormalize(unicode_normalized)
 
-    # print number_normalized
+    # Operator Grouping
+    operator_normalized = operatorNormalize(number_normalized)
+
+    for x in operator_normalized:
+        print x
+    # print operator_normalized
+    
 
 if __name__ == '__main__':
     main()
