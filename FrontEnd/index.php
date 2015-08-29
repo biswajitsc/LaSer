@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/font-awesome.min.css">
   <link rel="stylesheet" href="css/index.css">
   <script src="js/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="js/MathJax.js?config=MML_HTMLorMML-full"></script>
 </head>
  
 <nav id="navBar" class="navbar navbar-static" role="navigation">
