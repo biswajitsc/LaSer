@@ -257,6 +257,10 @@ def generateRankedLists(query) :
 			original_doc_id = original_doc_id.split(" ")[1]
 			tempDict = {}
 			tempDict['original_doc_id'] = original_doc_id
+			
+			original_eqn = unicode(original_eqn, "utf-8")
+
+			original_eqn = original_eqn.encode('ascii', 'xmlcharrefreplace')                    
 			tempDict['original_eqn'] = original_eqn
 			tempDict['doc_id'] = doc_id
 			tempDict['score'] = score

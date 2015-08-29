@@ -255,7 +255,7 @@ def generateRankedLists(query) :
 	return ranked_list
 
 def main() :
-	print generateRankedLists('e^{2x} = 1')
+	print generateRankedLists('\Lambda = 1')
 
 if __name__ == "__main__" :
 	main()
