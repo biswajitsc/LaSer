@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/font-awesome.min.css">
   <link rel="stylesheet" href="css/index.css">
   <script src="js/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="js/MathJax.js?config=MML_HTMLorMML-full"></script>
 </head>
  
 <nav id="navBar" class="navbar navbar-static" role="navigation">
@@ -68,9 +69,9 @@
                     echo '<div class="search-result">';
                     //echo $value['docID'];
                     echo '<center><a href='.'http://arxiv.org/abs/hep-th/'.$value['original_doc_id'].' target="_blank">'.$value['original_doc_id'].'</a></center>';
-                    echo '<center><div><?xml version="1.0" encoding="UTF-8"?>'.$value['original_eqn'].'</div></center>';
-
+                    echo ''.str_replace('m:', '', $value['original_eqn']).'';
                     // echo '<center><div>'.$value['score'].'</div></center>';
+
                     echo '</div>';
                 }
  
