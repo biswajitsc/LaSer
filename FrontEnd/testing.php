@@ -35,51 +35,33 @@
  
 <body>
  
-        <div class="container">
-               
-                <div class="row">
-                <div class="col-sm-6 col-sm-offset-3">
-                    <div id="imaginary_container">
-                        <div class="input-group stylish-input-group">
-                        <form id="mathSnippetForm" action="index.php">
-                            <input type="text" name = 'mathSnippet' class="form-control" placeholder="Search" >
-                        </form>    
-                        <span class="input-group-addon">
-                                <button id="submitButton" type="submit">
-                                <span class="glyphicon glyphicon-search"></span>
-                                </button>  
-                        </span>
-                        </div>
-                    </div>
-                </div>
-                </div>
- 
-                <div class="ranked-results">
- 
-            <?php
-                $url = "localhost:8080"; //Put the url here
-                $mathSnippet = $_GET['mathSnippet'];
-                $mathSnippet = urlencode($mathSnippet);
-                $mathSnippet = str_replace('+', '%20', $mathSnippet);
-                $resultJson = httpGet($url,$mathSnippet);
- 
-                foreach ($resultJson as $key => $value) {
-                    // echo $value['original_eqn'];
-                    echo '<div class="hr-line-dashed"></div>';
-                    echo '<div class="search-result">';
-                    //echo $value['docID'];
-                    echo '<center><a href='.'http://arxiv.org/abs/hep-th/'.$value['original_doc_id'].' target="_blank">'.$value['original_doc_id'].'</a></center>';
-                    echo ''.str_replace('m:', '', $value['original_eqn']).'';
-                    // echo '<center><div>'.$value['score'].'</div></center>';
+        <div>
 
-                    echo '</div>';
-                }
- 
+            <?php
+                $varString = '<m:math xmlns="http://www.w3.org/1998/m:Math/m:MathML" display="block">
+  <m:mi>x</m:mi> <m:mo>=</m:mo>
+  <m:mrow>
+    <m:mfrac>
+      <m:mrow>
+        <m:mo>−</m:mo>
+        <m:mi>b</m:mi>
+        <m:mo>±</m:mo>
+        <m:msqrt>
+          <m:msup><m:mi>b</m:mi><m:mn>2</m:mn></m:msup>
+          <m:mo>−</m:mo>
+          <m:mn>4</m:mn><m:mi>a</m:mi><m:mi>c</m:mi>
+        </m:msqrt>
+      </m:mrow>
+      <m:mrow> <m:mn>2</m:mn><m:mi>a</m:mi> </m:mrow>
+    </m:mfrac>
+  </m:mrow>
+  <m:mtext>.</m:mtext>
+</m:math>';
+            
+            echo str_replace('m:', '', $varString);
+
                 echo '<div class="hr-line-dashed"></div>';
             ?>
-                       
-                </div>
- 
             <!-- <div id="paginationDiv" class="text-center">
                 <div class="btn-group">
                 <button class="btn btn-white">First</button>
@@ -100,13 +82,6 @@
  
     </div>
  
-    <script type="text/javascript">
-   
-    $('#submitButton').click(function() {
-    $( "#mathSnippetForm" ).submit();
-    });
- 
-    </script>
  
  
    
