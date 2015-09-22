@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <m:math xmlns:m="http://www.w3.org/1998/Math/MathML" display="block">
   <m:mrow>
-    <m:msub>
-      <m:mi>w</m:mi>
-      <m:mrow>
-        <m:mi>K</m:mi>
-        <m:mo>⁢</m:mo>
-        <m:mi>Z</m:mi>
-      </m:mrow>
-    </m:msub>
-    <m:mo>≃</m:mo>
-    <m:msub>
-      <m:mi>w</m:mi>
-      <m:mrow>
-        <m:mi>n</m:mi>
-        <m:mo>→</m:mo>
-        <m:mi mathvariant="normal">∞</m:mi>
-      </m:mrow>
-    </m:msub>
+    <m:mo movablelimits="false">∑</m:mo>
+    <m:mfrac>
+      <m:mn>1</m:mn>
+      <m:msup>
+        <m:mi>x</m:mi>
+        <m:mn>2</m:mn>
+      </m:msup>
+    </m:mfrac>
   </m:mrow>
 </m:math>

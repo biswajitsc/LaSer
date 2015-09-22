@@ -13,15 +13,15 @@ import os
 import ast
 
 def generateMathML(latex_eqn) :
-    cleanEqn = latex_eqn.strip('\n').strip()
-    cleanEqn = re.sub('\\\\','\\\\\\\\',cleanEqn)
-    cleanEqn = re.sub('\)','\\\\)',cleanEqn)
-    cleanEqn = re.sub('\(','\\\\(',cleanEqn)
-    # print cleanEqn
-    oscommand = 'latexmlmath --pmml=- ' + cleanEqn + ' > temp.txt'
-    # print oscommand
-    os.system(oscommand)
-    return open('temp.txt','r').read()
+	cleanEqn = latex_eqn.strip('\n').strip()
+	cleanEqn = re.sub('\\\\','\\\\\\\\',cleanEqn)
+	cleanEqn = re.sub('\)','\\\\)',cleanEqn)
+	cleanEqn = re.sub('\(','\\\\(',cleanEqn)
+	# print cleanEqn
+	oscommand = 'latexmlmath --pmml=- ' + cleanEqn + ' > temp.txt'
+	# print oscommand
+	os.system(oscommand)
+	return open('temp.txt','r').read()
 
 def parseMML(mmlinput):
 	mmlinput= mmlinput.replace(' xmlns="', ' xmlnamespace="')
@@ -97,11 +97,11 @@ def numberNormalize(mathml_eqn) :
 				exp = abs(d.as_tuple().exponent)
 				i = 0
 				orig_string = '<mn>' + str(match[0]) + '</mn>'
-                while i < exp :
-                    strng = '<mn>' + str(round(d, i)) + '</mn>'
-                    temp_line = mathml_eqn.replace(orig_string, strng)
-                    normalizedLines.append(temp_line)
-                    i += 1
+				while i < exp :
+					strng = '<mn>' + str(round(d, i)) + '</mn>'
+					temp_line = mathml_eqn.replace(orig_string, strng)
+					normalizedLines.append(temp_line)
+					i += 1
 	matches = re.findall(r'<m:mn>[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?</m:mn>', mathml_eqn)
 	already_matched = set()
 	for match in matches :
@@ -112,109 +112,109 @@ def numberNormalize(mathml_eqn) :
 				exp = abs(d.as_tuple().exponent)
 				i = 0
 				orig_string = '<m:mn>' + str(match[0]) + '</m:mn>'
-                while i < exp :
-                    strng += '<m:mn>' + str(round(d, i)) + '</m:mn>'
-                    temp_line = mathml_eqn.replace(orig_string, strng)
-                    normalizedLines.append(temp_line)
-                    i += 1
+				while i < exp :
+					strng = '<m:mn>' + str(round(d, i)) + '</m:mn>'
+					temp_line = mathml_eqn.replace(orig_string, strng)
+					normalizedLines.append(temp_line)
+					i += 1
 	return normalizedLines
 	
 def unicodeNormalize(mathml_eqn) :
-    lines = mathml_eqn.split('\n')
-    normalizedString = ""
-    for line in lines:
-        tokens = line.split(' ')
-        for token in tokens:
-            startTag = '<m:mi>';
-            endTag = '</m:mi>'
-            normalized = False
-            for iter in range(2):
-                if (token.startswith(startTag)):
-                    st = token.find(startTag) + len(startTag)
-                    en = token.find(endTag)
-                    symbol = unicode(token[st:en], "utf-8")
-                    symbol = ucode.normalize('NFKD', symbol)
-                    symbol = symbol.encode('ascii', 'backslashreplace')
-                    normalizedString += startTag + symbol + endTag
-                    normalized = True
-                    break
-                startTag = '<mi>'
-                endTag = '</mi>'
-            if not normalized:
-                normalizedString += token
+	lines = mathml_eqn.split('\n')
+	normalizedString = ""
+	for line in lines:
+		tokens = line.split(' ')
+		for token in tokens:
+			startTag = '<m:mi>';
+			endTag = '</m:mi>'
+			normalized = False
+			for iter in range(2):
+				if (token.startswith(startTag)):
+					st = token.find(startTag) + len(startTag)
+					en = token.find(endTag)
+					symbol = unicode(token[st:en], "utf-8")
+					symbol = ucode.normalize('NFKD', symbol)
+					symbol = symbol.encode('ascii', 'backslashreplace')
+					normalizedString += startTag + symbol + endTag
+					normalized = True
+					break
+				startTag = '<mi>'
+				endTag = '</mi>'
+			if not normalized:
+				normalizedString += token
 
-            normalizedString += ' '
-        normalizedString += '\n'
+			normalizedString += ' '
+		normalizedString += '\n'
 
-    return normalizedString
+	return normalizedString
 
 map = {}
 
 def initMap():
-    fileName = "../Normalization/operator_groups.txt"
-    data = open(fileName,'r').read()
-    tokens = data.split('\n')
-    id = 1
+	fileName = "../Normalization/operator_groups.txt"
+	data = open(fileName,'r').read()
+	tokens = data.split('\n')
+	id = 1
 
-    for token in tokens:
-        # print token
-        operators = token.split(' ')
-        for c in operators:
-            map[c] = "OP" + str(id)
-        id += 1
+	for token in tokens:
+		# print token
+		operators = token.split(' ')
+		for c in operators:
+			map[c] = "OP" + str(id)
+		id += 1
 
-    # for key in map:
-    #     print key, map[key]
+	# for key in map:
+	#     print key, map[key]
 
 def addGroups(data):
-    normalized = ''
-    lines = data.split('\n')
-    changed = False
+	normalized = ''
+	lines = data.split('\n')
+	changed = False
 
-    for line in lines:
-        tokens = line.split(' ')
-        for token in tokens:
-            s1 = '<m:mo>'
-            e1 = '</m:mo>'
-            s2 = '<mo>'
-            e2 = '</mo>'
-            found = False
-            if token.startswith(s1):
-                st = token.find(s1) + len(s1)
-                en = token.find(e1)
-                op = token[st:en]
-                if (op in map):
-                    normalized += s1 + map[op] + e1
-                    found = True
-                    changed = True
-            elif token.startswith('<mo>'):
-                st = token.find(s2) + len(s2)
-                en = token.find(e2)
-                op = token[st:en]
-                if (op in map):
-                    normalized += s2 + map[op] + e2
-                    found = True
-                    changed = True
+	for line in lines:
+		tokens = line.split(' ')
+		for token in tokens:
+			s1 = '<m:mo>'
+			e1 = '</m:mo>'
+			s2 = '<mo>'
+			e2 = '</mo>'
+			found = False
+			if token.startswith(s1):
+				st = token.find(s1) + len(s1)
+				en = token.find(e1)
+				op = token[st:en]
+				if (op in map):
+					normalized += s1 + map[op] + e1
+					found = True
+					changed = True
+			elif token.startswith('<mo>'):
+				st = token.find(s2) + len(s2)
+				en = token.find(e2)
+				op = token[st:en]
+				if (op in map):
+					normalized += s2 + map[op] + e2
+					found = True
+					changed = True
 
-            if not found:
-                normalized += token
+			if not found:
+				normalized += token
 
-            normalized += ' '
-            normalized = normalized[:-1]
-        normalized += '\n'
-    normalized = normalized[:-1]
-    if changed:
-        return normalized
-    else:
-        return data
+			normalized += ' '
+			normalized = normalized[:-1]
+		normalized += '\n'
+	normalized = normalized[:-1]
+	if changed:
+		return normalized
+	else:
+		return data
 
 def operatorNormalize(mathml_eqn):
-    initMap()
-    normalized = addGroups(mathml_eqn)
-    if mathml_eqn != normalized:
-        return [mathml_eqn, addGroups(mathml_eqn)]
-    else:
-        return [mathml_eqn]
+	initMap()
+	normalized = addGroups(mathml_eqn)
+	if mathml_eqn != normalized:
+		return [mathml_eqn, addGroups(mathml_eqn)]
+	else:
+		return [mathml_eqn]
 
 def convertEquation(mathml_eqn) :
 	try :
