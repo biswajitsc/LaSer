@@ -36,3 +36,9 @@ Structural Properties
 * Just a basic structural generation
 * Run ```python genTreeStructure.py``` and the different variations will be generated in ```../../Data/StructureMathML.xml``` in line separated way and their metapath will be generated in ```../../Data/StructureMathMLMeta.xml``` in line separated way. 
 * Also the equations in ```../../Data/StructureMathML.xml``` will be in this format ```<line number of the original equation> <space> <xml of the variation>```
+
+Evaluation
+* An evaluation engine for LaSer Search System ( reference : ```Evaluation/eval-basis.txt```)
+* Install ```php5-mysql```, ```php5-mysqlnd```
+* MySQL database schema used as in ```Evaluation/init-database.sql```, with database config as in ```Evaluation/sql-config.ini```
+
