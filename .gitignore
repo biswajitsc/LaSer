@@ -1,0 +1,8 @@
+# ignore compiled python files
+*.pyc
+
+# ignore all temporary files (linux-os-specific)
+*.*~
+
+# ignore tex-backup files
+*.tex.backup
