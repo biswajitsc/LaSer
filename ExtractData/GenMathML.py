@@ -4,7 +4,7 @@ import re
 import subprocess
 
 def main():
-	formulae = open('../../Data/temp', 'r')
+	formulae = open('../../Data/Formulae', 'r')
 	meta = open('../../Data/Meta', 'r').readlines()
 	mathMLOutput = open('../../Data/MathML.xml', 'w')
 	metaOutput = open('../../Data/MathMLMeta.xml', 'w')
