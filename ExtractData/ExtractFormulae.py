@@ -3,6 +3,8 @@ import re
 import sys
 import codecs
 import resource
+import signal
+import time
 
 mmode0 = re.compile(r'\$\$.+?\$\$', flags=re.DOTALL | re.UNICODE)
 mmode1 = re.compile(r'\$.+?\$', flags=re.DOTALL | re.UNICODE)
@@ -29,6 +31,26 @@ clean5 = re.compile(r'\\end{titlepage}', flags=re.IGNORECASE)
 clean6 = re.compile(r'.*\\renewcommand.*', flags=re.IGNORECASE)
 
 
+class Timeout():
+
+    """Timeout class using ALARM signal."""
+    class Timeout(Exception):
+        pass
+
+    def __init__(self, sec):
+        self.sec = sec
+
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.raise_timeout)
+        signal.alarm(self.sec)
+
+    def __exit__(self, *args):
+        signal.alarm(0)    # disable alarm
+
+    def raise_timeout(self, *args):
+        raise Timeout.Timeout()
+
+
 def limit_memory(maxsize):
     soft, hard = resource.getrlimit(resource.RLIMIT_AS)
     resource.setrlimit(resource.RLIMIT_AS, (maxsize, hard))
@@ -42,7 +64,11 @@ def getdefsplits(macstr):
         if macstr[i] == '{':
             first = i
             break
-    macro = macstr[0:first]
+        if macstr[i] == '[':
+            return (macstr[0:i].strip(), ' ')
+        if macstr[i] == '#':
+            return (macstr[0:i].strip(), ' ')
+    macro = macstr[0:first].strip()
     replacement = macstr[first:].strip()[1:-1]
     return (macro, replacement)
 
@@ -55,7 +81,9 @@ def getcommsplits(macstr, maclen):
         if macstr[i] == '}':
             first = i
             break
-    macro = macstr[1:first]
+    macro = macstr[1:first].strip()
+    if macstr[first + 1:].strip()[0] == '[':
+        return (macro, ' ')
     replacement = macstr[first + 1:].strip()[1:-1]
     return (macro, replacement)
 
@@ -166,26 +194,50 @@ def tertiary_processing(inp):
 
 
 def full_processing(inp):
+    maxlen = 5000000
+    if len(inp) > maxlen:
+        print 'Skipping ... Length = ', len(inp)
+        return []
+
     newcoms = clean0.findall(inp)
     defs = clean2.findall(inp)
     renewcoms = clean6.findall(inp)
 
+    print newcoms, defs, renewcoms
+    pairs = []
+
     for mac in defs:
-        mac, repl = getdefsplits(mac)
-        inp = inp.replace(mac, repl)
+        try:
+            p = getdefsplits(mac)
+            pairs.append(p)
+        except Exception as e:
+            print e
 
     for mac in newcoms:
-        mac, repl = getcommsplits(mac, len('\\newcommand'))
-        inp = inp.replace(mac, repl)
+        try:
+            p = getcommsplits(mac, len('\\newcommand'))
+            pairs.append(p)
+        except Exception as e:
+            print e
 
     for mac in renewcoms:
-        mac, repl = getcommsplits(mac, len('\\renewcommand'))
-        inp = inp.replace(mac, repl)
+        try:
+            p = getcommsplits(mac, len('\\renewcommand'))
+            pairs.append(p)
+        except Exception as e:
+            print e
 
-    # print inp
+    pairs.sort(key=lambda x: -len(x[0]))
+
+    for m, r in pairs:
+        inp = inp.replace(m, r)
+        if len(inp) > maxlen:
+            print 'Skipping ... Length = ', len(inp)
+            return []
+
     # if inp.find('\\begin{document}') == -1:
     #     return []
-
+    # print "Done"
     inp = primary_processing(inp)
     inp = [secondary_processing(i) for i in inp]
 
@@ -197,14 +249,14 @@ def full_processing(inp):
 
 def main():
 
-    limit_memory(5000000000)
-    x = full_processing(
-        open('../../Dataset/2003/0301080', 'r')
-        .read().decode('cp1252', errors='ignore'))
-    for i in x:
-        print i
+    # limit_memory(5000000000)
+    # x = full_processing(
+    #     open('../../Dataset/2003/0301050', 'r')
+    #     .read().decode('cp1252', errors='ignore'))
+    # for i in x:
+    #     print i
 
-    sys.exit()
+    # sys.exit()
 
     out = codecs.open('../../Data/Formulae', 'w', 'cp1252')
     metaout = codecs.open('../../Data/Meta', 'w', 'cp1252')
@@ -219,26 +271,28 @@ def main():
 
         for afile in files:
             cnt += 1
-            if cnt % 100 == 0:
-                print "Done ", cnt, "Skipped ", skipped
+            print 'Doing', afile, 'Done ', cnt, 'Skipped ', skipped
 
             try:
                 text = open(
                     '../../Dataset/{0}/{1}'.format(year, afile), 'r'
                 ).read().decode('cp1252', errors='ignore')
-                allform = full_processing(text)
+
+                with Timeout(60):
+                    allform = full_processing(text)
 
                 if len(allform) == 0:
                     skipped += 1
+                    print "Skipped ", afile
 
                 for form in allform:
                     out.write(u'{0}\n'.format(form))
                     metaout.write(u'{0} {1}\n'.format(year, afile))
 
             except Exception as obj:
+                skipped += 1
                 print year, afile
                 print obj
-                raise
 
     out.close()
     metaout.close()
