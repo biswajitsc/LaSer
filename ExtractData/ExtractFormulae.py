@@ -203,7 +203,7 @@ def full_processing(inp):
     defs = clean2.findall(inp)
     renewcoms = clean6.findall(inp)
 
-    print newcoms, defs, renewcoms
+    # print newcoms, defs, renewcoms
     pairs = []
 
     for mac in defs:
@@ -293,6 +293,8 @@ def main():
                 skipped += 1
                 print year, afile
                 print obj
+
+            sys.stdout.flush()
 
     out.close()
     metaout.close()
