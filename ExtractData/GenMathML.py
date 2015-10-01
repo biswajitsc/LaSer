@@ -18,10 +18,10 @@ def main():
 
     stars = "*********************************************"
 
-    for eqn in formulae:
+    for eqn, met in zip(formulae, meta):
         cnt += 1
         cleanEqn = eqn.strip('\n').strip()
-        cleanEqn = re.sub('"', '', cleanEqn)
+        # cleanEqn = re.sub('"', '', cleanEqn)
         # print cleanEqn
         # cleanEqn = re.sub('\\\\','\\\\\\\\',cleanEqn)
         # cleanEqn = re.sub('\)','\\\\)',cleanEqn)
@@ -30,6 +30,7 @@ def main():
 
         oscommand = "latexmlmath --pmml=- \"" + cleanEqn + "\" > " + tempFile
         print stars
+        print 'Doing', met
         print oscommand
         print stars
 
@@ -42,7 +43,7 @@ def main():
 
         try:
             if len(result) > 0:
-                print '_________', result
+                print '___', result
                 print "Cannot parse eqn"
                 raise Exception("Cannot parse eqn")
 
