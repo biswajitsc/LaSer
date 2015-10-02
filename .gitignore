@@ -4,5 +4,13 @@
 # ignore all temporary files (linux-os-specific)
 *.*~
 
-# ignore tex-backup files
-*.tex.backup
+# Tex related ignores
+Paper/**/*.aux
+Paper/**/*.bbl
+Paper/**/*.blg
+Paper/**/*.dvi
+Paper/**/*.log
+Paper/**/*.out
+Paper/**/*.ps
+Paper/**/*.synctex.gz
+Paper/**/*.tex.backup

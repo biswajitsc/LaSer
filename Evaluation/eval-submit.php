@@ -15,24 +15,22 @@
 	for($i = 0; $i < $cnt; $i++)
 	{
 		$systyp = $x;
-		$oldrank = db_noquote($_POST['oldrank-x-' . strval($i)]);
-		$newrank = $oldrank; // TODO
+		$oldrank = $i + 1;
+		$newrank = db_noquote($_POST['newrank-x-' . strval($i)]);
 		$pid = db_noquote($_POST['pid-x-' . strval($i)]);
 		$relevant = db_quote($_POST['rel-bar-x-' . strval($i)]);
 		$query = "INSERT INTO evalresults (uid, systyp, qid, oldrank, newrank, pid, relevant) 
 			VALUES (" . $uid . ", " . $systyp . ", " . $qid . ", " . $oldrank . ", " . $newrank . ", " . $pid . ", " . $relevant . " )";
-		// echo '<br/>'; echo $query; echo '<br/>';
 		$result = db_query($query);
 		if($result === false) die("SQL Error: " . db_error());
 
 		$systyp = $y;
-		$oldrank = db_noquote($_POST['oldrank-y-' . strval($i)]);
-		$newrank = $oldrank; // TODO
+		$oldrank = $i + 1;
+		$newrank = db_noquote($_POST['newrank-y-' . strval($i)]);
 		$pid = db_noquote($_POST['pid-y-' . strval($i)]);
 		$relevant = db_quote($_POST['rel-bar-y-' . strval($i)]);
 		$query = "INSERT INTO evalresults (uid, systyp, qid, oldrank, newrank, pid, relevant) 
 			VALUES (" . $uid . ", " . $systyp . ", " . $qid . ", " . $oldrank . ", " . $newrank . ", " . $pid . ", " . $relevant . " )";
-		// echo '<br/>'; echo $query; echo '<br/>';
 		$result = db_query($query);
 		if($result === false) die("SQL Error: " . db_error());
 	}
