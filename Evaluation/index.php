@@ -58,7 +58,7 @@
 	</script>
 
 	<div>
-		<br/> <hr class="colorgraph"> <br/>
+		<hr class="colorgraph">
 
 		<div>
 			<p>
@@ -80,6 +80,9 @@
 					<br/>
 				<li> The ordering of the results can be modified to reflect the order of relevance among the search results, 
 					<br/>with the most relevant results having the least rank (top most result). </li>
+					<br/>
+				<li> In case the same result (paper & context) is displayed multiple times then mark the first occourance as usual, and
+					<br/>mark the rest of them as Irrelevant(0). </li>
 			</ul>
 		</div>
 	</div>

@@ -8,6 +8,10 @@ $username = $_COOKIE['username'];
 $counter = $_COOKIE['counter'];
 $lorqid = unserialize($_COOKIE['lorqid']);
 
+# nsystems : number of systems (1 : { 0=>laser }, 2 : { 0=>laser, 1=>baseline_1 }, ...)
+$config = parse_ini_file('sql-config.ini');
+$nsystems = $config['nsystems'];
+
 if( count($lorqid) === ($counter - 1) )
 {
 	header("Location: thanks.php");
@@ -55,21 +59,21 @@ $qval = $result[0]['value'];
 	<form action = "eval-submit.php" method = "post">
 		<table class="grid table table-bordered">
 			<tr>
-				<th> SYSTEM X </th>
-				<th> SYSTEM Y </th>
+				<?php
+					$systems = range(0, $nsystems - 1);
+					shuffle($systems);
+					echo '<input type="hidden" name="nsystems" value="' . strval($nsystems) . '"/>';
+					for($s = 0; $s < $nsystems; $s++)
+					{
+						echo '<th> SYSTEM ' . chr($s + 65) . ' </th>';
+						echo '<input type="hidden" name="' . chr($s + 65) . '-value" value="' . strval($systems[$s]) . '"/>';
+					}
+				?>
 			</tr>
-			<?php
-				$systems = array(0, 1);
-				$systemlabels = array('x', 'y');
-				shuffle($systems);
-				$x = $systems[0];
-				$y = $systems[1];
-				echo '<input type="hidden" name="x-value" value="' . strval($x) . '"/> <input type="hidden" name="y-value" value="' . strval($y) . '"/>';
-			?>
 			<tr>
 				<?php
 					$systemResults = array();
-					for($s = 0; $s < count($systems); $s++)
+					for($s = 0; $s < $nsystems; $s++)
 					{
 						$query = "SELECT * FROM modelresults WHERE qid = " . $qid . " and systyp = '" . strval($systems[$s]) . "' ORDER BY rank";
 						$systemResults[] = db_select($query);
@@ -77,15 +81,15 @@ $qval = $result[0]['value'];
 					}
 
 					$mincount = count($systemResults[0]);
-					for($s = 1; $s < count($systems); $s++)
+					for($s = 1; $s < $nsystems; $s++)
 						$mincount = min($mincount, count($systemResults[$s]));
 					echo '<input type="hidden" name="mincount" value="' . strval($mincount) . '"/>';
 
-					for($s = 0; $s < count($systems); $s++)
+					for($s = 0; $s < $nsystems; $s++)
 					{
 						echo
 						'<td>
-							<table class="grid table table-bordered" class="sortab" id="sortable' . $systemlabels[$s] . '">
+							<table class="grid table table-bordered" class="sortab" id="sortable' . chr($s + 65) . '">
 								<thead>
 									<tr>
 										<th> Rank </th>
@@ -107,13 +111,13 @@ $qval = $result[0]['value'];
 
 							echo '<tr>
 							<td> ' . $systemResults[$s][strval($i)]['rank'] . ' </td>
-							<input type="hidden" class="newrank" name="newrank-'.$systemlabels[$s].'-'.strval($i).'" 
+							<input type="hidden" class="newrank" name="newrank-'.chr($s + 65).'-'.strval($i).'" 
 								value="'.$systemResults[$s][strval($i)]['rank'].'"/>
 							<td> ' . $systemResults[$s][strval($i)]['pid'] . ' </td>
-							<input type="hidden" name="pid-'.$systemlabels[$s].'-'.strval($i).'" value="'.$systemResults[$s][strval($i)]['pid'].'"/>
+							<input type="hidden" name="pid-'.chr($s + 65).'-'.strval($i).'" value="'.$systemResults[$s][strval($i)]['pid'].'"/>
 							<td> ' . $paperval . ' </td>
 							<td> ' . $systemResults[$s][strval($i)]['context'] . ' </td>
-							<td class="Center-Container"> <input class="rel-bar Absolute-Center" style="width:50%" type="range" min="0" max="2" step="1" value="1" name="rel-bar-'.$systemlabels[$s].'-'.strval($i).'"/> </td>
+							<td class="Center-Container"> <input class="rel-bar Absolute-Center" style="width:50%" type="range" min="0" max="2" step="1" value="1" name="rel-bar-'.chr($s + 65).'-'.strval($i).'"/> </td>
 							</tr>';
 						}
 
@@ -135,9 +139,9 @@ $qval = $result[0]['value'];
 		// Assigns proper ranks to the reordered result list
 		function setnewrank()
 		{
-			<?php for($s = 0; $s < count($systems); $s++)
+			<?php for($s = 0; $s < $nsystems; $s++)
 			{
-				echo '$("#sortable' . $systemlabels[$s] . '>tbody>tr").each(function( index, value ) {
+				echo '$("#sortable' . chr($s + 65) . '>tbody>tr").each(function( index, value ) {
 				$(this).children(".newrank").get(0).value = index + 1; });';
 			} ?>
 			
@@ -153,9 +157,9 @@ $qval = $result[0]['value'];
 		$(document).ready(function() {
 			// Implementation for drag 'n drop feature for reordering the results of a particular system
 			// to use fixHelper use '{ helper: fixHelper }' as argument to sortable()
-			<?php for($s = 0; $s < count($systems); $s++)
+			<?php for($s = 0; $s < $nsystems; $s++)
 			{
-				echo '$( "#sortable' . $systemlabels[$s] . ' tbody" ).sortable({cursor: "move", 
+				echo '$( "#sortable' . chr($s + 65) . ' tbody" ).sortable({cursor: "move", 
 					stop: function(ev,ui){
 						setnewrank();
 						newrank = $(ui.item[0]).children(".newrank").get(0).value;
@@ -163,7 +167,7 @@ $qval = $result[0]['value'];
 
 						if(newrank > 1)
 						{
-							prevrel = $( "#sortable' . $systemlabels[$s] . '>tbody>tr" ).find(".rel-bar").get((newrank-1) - 1).value;
+							prevrel = $( "#sortable' . chr($s + 65) . '>tbody>tr" ).find(".rel-bar").get((newrank-1) - 1).value;
 							if(prevrel < myrel)
 							{
 								$(this).sortable("cancel");
@@ -174,7 +178,7 @@ $qval = $result[0]['value'];
 
 						if(newrank < ' . $mincount . ')
 						{
-							nextrel = $( "#sortable' . $systemlabels[$s] . '>tbody>tr" ).find(".rel-bar").get((newrank-1) + 1).value;
+							nextrel = $( "#sortable' . chr($s + 65) . '>tbody>tr" ).find(".rel-bar").get((newrank-1) + 1).value;
 							if(nextrel > myrel)
 							{
 								$(this).sortable("cancel");
@@ -184,7 +188,7 @@ $qval = $result[0]['value'];
 						}
 					}
 				});
-				$( "#sortable' . $systemlabels[$s] . ' tbody" ).disableSelection();';
+				$( "#sortable' . chr($s + 65) . ' tbody" ).disableSelection();';
 			} ?>
 
 			// Reordering the results when the user changes the value of relevance of a particular result
@@ -235,10 +239,10 @@ $qval = $result[0]['value'];
 		  top: 0; left: 0; bottom: 0; right: 0;
 		}
 
-		<?php for($s = 0; $s < count($systems); $s++)
+		<?php for($s = 0; $s < $nsystems; $s++)
 		{
-			echo '#sortable' . $systemlabels[$s] . ' tbody tr:hover {cursor: pointer;}';
-			echo '#sortable' . $systemlabels[$s] . ' tbody tr.ui-sortable-helper {cursor: move;}';
+			echo '#sortable' . chr($s + 65) . ' tbody tr:hover {cursor: pointer;}';
+			echo '#sortable' . chr($s + 65) . ' tbody tr.ui-sortable-helper {cursor: move;}';
 		} ?>
 
 		input[type=range]{
