@@ -203,6 +203,8 @@ def full_processing(inp):
     defs = clean2.findall(inp)
     renewcoms = clean6.findall(inp)
 
+    inp = inp.replace('\n', ' \n')
+
     # print newcoms, defs, renewcoms
     pairs = []
 
@@ -230,7 +232,7 @@ def full_processing(inp):
     pairs.sort(key=lambda x: -len(x[0]))
 
     for m, r in pairs:
-        inp = inp.replace(m, r)
+        inp = inp.replace(m + ' ', r + ' ')
         if len(inp) > maxlen:
             print 'Skipping ... Length = ', len(inp)
             return []
