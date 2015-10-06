@@ -78,21 +78,21 @@ def genTreeStructure(mathmlXml):
 
 def main():
 	# genTreeStructure('../../Data/MathML.xml','../../Data/MathMLMeta.xml')
-	genTreeStructure([\
-	"<math>\
-		<msup>\
-			<mi>e</mi>\
-			<mrow>\
-				<mo>{</mo>\
-				<mrow>\
-					<mi>x</mi>\
-					<mo>+</mo>\
-					<mi>y</mi>\
-				</mrow>\
-			<mo>}</mo>\
-			</mrow>\
-		</msup>\
-	</math>"\
+	#genTreeStructure([\
+	#"<math>\
+	#	<msup>\
+	#		<mi>e</mi>\
+	#		<mrow>\
+	#			<mo>{</mo>\
+	#			<mrow>\
+	#				<mi>x</mi>\
+	#				<mo>+</mo>\
+	#				<mi>y</mi>\
+	#			</mrow>\
+	#		<mo>}</mo>\
+	#		</mrow>\
+	#	</msup>\
+	#</math>"\
 	])
 
 if __name__ == '__main__':
