@@ -23,9 +23,18 @@ def main():
 			elif p2.match(line_) is not None:
 				# print line_
 				try:
-					m = re.match("^\\\\newcommand{(.*)}(\[\d+\])?{(.*)}$", line_)
-					temp[m.groups(1)] = m.groups(3)
-					print [m.group(1),m.group(3)]
+					m = re.match("^\\\\newcommand{(.*)}(\[\d+\])?(\[.*\])?{(.*)}$", line_)
+					temp[m.groups(1)] = m.groups(4)
+					print \
+					[\
+					m.group(1),\
+					m.group(2),\
+					m.group(3),\
+					m.group(4)\
+					]
+
+					text = m.groups()
+
 				except Exception as e:
 					continue
 				
