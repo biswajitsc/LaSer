@@ -28,7 +28,7 @@ def main():
         # cleanEqn = re.sub('\(','\\\\(',cleanEqn)
         # print cleanEqn
 
-        oscommand = "latexmlmath --pmml=- \"" + cleanEqn + "\" > " + tempFile
+        oscommand = "latexmlmath --pmml=- \" " + cleanEqn + " \" > " + tempFile
         print stars
         print 'Doing', met
         print oscommand
@@ -42,7 +42,7 @@ def main():
             result = str(e)
 
         try:
-            if len(result) > 0:
+            if len(result) > 0 and (result.find("Error") != -1 or result.find("error") != -1) :
                 print '___', result
                 print "Cannot parse eqn"
                 raise Exception("Cannot parse eqn")
