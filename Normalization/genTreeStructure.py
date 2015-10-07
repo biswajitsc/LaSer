@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 import sys
 
 
-def reduceExpression(terminalXml):
+def reduceExpression(terminalXml,depth):
 	
 	variations = []
 
@@ -23,21 +23,22 @@ def reduceExpression(terminalXml):
 		variations.append(tempString)
 
 	if terminalXml.tag == 'mi' or terminalXml.tag == 'mn':
-		variations.append('<'+'mi'+'> '+'Expression'+' </'+'mi'+'>')
+		if depth < 0 and depth > -3:
+			variations.append('<'+'mi'+'> '+'Expression'+' </'+'mi'+'>')
 		variations.append('<'+terminalXml.tag+'> '+terminalXmlText+' </'+terminalXml.tag+'>')
 
 
-	return variations
+	return variations,depth-1
 
-def genTreeStructureUtil(rawXml):
+def genTreeStructureUtil(rawXml,depth):
 	if (len(list(rawXml))) <= 0:
-		return reduceExpression(rawXml)
+		return reduceExpression(rawXml,0)
 
 	variations = []
 	variations.append('')	
 	
 	for child in rawXml:	
-		tempa = genTreeStructureUtil(child)
+		tempa,depth2 = genTreeStructureUtil(child,depth)
 		tempVariations = []
 		for i in xrange(0,len(variations)):
 			for j in xrange(0,len(tempa)):
@@ -49,51 +50,42 @@ def genTreeStructureUtil(rawXml):
 	for i in xrange(0,len(variations)):
 		variations[i] = '<' + rawXml.tag + '> ' + variations[i] + ' </' + rawXml.tag + '>'
 
-	variations.append('<mi> Expression </mi>')
+	if depth2 < 0 and depth2 > -3:
+		variations.append('<mi> Expression </mi>')
 
-	return variations
+	return variations,depth2-1
 		
-def genTreeStructure(mathmlXml):
-	# meta = open(mathmlMeta, 'r').readlines()
-	# structureMathML = open('../../Data/StructureMathML.xml', 'w')
-	# structureMathMLMeta = open('../../Data/StructureMathMLMeta.xml', 'w')
-	# mathXmlFile = open(mathmlXml, 'r')
+def genTreeStructure():
+	meta = open('../../Data/MathMLMeta.xml', 'r').readlines()
+	structureMathML = open('../../Data/StructureMathML.xml', 'w')
+	structureMathMLMeta = open('../../Data/StructureMathMLMeta.xml', 'w')
+	mathXmlFile = open('../../Data/MathML.xml', 'r')
+	structToOrigMap = open('../../Data/StructureToOrig.xml', 'w')
 	cnt = -1
-	for rawEquation in mathmlXml:
+	for rawEquation in mathXmlFile:
 		cnt += 1
-		print rawEquation.replace('m:','')
-		variations = genTreeStructureUtil(ET.fromstring(rawEquation.replace('m:','')))
-		variations = variations[:-1]
-		for variation in variations:
-			# structureMathML.write(str(cnt+1) + ' ' + variation.encode('utf-8') + '\n')
-			# structureMathMLMeta.write(meta[cnt].strip('\n')+'\n')
-			print variation
-			# print 
+		rawEq = rawEquation.strip('\n').replace('m:','')
+		rawEq = rawEq.replace('xmlns:m="http://www.w3.org/1998/Math/MathML"','')
+		print rawEq
+		try:
+			variations,depth = genTreeStructureUtil(ET.fromstring(rawEq),100000)
+			variations = variations[:-1]
+			for variation in variations:
+				structureMathML.write(variation.encode('utf-8') + '\n')
+				structureMathMLMeta.write(meta[cnt].strip('\n')+'\n')
+				structToOrigMap.write(str(cnt)+'\n')
+		except Exception as e:
+			print e
 		if cnt >= 0:
 			break
 	
-	# structureMathML.close()
-	# structureMathMLMeta.close()
-	# mathXmlFile.close()
+	structureMathML.close()
+	structureMathMLMeta.close()
+	structToOrigMap.close()
+	mathXmlFile.close()
 
 def main():
-	# genTreeStructure('../../Data/MathML.xml','../../Data/MathMLMeta.xml')
-	#genTreeStructure([\
-	#"<math>\
-	#	<msup>\
-	#		<mi>e</mi>\
-	#		<mrow>\
-	#			<mo>{</mo>\
-	#			<mrow>\
-	#				<mi>x</mi>\
-	#				<mo>+</mo>\
-	#				<mi>y</mi>\
-	#			</mrow>\
-	#		<mo>}</mo>\
-	#		</mrow>\
-	#	</msup>\
-	#</math>"\
-	])
+	genTreeStructure()
 
 if __name__ == '__main__':
 	main()
