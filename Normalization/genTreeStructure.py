@@ -1,7 +1,5 @@
 import xml.etree.ElementTree as ET
-# from bs4 import BeautifulSoup
 import sys
-
 
 def reduceExpression(terminalXml,depth):
 	
@@ -24,9 +22,8 @@ def reduceExpression(terminalXml,depth):
 
 	if terminalXml.tag == 'mi' or terminalXml.tag == 'mn':
 		if depth < 0 and depth > -3:
-			variations.append('<'+'mi'+'> '+'Expression'+' </'+'mi'+'>')
+			variations.append('<'+'mi'+'> '+'$Expression$'+' </'+'mi'+'>')
 		variations.append('<'+terminalXml.tag+'> '+terminalXmlText+' </'+terminalXml.tag+'>')
-
 
 	return variations,depth-1
 
@@ -51,8 +48,9 @@ def genTreeStructureUtil(rawXml,depth):
 		variations[i] = '<' + rawXml.tag + '> ' + variations[i] + ' </' + rawXml.tag + '>'
 
 	if depth2 < 0 and depth2 > -3:
-		variations.append('<mi> Expression </mi>')
+		variations.append('<mi> $Expression$ </mi>')
 
+	# print depth2
 	return variations,depth2-1
 		
 
@@ -80,11 +78,14 @@ def genTreeStructure():
 		rawEq = rawEq.replace('xmlns', '')
 		rawEq = rawEq.replace(':m', '')
 		rawEq = rawEq.replace('="http://www.w3.org/1998/Math/MathML"','')
-		print rawEq
+		# print rawEq
 		try:
 			if findDepth(ET.fromstring(rawEq)) < 2:
-				print rawEq
+				structureMathML.write(rawEq.encode('utf-8') + '\n')
+				structureMathMLMeta.write(meta[cnt].strip('\n')+'\n')
+				structToOrigMap.write(str(cnt)+'\n')
 				continue
+
 			variations,depth = genTreeStructureUtil(ET.fromstring(rawEq),100000)
 			variations = variations[:-1]
 			for variation in variations:
@@ -93,8 +94,8 @@ def genTreeStructure():
 				structToOrigMap.write(str(cnt)+'\n')
 		except Exception as e:
 			print e
-		if cnt >= 0:
-			break
+		# if cnt >= 0:
+		# 	break
 	
 	structureMathML.close()
 	structureMathMLMeta.close()
