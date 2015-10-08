@@ -65,7 +65,9 @@ def genTreeStructure():
 	for rawEquation in mathXmlFile:
 		cnt += 1
 		rawEq = rawEquation.strip('\n').replace('m:','')
-		rawEq = rawEq.replace('xmlns:m="http://www.w3.org/1998/Math/MathML"','')
+		rawEq = rawEq.replace('xmlns', '')
+		rawEq = rawEq.replace(':m', '')
+		rawEq = rawEq.replace('="http://www.w3.org/1998/Math/MathML"','')
 		print rawEq
 		try:
 			variations,depth = genTreeStructureUtil(ET.fromstring(rawEq),100000)
