@@ -154,6 +154,27 @@ def main() :
 				idf_scores[trigram] += 1
 	print "Trigram Features Postings List created"
 
+	i = 0
+	for unigram in unigrams_postinglist.keys() :
+		if len(unigrams_postinglist[unigram]) <= 5 :
+			unigrams_postinglist.pop(unigram, None)
+			i += 1
+	print i, " rare Unigram features removed"
+
+	i = 0
+	for bigram in bigrams_postinglist.keys() :
+		if len(bigrams_postinglist[bigram]) <= 5 :
+			bigrams_postinglist.pop(bigram, None)
+			i += 1
+	print i, " rare Bigram features removed"
+
+	i = 0
+	for trigram in trigrams_postinglist.keys() :
+		if len(trigrams_postinglist[trigram]) <= 5 :
+			trigrams_postinglist.pop(trigram, None)
+			i += 1
+	print i, " rare Trigram features removed"
+
 	output_file_unigrams.write(str(unigrams_postinglist))
 	output_file_bigrams.write(str(bigrams_postinglist))
 	output_file_trigrams.write(str(trigrams_postinglist))
