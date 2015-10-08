@@ -55,6 +55,18 @@ def genTreeStructureUtil(rawXml,depth):
 
 	return variations,depth2-1
 		
+
+def findDepth(rawXml):
+	if(len(list(rawXml))<=0):
+		return 0
+
+	depth = -1
+	for child in rawXml:
+		depth = max(depth,findDepth(child))
+
+	return depth + 1
+
+
 def genTreeStructure():
 	meta = open('../../Data/MathMLMeta.xml', 'r').readlines()
 	structureMathML = open('../../Data/StructureMathML.xml', 'w')
@@ -70,6 +82,9 @@ def genTreeStructure():
 		rawEq = rawEq.replace('="http://www.w3.org/1998/Math/MathML"','')
 		print rawEq
 		try:
+			if findDepth(ET.fromstring(rawEq)) < 2:
+				print rawEq
+				continue
 			variations,depth = genTreeStructureUtil(ET.fromstring(rawEq),100000)
 			variations = variations[:-1]
 			for variation in variations:
