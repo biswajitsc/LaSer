@@ -151,10 +151,10 @@ def unicodeNormalize(data) :
     return normalizedString
 
 def main():
-    dataFile = "../../Data/SimplifiedMathML.xml"
-    metaFile = "../../Data/SimplifiedMathMLMeta.xml"
-    normalizedFile = open("../../Data/NormalizedMathML.xml", "w")
-    metaOutFile = open("../../Data/NormalizedMathMLMeta.xml", "w")
+    dataFile = "../../smallData/SimplifiedMathML.xml"
+    metaFile = "../../smallData/SimplifiedMathMLMeta.xml"
+    normalizedFile = open("../../smallData/NormalizedMathML.xml", "w")
+    metaOutFile = open("../../smallData/NormalizedMathMLMeta.xml", "w")
 
     data = open(dataFile,'r').read()
     metadata = open(metaFile, 'r').read()
