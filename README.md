@@ -37,6 +37,9 @@ Structural Properties
 * Run ```python genTreeStructure.py``` and the different variations will be generated in ```../../Data/StructureMathML.xml``` in line separated way and their metapath will be generated in ```../../Data/StructureMathMLMeta.xml``` in line separated way. 
 * Also the equations in ```../../Data/StructureMathML.xml``` will be in this format ```<line number of the original equation> <space> <xml of the variation>```
 
+Overall Pipeline
+* Extract MathML using GenMathML.py -> Run ExtractData/SimplifyEquations.py -> Run Normalization/Normalization.py -> Run FeatureExtraction/ExtractFeatures.py -> Use service.py with the files "Unigram","Bigram","Trigram","IDF-Scores","NormalizedMathML.xml","NormalizedMathMLMeta.xml"
+
 Evaluation
 * An evaluation engine for LaSer Search System ( reference : ```Evaluation/eval-basis.txt```)
 * Install ```php5-mysql```, ```php5-mysqlnd```
