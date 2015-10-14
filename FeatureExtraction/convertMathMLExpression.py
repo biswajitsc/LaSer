@@ -23,7 +23,7 @@ def convertEquation(mathML) :
 					strng += text + " "
 			expressions.append(strng)
 		except Exception as ex :
-			print j, ex
+			print j, ex, len(eqn.split(' '))
 			continue
 	return expressions
 
