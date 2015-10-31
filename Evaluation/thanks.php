@@ -24,7 +24,8 @@ if($result === false) die("SQL Error: " . db_error());
 
 <body>
 	<div>
+		<br/>
 		<img height="80%" src="http://www.remarkableriverrun.com/wp-content/uploads/2014/05/20-thank-you.jpg"/> <br/>
-		<h4> Thank you! <?php echo trim($username, '\''); ?>. Your response has been successfully recorded. </h4>
+		<h4> <em>Thank you! <?php echo trim($username, '\''); ?>. Your response has been successfully recorded.</em> </h4>
 	</div>
 </body>

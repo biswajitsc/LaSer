@@ -420,10 +420,10 @@ def generateIndex(NormalizedMathML):
 	# 				values[trigram] = idf_scores[trigram]
 	# 	weight_matrix.append(values)
 
-	metadata = open("../../Data/NormalizedMathMLMeta.xml","r").readlines()
+	metadata = open("../../smallData/NormalizedMathMLMeta.xml","r").readlines()
 
-	original_eqns = open("../../Data/MathML.xml","r").readlines()
+	original_eqns = open("../../smallData/MathML.xml","r").readlines()
 
 	return (unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns)
 
-(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns) = generateIndex("../../Data/NormalizedMathML.xml")
+(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns) = generateIndex("../../smallData/NormalizedMathML.xml")
