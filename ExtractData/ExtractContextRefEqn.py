@@ -62,7 +62,7 @@ def main():
 	skipped = 0
 	cnt = 0
 	#out = open('../../Data/Context/' + afile + '.pkl', 'wb')
-	out = open('../../Data/Context/ref.txt', 'wb')
+	out = codecs.open('../../Data/Context/ref.txt', 'w', 'cp1252')
 	
 	labelsData = open('../../Data/FormulaeLabel', 'r').read().decode('cp1252', errors='ignore').split('\n')
 	meta = open('../../Data/Meta').read().decode('cp1252', errors='ignore').split('\n')
