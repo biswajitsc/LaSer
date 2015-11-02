@@ -51,9 +51,10 @@
 
 	<script type="text/javascript">
 	// Generating drop down list of names of users from the database matching the user-name prefix entered
-	$("#username").keyup(function()
+	$("#username").keyup(function(e)
 	{
-	   	loadlist($('datalist#user-list').get(0), 'get-users.php?prefix=' + $('#username').val(),'name');
+		if( !(e.which >= 37 && e.which <= 40) && e.which != 13 )
+	   		loadlist($('datalist#user-list').get(0), 'get-users.php?prefix=' + $('#username').val(),'name');
 	});
 	</script>
 

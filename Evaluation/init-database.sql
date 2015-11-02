@@ -8,13 +8,13 @@ CREATE TABLE users
 CREATE TABLE queries
 (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    value VARCHAR( 500 ) NOT NULL UNIQUE
+    value VARCHAR( 5000 ) NOT NULL
 );
 
 CREATE TABLE papers
 (
-    id INTEGER PRIMARY KEY,
-    value VARCHAR( 500 ) NOT NULL
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    value VARCHAR( 5000 ) NOT NULL
 );
 
 CREATE TABLE modelresults
@@ -23,7 +23,7 @@ CREATE TABLE modelresults
     qid INTEGER NOT NULL,
     rank INTEGER NOT NULL,
     pid INTEGER NOT NULL,
-    context VARCHAR( 500 ) NOT NULL,
+    context VARCHAR( 5000 ) NOT NULL,
     PRIMARY KEY (qid, rank, systyp),
     FOREIGN KEY (qid) REFERENCES queries(id),
     FOREIGN KEY (pid) REFERENCES papers(id)

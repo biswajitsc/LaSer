@@ -1,0 +1,10 @@
+C^{\mu\lambda}B_{\lambda\nu}={\delta^{\mu}}_{\nu}
+\omega = 2\pi\ell_p^2 \,d\left[H^{-1} \left(dy + \frac{1}{2} R\cos\theta    d\psi\right)\right]
+S_{\mathrm{2D}}\left( g,\Phi \right) +S_{\mathrm{M}}\left( g,\Phi ,\mathrm{ Matter}\right)
+YZ-qZY  =  -V'(X) = - \sum _{i\not \equiv 0\mod(n)} a_i X^{i-1}
+\pi = \tilde{\pi} - {\cal H} \psi,  \label{pigen1}
+B_{ijkl} = C^m{}_{ijn} C^n{}_{lkm}
+X^i(\sigma, t)  =  \frac{1}{\sqrt{2}}\sum_{n \in Z}X_n^i (t) e^{in\sigma}
+p_\theta  =  p_\varphi = \frac{r''}{8\pi r}
+a_{\Delta_2 - 1}   =  {1 \over 4 (\Delta_1 - 1)(\Delta_2 - 1)}
+m^2 = \mu^2 + \lambda_0 G(x,x;m^2) + \eta_0 G^2(x,x;m^2)

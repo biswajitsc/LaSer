@@ -42,8 +42,9 @@ def main() :
 	output_file_expressions = open("../../Data/ExtractedExpressions","w")
 	output_file_idfs = open("../../Data/IDF-Scores","w")
 	data = input_file.read()
-	data = data.replace("\n"," ")
-	lines = data.split('<m:math')
+	# data = data.replace("\n"," ")
+	# lines = data.split('<m:math')
+	lines = data.split('\n')
 	mathML = []
 	for line in lines :
 		temp_line = line
@@ -54,7 +55,7 @@ def main() :
 		line = symbol.encode('ascii', 'backslashreplace')
 		if len(line) == 0 :
 			continue
-		line = '<math' + line
+		# line = '<math' + line
 		xmls = line.split('<?xml version="1.0"?>')
 		for xml in xmls :
 			xml = re.sub(' +',' ',xml)
