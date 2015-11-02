@@ -4,6 +4,8 @@ import os
 import codecs
 import pickle
 import nltk
+from nltk.corpus import stopwords
+stop = stopwords.words('english')
 
 windowSize = 20
 	
@@ -85,7 +87,7 @@ def main():
 			print obj
 			raise
 
-
+	out.close()
 
 if __name__ == '__main__':
 	main()
