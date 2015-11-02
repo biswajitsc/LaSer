@@ -6,8 +6,8 @@ sub = "\label{"
 if __name__ == '__main__':
 
 	cnt = 0
-	outf = open(sys.argv[2], 'w')
-	with open(sys.argv[1], 'r') as f:
+	outf = open('../../Data/Formulae', 'w')
+	with open('../../Data/FormulaeLabel', 'r') as f:
 		for line in f:
 			l = line.strip('\n')
 			index = l.find(sub)
