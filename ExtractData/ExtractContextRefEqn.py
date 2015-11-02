@@ -4,44 +4,59 @@ import os
 import codecs
 import pickle
 
-windowSize = 10
+windowSize = 20
 
 def parse(sentence):
 	sentence = sentence.replace(',', ' ')
 	tokens = sentence.split()
-	res = []
-	isSymbol = [False for x in range(len(tokens))]
+	res = {}
+	isReference = [False for x in range(len(tokens))]
 	idToEqns = {}
 	for i in xrange(0, len(tokens)):
-		m = re.findall('ref{eq:([^}]*)',tokens[i])
+		m = re.findall('ref{([^}]*)',tokens[i])
 		if m:
 			#Extract all the equations being referred to
-			idToEqns[i] = m
-			isSymbol[i] = True
+			idToEqns[i] = m[0]
+			isReference[i] = True
 			# print sentence.encode('ascii','ignore')
 
 	for i in xrange(0, len(tokens)):
-		if isSymbol[i]:
+		if isReference[i]:
 			before = ""
 			for j in xrange(1, windowSize):
 				if i - j < 0 or tokens[i - j].startswith('\\end'):
 					break
-				if not isSymbol[i - j]:
+				if not isReference[i - j]:
 					before = tokens[i - j] + ' ' + before
 			before = before[:-1]
 			after = ""
 			for j in xrange(1, windowSize):
 				if i + j >= len(tokens) or tokens[i + j].startswith('\\begin'):
 					break
-				if not isSymbol[i + j]:
+				if not isReference[i + j]:
 					after += tokens[i + j] + ' '
 			after = after[:-1]
-			res.append((before, idToEqns[i], after))
+
+			if idToEqns in res.keys():	
+				res[idToEqns[i]] = res[idToEqns[i]] + ' ' + before + ' ' + after
+			else:
+				res[idToEqns[i]] = before + ' ' + after
 	return res
 
 def main():
 	skipped = 0
 	cnt = 0
+	#out = open('../../Data/Context/' + afile + '.pkl', 'wb')
+	out = open('../../Data/Context/ref.txt', 'wb')
+	
+	labelsData = open('../../Data/FormulaeLabel').read().decode('cp1252', errors='ignore').split('\n')
+	labels = {}
+
+	for line in labelsData:
+		try:
+			labels[line.split(' ',1)[1]] = line.split(' ',1)[0]
+		except:
+			print line
 
 	for year in reversed(xrange(1992, 2004)):
 
@@ -49,7 +64,6 @@ def main():
 		files = os.listdir('../../Dataset/{0}'.format(year))
 		for afile in files:
 			cnt += 1
-			out = open('../../Data/Context/' + afile + '.pkl', 'wb')
 			if cnt % 100 == 0:
 				print "Done ", cnt, "Skipped ", skipped
 
@@ -64,12 +78,16 @@ def main():
 						continue
 					data += ' ' + line
 
-				sentences = re.compile('\.\s+').split(data);
+#				sentences = re.compile('\.\s+').split(data);
 				
-				for sentence in sentences:
-					res = parse(sentence)
-			        pickle.dump(res,out)
-					
+#				for sentence in sentences:
+				res = parse(data)
+				#pickle.dump(res,out)
+				for key in res.keys():
+					if key in labels.keys(): 
+						print labels[key] + ' ' + ' ' + key + ' ' + res[key]
+
+
 				out.close()
 
 			except Exception as obj:
