@@ -3,11 +3,26 @@ import re
 import os
 import codecs
 import pickle
+import nltk
+from nltk.corpus import stopwords
+stop = stopwords.words('english')
 
 windowSize = 20
 
-def parse(sentence):
-	sentence = sentence.replace(',', ' ')
+def filterText(inp):
+	inp = re.sub('\W+',' ',inp)
+	clean_inp = ""
+	inp_words = inp.split()
+	for word in inp_words:
+		if word not in stop and len(word) >= 3:
+			clean_inp += word + ' '
+	clean_inp = clean_inp.strip()
+	return clean_inp
+
+def parse(sentence,keymaps):
+	# for i in keymaps.keys():
+	# 	sentence = sentence.replace(keymaps[i],i)
+	# sentence = sentence.replace(',', ' ')
 	tokens = sentence.split()
 	res = {}
 	isReference = [False for x in range(len(tokens))]
@@ -49,7 +64,11 @@ def main():
 	#out = open('../../Data/Context/' + afile + '.pkl', 'wb')
 	out = open('../../Data/Context/ref.txt', 'wb')
 	
-	labelsData = open('../../Data/FormulaeLabel').read().decode('cp1252', errors='ignore').split('\n')
+	labelsData = open('../../Data/FormulaeLabel', 'r').read().decode('cp1252', errors='ignore').split('\n')
+	meta = open('../../Data/Meta').read().decode('cp1252', errors='ignore').split('\n')
+	for i in xrange(0,len(meta)):
+		meta[i] = meta[i].split()
+
 	labels = {}
 
 	for line in labelsData:
@@ -66,7 +85,7 @@ def main():
 			cnt += 1
 			if cnt % 100 == 0:
 				print "Done ", cnt, "Skipped ", skipped
-
+				
 			try:
 				data = open('../../Dataset/{0}/{1}'.format(year,afile), 'r').read().decode('cp1252', errors='ignore')
 				lines = data.split('\n')
@@ -81,20 +100,31 @@ def main():
 #				sentences = re.compile('\.\s+').split(data);
 				
 #				for sentence in sentences:
-				res = parse(data)
 				#pickle.dump(res,out)
-				for key in res.keys():
-					if key in labels.keys(): 
-						print labels[key] + ' ' + ' ' + key + ' ' + res[key]
+				dummy = 'NINJAHATORI'
+				keys = labels.keys()
+				keymaps = {}
+				for i in xrange(0,len(keys)):
+					keymaps[dummy+str(i)] = keys[i]
 
-
-				out.close()
-
+				res = parse(data,keymaps)
+				for key2 in res.keys():
+					if key2 in labels.keys():
+						key = key2
+						eqnid = int(labels[key])
+						if str(meta[eqnid][0]) == str(year) and str(meta[eqnid][1]) == str(afile): 
+							out.write(labels[key] + ' ' + key + ' ' + filterText(res[key2]) + '\n')
+							out.flush()
+							
 			except Exception as obj:
 				print year, afile
 				print obj
 				raise
-	
 
+	out.close()
+	
+		# break	
+	
+		
 if __name__ == '__main__':
 	main()
