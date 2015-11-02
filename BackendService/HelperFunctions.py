@@ -257,6 +257,65 @@ def extract_MathMLUnigrams(mathML, idf_scores) :
 				
 	return weight_score
 
+def extractContextWeights(context, idf_scores, unigrams, bigrams, trigrams):
+	context = context.replace('\n', ' ')
+	context = re.sub(' +',' ',context)
+	context = context.replace('\t', ' ')
+
+	symbol = unicode(context, "utf-8")
+	context = symbol.encode('ascii', 'backslashreplace')
+
+	unigrams_query = set()
+	bigrams_query = set()
+	trigrams_query = set()
+
+	weight_score = {}
+
+	words = context.split(' ')
+	for word in words :
+		if (len(word) > 0) :
+			unigrams_query.add(word)
+	print "Unigrams_query of context Extracted"
+	
+	words = context.split(' ')
+	if len(words) >= 2 :
+		i = 0
+		while (i < (len(words) - 1)) :
+			if (len(words[i]) > 0 and len(words[i + 1]) > 0) :
+				bigrams_query.add((words[i],words[i + 1]))
+			i += 1
+	print "Bigrams_query of context Extracted"
+	
+	words = context.split(' ')
+	if len(words) > 2 :
+		i = 0
+		while (i < (len(words) - 2)) :
+			if (len(words[i]) > 0 and len(words[i + 1]) > 0 and len(words[i + 2]) > 0) :	
+				trigrams_query.add((words[i],words[i + 1],words[i + 2]))
+			i += 1
+	print "Trigrams_query of context Extracted"
+	
+	for unigram in unigrams_query :
+		string = str(unigram)
+		if string in context and unigram in idf_scores.keys():
+			weight_score[unigram] = ((1 + math.log(context.count(string))) * idf_scores[unigram])
+
+	for bigram in bigrams_query :
+		string = (str(bigram[0]) + ' ' + str(bigram[1]))
+		if string in context and bigram in idf_scores.keys():
+			print string, "occured"
+			weight_score[bigram] = ((1 + math.log(context.count(string))) * idf_scores[bigram])
+	
+	for trigram in trigrams_query :
+		string = (str(trigram[0]) + ' ' + str(trigram[1]) + ' ' + str(trigram[2]))
+		if string in context and trigram in idf_scores.keys():
+			print string, "occured"
+			weight_score[trigram] = ((1 + math.log(context.count(string))) * idf_scores[trigram])
+
+	print "in extractContextWeights : weight_score is ",weight_score
+
+	return weight_score
+
 def extractWeights(mathml_eqn, idf_scores, unigrams, bigrams, trigrams) :
 	mathml_eqn = mathml_eqn.replace('\n', ' ')
 	mathml_eqn = mathml_eqn.replace('<?xml version="1.0"?>', '')
@@ -360,6 +419,16 @@ def generateIndex(NormalizedMathML):
 	trigrams_postinglist = ast.literal_eval(input_file_trigrams_postinglist)
 	idf_scores = ast.literal_eval(input_file_idf_scores)
 
+	input_file_unigrams_context_postinglist = open("../../Data/UnigramContextFeatures","r").read()
+	input_file_bigrams_context_postinglist = open("../../Data/BigramContextFeatures","r").read()
+	input_file_trigrams_context_postinglist = open("../../Data/TrigramContextFeatures","r").read()
+	input_file_idf_context_scores = open("../../Data/ContextIDF-Scores","r").read()
+
+	context_unigrams_postinglist = ast.literal_eval(input_file_unigrams_context_postinglist)
+	context_bigrams_postinglist = ast.literal_eval(input_file_bigrams_context_postinglist)
+	context_trigrams_postinglist = ast.literal_eval(input_file_trigrams_context_postinglist)
+	context_idf_scores = ast.literal_eval(input_file_idf_context_scores)
+
 	unigrams = set()
 	bigrams = set()
 	trigrams = set()
@@ -373,16 +442,33 @@ def generateIndex(NormalizedMathML):
 	for x in trigrams_postinglist:
 		trigrams.add(x)
 
+	context_unigrams = set()
+	context_bigrams = set()
+	context_trigrams = set()
+
+	for x in context_unigrams_postinglist:
+		context_unigrams.add(x)
+
+	for x in context_bigrams_postinglist:
+		context_bigrams.add(x)
+
+	for x in context_trigrams_postinglist:
+		context_trigrams.add(x)
+
 	input_file = open(NormalizedMathML,"r")
 	data = input_file.read()
-	data = data.replace("\n"," ")
-	lines = data.split('<m:math')
+	lines = data.split('\n')
 	mathML = []
 	for line in lines :
+		temp_line = line
+		line = line.replace("<m:","<")
+		line = line.replace("</m:","</")
 		line = line.replace('\n', ' ')
+		symbol = unicode(line, "utf-8")
+		line = symbol.encode('ascii', 'backslashreplace')
 		if len(line) == 0 :
 			continue
-		line = '<m:math' + line
+		# line = '<math' + line
 		xmls = line.split('<?xml version="1.0"?>')
 		for xml in xmls :
 			xml = re.sub(' +',' ',xml)
@@ -424,6 +510,6 @@ def generateIndex(NormalizedMathML):
 
 	original_eqns = open("../../smallData/MathML.xml","r").readlines()
 
-	return (unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns)
+	return (unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns, context_unigrams, context_bigrams, context_trigrams, context_idf_scores, context_unigrams_postinglist, context_bigrams_postinglist, context_trigrams_postinglist)
 
-(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns) = generateIndex("../../smallData/NormalizedMathML.xml")
+(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns, context_unigrams, context_bigrams, context_trigrams, context_idf_scores, context_unigrams_postinglist, context_bigrams_postinglist, context_trigrams_postinglist) = generateIndex("../../smallData/NormalizedMathML.xml")
