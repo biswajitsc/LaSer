@@ -10,14 +10,14 @@ stop = stopwords.words('english')
 windowSize = 20
 	
 def filterText(inp):
-#	inp = re.sub('\W+',' ',inp)
-#	clean_inp = ""
-#	inp_words = inp.split()
-#	for word in inp_words:
-#		if word not in stop and len(word) >= 3:
-#			clean_inp += word + ' '
-#	clean_inp = clean_inp.strip()
-#	return clean_inp
+	inp = re.sub('\W+',' ',inp)
+	clean_inp = ""
+	inp_words = inp.split()
+	for word in inp_words:
+		if word not in stop and len(word) >= 3:
+			clean_inp += word + ' '
+	clean_inp = clean_inp.strip()
+	return clean_inp
 	return inp
 
 def parse(data,eqn):
@@ -83,9 +83,8 @@ def main():
 			out.flush()
 						
 		except Exception as obj:
-			print doc.split(' ')[0], doc.split(' ')[1]
+			print doc
 			print obj
-			raise
 
 	out.close()
 
