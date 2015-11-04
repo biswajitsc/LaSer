@@ -23,6 +23,13 @@ def main() :
 			continue
 		line = re.sub(' +',' ',line)
 		line = line.replace('\t', ' ')
+		words = line.split(' ')[1:]
+		line = ''
+		for i in range(len(words)):
+			if i < len(words) - 1:
+				line += words[i] + " "
+			else:
+				line += words[i]
 		contexts.append(line)
 
 	unigrams = set()
@@ -77,11 +84,14 @@ def main() :
 	for trigram in trigrams :
 		trigrams_postinglist[trigram] = []
 		idf_scores[trigram] = 0
+	print "Initialized weight matrices"
 
 	i = 0
 	for line in contexts:
 		line = line.encode('utf-8')
 		i += 1
+		if (i % 100 == 0) :
+                        print str(i) + "th xml checked for unigrams"
 		for unigram in unigrams :
 			string = str(unigram)
 			if string in line :
