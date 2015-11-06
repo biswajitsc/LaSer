@@ -21,7 +21,108 @@ app = web.application(urls, globals())
 
 val = 0
 
-def generateRankedLists(query) :
+def generateRankedListBasedOnContext(query):
+
+	global context_unigrams
+	global context_bigrams
+	global context_trigrams
+	global context_idf_scores
+	global context_unigrams_postinglist
+	global context_bigrams_postinglist
+	global context_trigrams_postinglist
+	global original_metadata
+	global original_eqns
+
+	context_query = urllib.unquote(query).decode('utf8')
+
+	query_vector = extractContextWeights(context_query, context_idf_scores, context_unigrams, context_bigrams, context_trigrams)
+
+	mathced_eqns = set()
+	cosine_similarity = {}
+
+	for feature in query_vector:
+		if feature in context_unigrams:
+			for eqn_id, frequency in context_unigrams_postinglist[feature]:
+				if eqn_id not in cosine_similarity:
+					cosine_similarity[eqn_id] = 0.0
+					matched_eqns.add(eqn_id)
+				cosine_similarity[eqn_id] += (context_idf_scores[feature] * (1 + math.log(frequency)))*query_vector[feature]
+		elif feature in context_bigrams:
+			for eqn_id, frequency in context_bigrams_postinglist[feature]:
+				if eqn_id not in cosine_similarity:
+					cosine_similarity[eqn_id] = 0.0
+					matched_eqns.add(eqn_id)
+				cosine_similarity[eqn_id] += (context_idf_scores[feature] * (1 + math.log(frequency)))*query_vector[feature]
+		elif feature in context_trigrams:
+			for eqn_id, frequency in context_trigrams_postinglist[feature]:
+				if eqn_id not in cosine_similarity:
+					cosine_similarity[eqn_id] = 0.0
+					matched_eqns.add(eqn_id)
+				cosine_similarity[eqn_id] += (context_idf_scores[feature] * (1 + math.log(frequency)))*query_vector[feature]
+		else:
+			print "This should not have bloody fucking happened"
+
+	mod_weight = {}
+
+	for doc_id in docs:
+		mod_weight[doc_id] = 0.0
+
+	for feature in context_unigrams_postinglist:
+		for eqn_id, frequency in context_unigrams_postinglist[feature]:
+			if eqn_id in eqns:
+				mod_weight[eqn_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
+
+	for feature in context_bigrams_postinglist:
+		for eqn_id, frequency in context_bigrams_postinglist[feature]:
+			if eqn_id in eqns:
+				mod_weight[eqn_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
+
+	for feature in context_trigrams_postinglist:
+		for eqn_id, frequency in context_trigrams_postinglist[feature]:
+			if eqn_id in eqns:
+				mod_weight[eqn_id] += (idf_scores[feature]*(1+math.log(frequency)))*(idf_scores[feature]*(1+math.log(frequency)))
+
+	for eqn_id in eqns:
+		mod_weight[eqn_id] = math.sqrt(mod_weight[eqn_id])
+
+	for eqn_id in cosine_similarities:
+		cosine_similarities[eqn_id] = cosine_similarities[eqn_id]/mod_weight[eqn_id]
+
+	#tupple of eqn_id , score
+	sorted_cosine_similarities_list = []
+
+	for eqn_id, score in cosine_similarities.items():
+		sorted_cosine_similarities_list.append(eqn_id, score)
+
+	sorted_cosine_similarities_list = sorted(sorted_cosine_similarities_list, key=lambda tup: tup[1], reverse=True)
+
+	ranked_list = {}
+	ranked_eqns = set()
+	i = 0
+
+	for eqn_id, score in sorted_cosine_similarities_list:
+		if eqn_id not in ranked_eqns:
+			i += 1
+			ranked_eqns.add(eqn_id)
+			doc_id = original_metadata[int(eqn_id)-1].split(" ")[1]
+			eqn = original_eqns[eqn_id-1]
+			tempDict = {}
+			tempDict['original_doc_id'] = doc_id
+			
+			eqn = unicode(eqn, "utf-8")
+
+			eqn = eqn.encode('ascii', 'xmlcharrefreplace')                    
+			tempDict['original_eqn'] = eqn
+			tempDict['doc_id'] = doc_id
+			tempDict['score'] = score
+			# ranked_list.append((doc_id,score,int(original_doc_id),original_eqn))
+			ranked_list[i] = tempDict
+		if i == 50:
+			break
+
+	return ranked_list
+
+def generateRankedListBasedOnEquation(query):
 
 	global unigrams
 	global bigrams
@@ -274,18 +375,20 @@ def generateRankedLists(query) :
 class greet:
 
     def GET(self, query):
-        ans = generateRankedLists(query)
+	#split the query into equation and context part
+        euqation_ans = generateRankedListBasedOnEquation(equation_query)
+	context_ans = generateRankedListBasedOnContext(context_query)
         latex_formulae = []
-        latex_formulae.append("a = b")
-        latex_formulae.append("b = c")
+        #latex_fddormulae.append("a = b")
+        #latex_formulae.append("b = c")
         archive_id = []
-        archive_id.append("1")
-        archive_id.append("2")
+        #archive_id.append("1")
+        #archive_id.append("2")
         archive_links = []
-        archive_links.append('https//papers.com/1')
-        archive_links.append('https//papers.com/2')
-        web.header('Content-Type', 'application/json') 
-        print ans
+        #archive_links.append('https//papers.com/1')
+        #archive_links.append('https//papers.com/2')
+        web.header('Content-Type', 'application/json')
+        #print ans
         # return str(ans).decode('utf-8')
         return json.dumps(ans,ensure_ascii=False)#, 'latex_formulae' : latex_formulae, 'archive_id' : archive_id, 'archive_links' : archive_links}
 
@@ -294,4 +397,4 @@ class greet:
         print "PUT",val
 
 if __name__ == "__main__":
-	app.run(host="0.0.0.0")
+	app.run()
