@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/font-awesome.min.css">
   <link rel="stylesheet" href="css/index.css">
+	
   <script src="js/jquery-1.11.0.min.js"></script>
   <script type="text/javascript" src="js/MathJax.js?config=MML_HTMLorMML-full"></script>
 </head>
@@ -40,9 +41,10 @@
                 <div class="row">
                 <div class="col-sm-6 col-sm-offset-3">
                     <div id="imaginary_container">
-                        <div class="input-group stylish-input-group">
+                         <div class="input-group stylish-input-group">
                         <form id="mathSnippetForm" action="index.php">
-                            <input type="text" name = 'mathSnippet' class="form-control" placeholder="Search" >
+                          <div> <input type="text" name = 'mathSnippet' class="form-control col-sm-3" placeholder="Enter equation" > </div>
+                          <div> <input type="text" name = 'contextSnippet' class="form-control col-sm-3" placeholder="Enter context words" > </div>
                         </form>    
                         <span class="input-group-addon">
                                 <button id="submitButton" type="submit">
@@ -61,13 +63,17 @@
                 $mathSnippet = $_GET['mathSnippet'];
                 $mathSnippet = urlencode($mathSnippet);
                 $mathSnippet = str_replace('+', '%20', $mathSnippet);
-                $resultJson = httpGet($url,$mathSnippet);
+                $contextSnippet = $_GET['contextSnippet'];
+                $contextSnippet = urlencode($contextSnippet);
+                $contextSnippet = str_replace('+', '%20', $contextSnippet);
+                $resultJson = httpGet($url,$mathSnippet,$contextSnippet);
  
                 foreach ($resultJson as $key => $value) {
                     // echo $value['original_eqn'];
                     echo '<div class="hr-line-dashed"></div>';
                     echo '<div class="search-result">';
                     //echo $value['docID'];
+                    //echo '<center>'.$key.'</center>';
                     echo '<center><a href='.'http://arxiv.org/abs/hep-th/'.$value['original_doc_id'].' target="_blank">'.$value['original_doc_id'].'</a></center>';
                     echo ''.str_replace('m:', '', $value['original_eqn']).'';
                     // echo '<center><div>'.$value['score'].'</div></center>';

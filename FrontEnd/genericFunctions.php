@@ -1,9 +1,9 @@
 <?php
  
-function httpGet($theUrl,$mathSnippet)
+function httpGet($theUrl,$mathSnippet,$contextSnippet)
 {
     $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, $theUrl.'/'.$mathSnippet);
+    curl_setopt($curl, CURLOPT_URL, $theUrl.'/'.$mathSnippet.'$$$'.$contextSnippet);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
  
     $result2 = curl_exec($curl);

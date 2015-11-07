@@ -1,13 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<m:math xmlns:m="http://www.w3.org/1998/Math/MathML" display="block">
-  <m:mrow>
-    <m:mo movablelimits="false">∑</m:mo>
-    <m:mfrac>
-      <m:mn>1</m:mn>
-      <m:msup>
-        <m:mi>x</m:mi>
-        <m:mn>2</m:mn>
-      </m:msup>
-    </m:mfrac>
-  </m:mrow>
-</m:math>
+<math xmlns="http://www.w3.org/1998/Math/MathML" alttext="d{\tilde{s}_{5}^{2}}={\Omega^{2}}d{s_{5}^{2}}," display="block">
+  <mrow>
+    <mrow>
+      <mrow>
+        <mi>d</mi>
+        <mo>⁢</mo>
+        <msubsup>
+          <mover accent="true">
+            <mi>s</mi>
+            <mo stretchy="false">~</mo>
+          </mover>
+          <mn>5</mn>
+          <mn>2</mn>
+        </msubsup>
+      </mrow>
+      <mo>=</mo>
+      <mrow>
+        <msup>
+          <mi mathvariant="normal">Ω</mi>
+          <mn>2</mn>
+        </msup>
+        <mo>⁢</mo>
+        <mi>d</mi>
+        <mo>⁢</mo>
+        <msubsup>
+          <mi>s</mi>
+          <mn>5</mn>
+          <mn>2</mn>
+        </msubsup>
+      </mrow>
+    </mrow>
+    <mo>,</mo>
+  </mrow>
+</math>

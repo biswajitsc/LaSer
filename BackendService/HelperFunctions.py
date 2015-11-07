@@ -262,7 +262,7 @@ def extractContextWeights(context, idf_scores, unigrams, bigrams, trigrams):
 	context = re.sub(' +',' ',context)
 	context = context.replace('\t', ' ')
 
-	symbol = unicode(context, "utf-8")
+	symbol = context.encode("utf-8")
 	context = symbol.encode('ascii', 'backslashreplace')
 
 	unigrams_query = set()
@@ -510,6 +510,6 @@ def generateIndex(NormalizedMathML):
 	original_metadata = open("../../Data/MathMLMeta.xml","r").readlines()
 	original_eqns = open("../../Data/MathML.xml","r").readlines()
 
-	return (unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns, context_unigrams, context_bigrams, context_trigrams, context_idf_scores, context_unigrams_postinglist, context_bigrams_postinglist, context_trigrams_postinglist)
+	return (unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns, original_metadata, context_unigrams, context_bigrams, context_trigrams, context_idf_scores, context_unigrams_postinglist, context_bigrams_postinglist, context_trigrams_postinglist)
 
-(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns, original_metadata, context_unigrams, context_bigrams, context_trigrams, context_idf_scores, context_unigrams_postinglist, context_bigrams_postinglist, context_trigrams_postinglist) = generateIndex("../../smallData/NormalizedMathML.xml")
+(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns, original_metadata, context_unigrams, context_bigrams, context_trigrams, context_idf_scores, context_unigrams_postinglist, context_bigrams_postinglist, context_trigrams_postinglist) = generateIndex("../../Data/NormalizedMathML.xml")
