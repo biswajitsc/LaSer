@@ -4,6 +4,7 @@ from lxml import etree
 from StringIO import *
 from lxml import objectify
 import sympy
+import sys
 
 def parseMML(mmlinput):
 	mmlinput= mmlinput.replace(' xmlns="', ' xmlnamespace="')
@@ -48,11 +49,11 @@ def parseMML(mmlinput):
 	return (exppy, symvars)
 
 def main() :
-	in_file = open("../../smallData/MathML.xml","r")
-	in_meta_file = open("../../smallData/MathMLMeta.xml","r")
-	out_file = open("../../smallData/Expressions","w")
-	output_file = open("../../smallData/SimplifiedMathML.xml","w")
-	out_meta_file = open("../../smallData/SimplifiedMathMLMeta.xml","w")
+	in_file = open(sys.argv[1],"r")
+	in_meta_file = open(sys.argv[2],"r")
+	out_file = open("../../Data/Expressions","w")
+	output_file = open("../../Data/SimplifiedMathML.xml","w")
+	out_meta_file = open("../../Data/SimplifiedMathMLMeta.xml","w")
 	data = in_file.read()
 	metadata = in_meta_file.read()
 	mathml_eqns = data.split('\n')
