@@ -45,6 +45,14 @@ def searchOnMathParser(latexQuery):
     return results[:NOTOPRES]
 
 def transform(value):
+    value = value.replace('<=', '\\le ')
+    value = value.replace('>=', '\\ge ')
+    value = value.replace('<', '\\lt ')
+    value = value.replace('>', '\\gt ')
+    value = value.replace('\\left\\lt', '\\left<')
+    value = value.replace('\\left\\gt', '\\left>')
+    value = value.replace('\\right\\lt', '\\right<')
+    value = value.replace('\\right\\gt', '\\right>')
     value = value.replace('%\n', '')
     value = value.replace('\\', '\\\\')
     value = value.replace("'", "\\'")
@@ -83,12 +91,12 @@ def main():
     queryFile = open('queries.txt', 'r')
     for latexQuery in queryFile:
         latexQuery = latexQuery.strip()
+        print latexQuery
         qid = insertIntoTableGetId('queries', '$' + latexQuery + '$')
         somQR = searchOnMathParser(latexQuery)
         insertIntoDB(qid, somQR, str(SOM))
         laserQR = laserParser(latexQuery)
         insertIntoDB(qid, laserQR, str(LASER))
-        break
     db.commit()
 
 if __name__ == '__main__':

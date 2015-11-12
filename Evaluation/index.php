@@ -67,23 +67,25 @@
 				<br/>The MathWebSearch system harvests the web for content representations (currently MathML) of formulae and indexes them using unigrams, 
 				bigrams and trigrams.
 				<br/>The query for now is limited to Latex format only and can and will be extended to free form queries. 
-				<br/>Our Project can be found on <a href="https://github.com/biswajitsc/LaSer">GitHub.</a>
+				<!-- <br/>Our Project can be found on <a href="https://github.com/biswajitsc/LaSer">GitHub.</a> -->
 			</p>
 		</div>
 
 		<br/>
 
 		<div>
-			<h4> Guidelines for Evaluation </h4>
+			<h4> <strong> Guidelines for Evaluation </strong> </h4>
 			<ul>
-				<li> Each result can be marked as Relevant(2), Partially-Relevant(1) or Irrelevant(0) ;
+				<li> Each result can be marked as <strong>Relevant(2), Partially-Relevant(1) or Irrelevant(0)</strong>,
 					<br/>based on the extent of the relevance of the search query to the result (description of the paper + context) displayed. </li>
 					<br/>
-				<li> The ordering of the results can be modified to reflect the order of relevance among the search results, 
+				<li> The <strong>ordering of the results</strong> can be modified to reflect the order of <strong>relevance</strong> among the search results, 
 					<br/>with the most relevant results having the least rank (top most result). </li>
 					<br/>
-				<li> In case the same result (paper & context) is displayed multiple times then mark the first occourance as usual, and
+				<li> In case the <strong>same result (paper & context)</strong> is displayed multiple times then mark the first occourance as usual, and
 					<br/>mark the rest of them as Irrelevant(0). </li>
+					<br/>
+				<li> <strong>Context</strong> represents the equation, kindly consider the <strong>structure</strong> of the equation as well </li>
 			</ul>
 		</div>
 	</div>
