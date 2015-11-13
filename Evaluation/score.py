@@ -5,7 +5,7 @@ import math
 # number of search systems
 S = 2
 # number of search results per query
-K = 3
+K = 5
 
 # establishing database connection
 sqlconf = ConfigParser.ConfigParser()
@@ -87,7 +87,8 @@ def dcg(systyp, q, users):
 	# Compute nDCG for (query, user) pair
 	nDCG_1 = 0.0
 	for u in users:
-		nDCG_1 += (DCG[u] / optDCG[u])
+		if optDCG[u] > 1e-10:
+			nDCG_1 += (DCG[u] / optDCG[u])
 	nDCG_1 /= len(users)
 	# Compute DCG for (query, averaged-user)
 	DCG_2 = 0.0
@@ -106,7 +107,10 @@ def dcg(systyp, q, users):
 			optDCG_2 += ( avgmr[k][0] * avgmr[k][1] / math.log(float(k + 1), 2) )
 		else:
 			optDCG_2 += ( avgmr[k][0] * avgmr[k][1] )
-	nDCG_2 = DCG_2 / optDCG_2
+	if optDCG_2 > 1e-10:
+		nDCG_2 = DCG_2 / optDCG_2
+	else:
+		nDCG_2 = 0.0
 	return ((DCG_1, DCG_2), (nDCG_1, nDCG_2))
 
 def main():
