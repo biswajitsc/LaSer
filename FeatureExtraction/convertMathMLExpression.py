@@ -2,9 +2,7 @@ from lxml import etree
 from StringIO import *
 import re
 import sys
-
 import xml.etree.ElementTree as ET
-import sys
 
 variations = []
 
@@ -77,21 +75,24 @@ def convertEquation(mathML) :
 	for rawEquation in mathML :
 		j += 1
 		rawEq = rawEquation.strip('\n').replace('m:','')
-		rawEq = rawEq.replace('xmlns', '')
-		rawEq = rawEq.replace(':m', '')
-		rawEq = rawEq.replace('="http://www.w3.org/1998/Math/MathML"','')
-		# print rawEq
+		# rawEq = rawEq.replace('xmlns', '')
+		# rawEq = rawEq.replace(':m', '')
+		# rawEq = rawEq.replace(':mml', '')
+		# rawEq = rawEq.replace('="http://www.w3.org/1998/Math/MathML"','')
+		# rawEq = rawEq.replace(':xsi="http://www.w3.org/2001/XMLSchema-instance"','')
+		# rawEq = rawEq.replace('xsi:schemaLocation="http://www.w3.org/1998/Math/MathML http://www.w3.org/Math/XMLSchema/mathml2/mathml2.xsd"', '')
+		# # print rawEq
 		try:
 			variations = []
 			# print rawEq
 			genTreeStructureUtil(ET.fromstring(rawEq))
-			print variations
+			# print variations
 			newExp = ''
 			for variation in variations:
 				newExp += variation + ' '
 			expressions.append(newExp)
 		except Exception as e:
-			print e
+			print e, j, rawEquation
 
 		
 	return expressions

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<m:math xmlns:m="http://www.w3.org/1998/Math/MathML" display="block">
+  <m:mrow>
+    <m:msup>
+      <m:mi>η</m:mi>
+      <m:mn>4</m:mn>
+    </m:msup>
+    <m:mo>-</m:mo>
+    <m:msup>
+      <m:mi>η</m:mi>
+      <m:mn>2</m:mn>
+    </m:msup>
+  </m:mrow>
+</m:math>

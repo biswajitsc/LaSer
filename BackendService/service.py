@@ -64,6 +64,7 @@ def generateRankedListBasedOnContext(query):
 
 	mod_weight = {}
 	eqns = set()
+	print matched_eqns
 
 	for eqn_id in matched_eqns:
 		eqns.add(eqn_id)
@@ -107,6 +108,7 @@ def generateRankedListBasedOnContext(query):
 			i += 1
 			ranked_eqns.add(eqn_id)
 			doc_id = original_metadata[int(eqn_id)-1].split(" ")[1]
+			print eqn_id
 			eqn = original_eqns[eqn_id-1]
 			tempDict = {}
 			tempDict['original_doc_id'] = doc_id
@@ -358,6 +360,7 @@ def generateRankedListBasedOnEquation(query):
 		if doc_id not in ranked_docs:
 			i += 1
 			ranked_docs.add(doc_id)
+			print int(doc_id), len(metadata), " Metadata"
 			original_doc_id = metadata[int(doc_id)-1]
 			original_eqn = original_eqns[int(original_doc_id.split(" ")[2]) - 1]
 			original_doc_id = original_doc_id.split(" ")[1]

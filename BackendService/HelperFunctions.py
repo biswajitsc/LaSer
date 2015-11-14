@@ -3,6 +3,7 @@
 from lxml import etree
 from StringIO import *
 from lxml import objectify
+import xml.etree.ElementTree as ET
 import sympy
 import re
 import decimal
@@ -151,7 +152,7 @@ def unicodeNormalize(mathml_eqn) :
 map = {}
 
 def initMap():
-	fileName = "../Normalization/operator_groups.txt"
+	fileName = "../../Normalization/operator_groups.txt"
 	data = open(fileName,'r').read()
 	tokens = data.split('\n')
 	id = 1
@@ -160,7 +161,8 @@ def initMap():
 		# print token
 		operators = token.split(' ')
 		for c in operators:
-			map[c] = "OP" + str(id)
+			if len(c) > 0:
+				map[c] = "OP" + str(id)
 		id += 1
 
 	# for key in map:
@@ -216,25 +218,66 @@ def operatorNormalize(mathml_eqn):
 	else:
 		return [mathml_eqn]
 
-def convertEquation(mathml_eqn) :
-	try :
-		string = mathml_eqn.replace(' xmlns="', ' xmlnamespace="')
-		parser = etree.XMLParser(ns_clean=True,remove_pis=True,remove_comments=True)
-		tree   = etree.parse(StringIO(string), parser)
-		root = tree.getroot()
-		tags = root.findall('.//')
-		expression = ""
-		for tag in tags :
-			if tag.text == None or len(tag.text) == 0 :
-				continue
-			text = tag.text.strip()
-			if len(text) != 0 :
-				expression += text + " "
-		return expression
-	except Exception :
-		print "Error parsing", mathml_eqn
-		return mathml_eqn
+variations = []
 
+def reduceExpression(terminalXml):
+	
+	global variations
+
+	terminalXmlText = terminalXml.text
+	terminalXmlTag = terminalXml.tag
+
+	if terminalXmlText != None:
+		terminalXmlText = terminalXmlText.strip()
+		if terminalXmlText != '':
+			variations.append(terminalXmlText)
+
+	if terminalXmlTag != None:
+		terminalXmlTag = terminalXmlTag.strip()
+		if terminalXmlTag != '' and terminalXmlTag != 'mo' and terminalXmlTag != 'mi' and terminalXmlTag != 'mn' and terminalXmlTag != 'mrow' and terminalXmlTag != 'math':
+			variations.append(terminalXmlTag)
+
+def genTreeStructureUtil(rawXml):
+
+	global variations
+
+	if (len(list(rawXml))) <= 0:
+		reduceExpression(rawXml)
+
+	terminalXmlTag = rawXml.tag
+
+	if terminalXmlTag != None:
+		terminalXmlTag = terminalXmlTag.strip()
+		if terminalXmlTag != '' and terminalXmlTag != 'mo' and terminalXmlTag != 'mi' and terminalXmlTag != 'mn' and terminalXmlTag != 'mrow' and terminalXmlTag != 'math':
+			variations.append(terminalXmlTag)
+	
+	for child in rawXml:	
+		genTreeStructureUtil(child)
+
+
+def convertEquation(mathml_eqn) :
+
+	global variations
+	rawEq = mathml_eqn.strip('\n').replace('m:','')
+	# rawEq = rawEq.replace('xmlns', '')
+	# rawEq = rawEq.replace(':m', '')
+	# rawEq = rawEq.replace(':mml', '')
+	# rawEq = rawEq.replace('="http://www.w3.org/1998/Math/MathML"','')
+	# rawEq = rawEq.replace(':xsi="http://www.w3.org/2001/XMLSchema-instance"','')
+	# rawEq = rawEq.replace('xsi:schemaLocation="http://www.w3.org/1998/Math/MathML http://www.w3.org/Math/XMLSchema/mathml2/mathml2.xsd"', '')
+	# # print rawEq
+	expression = ""
+	try:
+		variations = []
+		# print rawEq
+		genTreeStructureUtil(ET.fromstring(rawEq))
+		# print variations
+		for variation in variations:
+			expression += variation + ' '
+		return expression
+	except Exception as e:
+		print e, mathml_eqn
+		return mathml_eqn
 def extract_MathMLUnigrams(mathML, idf_scores) :
 	unigrams = set()
 	
@@ -409,20 +452,20 @@ def normalizeQuery(mathml_eqn) :
 
 def generateIndex(NormalizedMathML):
 	print "generateIndex invoked"
-	input_file_unigrams_postinglist = open("../../Data/UnigramFeatures","r").read().decode('cp1252', errors='ignore')
-	input_file_bigrams_postinglist = open("../../Data/BigramFeatures","r").read().decode('cp1252', errors='ignore')
-	input_file_trigrams_postinglist = open("../../Data/TrigramFeatures","r").read().decode('cp1252', errors='ignore')
-	input_file_idf_scores = open("../../Data/IDF-Scores","r").read().decode('cp1252', errors='ignore')
+	input_file_unigrams_postinglist = open("../../../Data/UnigramFeatures","r").read().decode('cp1252', errors='ignore')
+	input_file_bigrams_postinglist = open("../../../Data/BigramFeatures","r").read().decode('cp1252', errors='ignore')
+	input_file_trigrams_postinglist = open("../../../Data/TrigramFeatures","r").read().decode('cp1252', errors='ignore')
+	input_file_idf_scores = open("../../../Data/IDF-Scores","r").read().decode('cp1252', errors='ignore')
 
 	unigrams_postinglist = ast.literal_eval(input_file_unigrams_postinglist)
 	bigrams_postinglist = ast.literal_eval(input_file_bigrams_postinglist)
 	trigrams_postinglist = ast.literal_eval(input_file_trigrams_postinglist)
 	idf_scores = ast.literal_eval(input_file_idf_scores)
 
-	input_file_context_unigrams_postinglist = open("../../Data/UnigramContextFeatures","r").read().decode('cp1252', errors='ignore')
-	input_file_context_bigrams_postinglist = open("../../Data/BigramContextFeatures","r").read().decode('cp1252', errors='ignore')
-	input_file_context_trigrams_postinglist = open("../../Data/TrigramContextFeatures","r").read().decode('cp1252', errors='ignore')
-	input_file_context_idf_scores = open("../../Data/ContextIDF-Scores","r").read().decode('cp1252', errors='ignore')
+	input_file_context_unigrams_postinglist = open("../../../Data/UnigramContextFeatures","r").read().decode('cp1252', errors='ignore')
+	input_file_context_bigrams_postinglist = open("../../../Data/BigramContextFeatures","r").read().decode('cp1252', errors='ignore')
+	input_file_context_trigrams_postinglist = open("../../../Data/TrigramContextFeatures","r").read().decode('cp1252', errors='ignore')
+	input_file_context_idf_scores = open("../../../Data/ContextIDF-Scores","r").read().decode('cp1252', errors='ignore')
 
 	context_unigrams_postinglist = eval(input_file_context_unigrams_postinglist)
 	context_bigrams_postinglist = eval(input_file_context_bigrams_postinglist)
@@ -506,10 +549,10 @@ def generateIndex(NormalizedMathML):
 	# 				values[trigram] = idf_scores[trigram]
 	# 	weight_matrix.append(values)
 
-	metadata = open("../../Data/NormalizedMathMLMeta.xml","r").readlines()
-	original_metadata = open("../../Data/MathMLMeta.xml","r").readlines()
-	original_eqns = open("../../Data/MathML.xml","r").readlines()
+	metadata = open("../../../Data/NormalizedMathMLMeta.xml","r").readlines()
+	original_metadata = open("../../../Data/MathMLMeta.xml","r").readlines()
+	original_eqns = open("../../../Data/MathML.xml","r").readlines()
 
 	return (unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns, original_metadata, context_unigrams, context_bigrams, context_trigrams, context_idf_scores, context_unigrams_postinglist, context_bigrams_postinglist, context_trigrams_postinglist)
 
-(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns, original_metadata, context_unigrams, context_bigrams, context_trigrams, context_idf_scores, context_unigrams_postinglist, context_bigrams_postinglist, context_trigrams_postinglist) = generateIndex("../../Data/NormalizedMathML.xml")
+(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns, original_metadata, context_unigrams, context_bigrams, context_trigrams, context_idf_scores, context_unigrams_postinglist, context_bigrams_postinglist, context_trigrams_postinglist) = generateIndex("../../../Data/NormalizedMathML.xml")
