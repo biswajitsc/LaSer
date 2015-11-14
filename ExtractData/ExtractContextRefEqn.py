@@ -65,7 +65,7 @@ def main():
 	out = codecs.open('../../Data/Context/ref.txt', 'w', 'cp1252')
 	
 	labelsData = open('../../Data/FormulaeLabel', 'r').read().decode('cp1252', errors='ignore').split('\n')
-	meta = open('../../Data/Meta').read().decode('cp1252', errors='ignore').split('\n')
+	meta = open('../../Data/MathMLMeta.xml').read().decode('cp1252', errors='ignore').split('\n')
 	for i in xrange(0,len(meta)):
 		meta[i] = meta[i].split()
 
