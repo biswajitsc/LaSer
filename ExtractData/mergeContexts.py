@@ -17,7 +17,7 @@ if __name__ == '__main__':
 			index = int(temp[0])
 			if index not in context.keys():
 				context[index] = ''
-			context[index] += temp[1]
+			context[index] += ' ' + temp[1]
 
 	cnt = 0
 	with open('../../Data/Context/equation_context.txt','w') as f:

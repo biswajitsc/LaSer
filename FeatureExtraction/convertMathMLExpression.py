@@ -85,7 +85,7 @@ def convertEquation(mathML) :
 			variations = []
 			# print rawEq
 			genTreeStructureUtil(ET.fromstring(rawEq))
-			print variations
+			# print variations
 			newExp = ''
 			for variation in variations:
 				newExp += variation + ' '
