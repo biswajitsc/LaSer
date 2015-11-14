@@ -63,8 +63,8 @@ def main() :
 	j = 0
 	for mathml_eqn in mathml_eqns :
 		j += 1
-		if (str(mathml_eqn) == '<?xml version="1.0" encoding="UTF-8"?>' or len(mathml_eqn) == 0) :
-			continue
+		# if (str(mathml_eqn) == '<?xml version="1.0" encoding="UTF-8"?>' or len(mathml_eqn) == 0) :
+		# 	continue
 		mathml_eqn = mathml_eqn.replace('\n',' ')
 		temp_mathml_eqn = mathml_eqn
 		if (i % 100 == 0) :
@@ -72,6 +72,7 @@ def main() :
 		try :
 			mathml_eqn = mathml_eqn.replace("<m:mo><U+2062></m:mo>","")
 			(expr, symbvars) = parseMML(mathml_eqn)
+			# print "Expr : ", expr
 			simp_expr = sympy.simplify(expr)
 			out_file.write(str(expr) + '\n$$\n$$\n' + str(simp_expr) + '\n')
 			c_mathml = sympy.printing.mathml(simp_expr)
@@ -81,7 +82,9 @@ def main() :
 			p_mathml = p_mathml.replace('\n',' ')
 			output_file.write(str(temp_mathml_eqn) + '\n' + p_mathml + '\n')
 			out_meta_file.write(str(metadata_eqns[i]) + " " + str(j) + '\n' + str(metadata_eqns[i]) + " " + str(j) + '\n')
-		except Exception :
+		except Exception as e :
+			# print e
+			# print mathml_eqn
 			output_file.write(str(temp_mathml_eqn) + '\n')
 			out_meta_file.write(str(metadata_eqns[i]) + " " + str(j) + '\n')
 		i += 1

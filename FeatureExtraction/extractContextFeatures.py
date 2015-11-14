@@ -20,6 +20,7 @@ def main() :
 		symbol = unicode(line, "utf-8")
 		line = symbol.encode('ascii', 'backslashreplace')
 		if len(line) == 0 :
+			contexts.append('')
 			continue
 		line = re.sub(' +',' ',line)
 		line = line.replace('\t', ' ')
@@ -91,7 +92,7 @@ def main() :
 		line = line.encode('utf-8')
 		i += 1
 		if (i % 100 == 0) :
-                        print str(i) + "th xml checked for unigrams"
+			print str(i) + "th xml checked for unigrams"
 		for unigram in unigrams :
 			string = str(unigram)
 			if string in line :

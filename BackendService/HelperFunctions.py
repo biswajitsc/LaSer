@@ -3,6 +3,7 @@
 from lxml import etree
 from StringIO import *
 from lxml import objectify
+import xml.etree.ElementTree as ET
 import sympy
 import re
 import decimal
@@ -160,7 +161,8 @@ def initMap():
 		# print token
 		operators = token.split(' ')
 		for c in operators:
-			map[c] = "OP" + str(id)
+			if len(c) > 0:
+				map[c] = "OP" + str(id)
 		id += 1
 
 	# for key in map:
@@ -216,25 +218,66 @@ def operatorNormalize(mathml_eqn):
 	else:
 		return [mathml_eqn]
 
-def convertEquation(mathml_eqn) :
-	try :
-		string = mathml_eqn.replace(' xmlns="', ' xmlnamespace="')
-		parser = etree.XMLParser(ns_clean=True,remove_pis=True,remove_comments=True)
-		tree   = etree.parse(StringIO(string), parser)
-		root = tree.getroot()
-		tags = root.findall('.//')
-		expression = ""
-		for tag in tags :
-			if tag.text == None or len(tag.text) == 0 :
-				continue
-			text = tag.text.strip()
-			if len(text) != 0 :
-				expression += text + " "
-		return expression
-	except Exception :
-		print "Error parsing", mathml_eqn
-		return mathml_eqn
+variations = []
 
+def reduceExpression(terminalXml):
+	
+	global variations
+
+	terminalXmlText = terminalXml.text
+	terminalXmlTag = terminalXml.tag
+
+	if terminalXmlText != None:
+		terminalXmlText = terminalXmlText.strip()
+		if terminalXmlText != '':
+			variations.append(terminalXmlText)
+
+	if terminalXmlTag != None:
+		terminalXmlTag = terminalXmlTag.strip()
+		if terminalXmlTag != '' and terminalXmlTag != 'mo' and terminalXmlTag != 'mi' and terminalXmlTag != 'mn' and terminalXmlTag != 'mrow' and terminalXmlTag != 'math':
+			variations.append(terminalXmlTag)
+
+def genTreeStructureUtil(rawXml):
+
+	global variations
+
+	if (len(list(rawXml))) <= 0:
+		reduceExpression(rawXml)
+
+	terminalXmlTag = rawXml.tag
+
+	if terminalXmlTag != None:
+		terminalXmlTag = terminalXmlTag.strip()
+		if terminalXmlTag != '' and terminalXmlTag != 'mo' and terminalXmlTag != 'mi' and terminalXmlTag != 'mn' and terminalXmlTag != 'mrow' and terminalXmlTag != 'math':
+			variations.append(terminalXmlTag)
+	
+	for child in rawXml:	
+		genTreeStructureUtil(child)
+
+
+def convertEquation(mathml_eqn) :
+
+	global variations
+	rawEq = mathml_eqn.strip('\n').replace('m:','')
+	# rawEq = rawEq.replace('xmlns', '')
+	# rawEq = rawEq.replace(':m', '')
+	# rawEq = rawEq.replace(':mml', '')
+	# rawEq = rawEq.replace('="http://www.w3.org/1998/Math/MathML"','')
+	# rawEq = rawEq.replace(':xsi="http://www.w3.org/2001/XMLSchema-instance"','')
+	# rawEq = rawEq.replace('xsi:schemaLocation="http://www.w3.org/1998/Math/MathML http://www.w3.org/Math/XMLSchema/mathml2/mathml2.xsd"', '')
+	# # print rawEq
+	expression = ""
+	try:
+		variations = []
+		# print rawEq
+		genTreeStructureUtil(ET.fromstring(rawEq))
+		# print variations
+		for variation in variations:
+			expression += variation + ' '
+		return expression
+	except Exception as e:
+		print e, mathml_eqn
+		return mathml_eqn
 def extract_MathMLUnigrams(mathML, idf_scores) :
 	unigrams = set()
 	

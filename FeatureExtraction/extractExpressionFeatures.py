@@ -56,14 +56,17 @@ def main() :
 		if len(line) == 0 :
 			continue
 		# line = '<math' + line
-		xmls = line.split('<?xml version="1.0"?>')
-		for xml in xmls :
-			xml = re.sub(' +',' ',xml)
-			xml = xml.replace('\t', ' ')
-			mathML.append(xml)
+		line = line.replace('<?xml version="1.0"?>', "")
+		mathML.append(line)
+		# xmls = line.split('<?xml version="1.0"?>')
+		# for xml in xmls :
+		# 	xml = re.sub(' +',' ',xml)
+		# 	xml = xml.replace('\t', ' ')
+		# 	mathML.append(xml)
 
 	(unigrams_mathML, unigrams_postinglist, idf_scores) = extract_MathMLUnigrams(mathML)
 	expressions = convertEquation(mathML)
+	print "Num Expressions : ", len(expressions)
 
 	for expression in expressions :
 		output_file_expressions.write(expression.encode('utf-8') + '\n')

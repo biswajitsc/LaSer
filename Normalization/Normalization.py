@@ -62,7 +62,8 @@ def initMap():
         # print token
         operators = token.split(' ')
         for c in operators:
-            operator_map[c] = "OP" + str(id)
+            if len(c) > 0:
+                operator_map[c] = "OP" + str(id)
         id += 1
 
     # for key in operator_map:
