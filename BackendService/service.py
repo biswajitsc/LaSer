@@ -382,6 +382,7 @@ def generateRankedListBasedOnEquation(query):
 
 def generateRankedList(context_ans,equation_ans):
 
+	
 	ans_list = []
 	i = 0;
 	for key,item in equation_ans.items():
