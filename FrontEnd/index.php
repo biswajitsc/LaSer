@@ -23,13 +23,13 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.php">LaSer</a>
+                <a class="navbar-brand" href="index.php" style="color: #D9EDF7;">LaSer</a>
         </div>
  
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                  <li class= "active" ><a href="index.php">Home</a></li>
-                  <li class= "" ><a href="about.php">About</a></li>
+                  <li class= "active" ><a href="index.php" style="color: #D9EDF7;">Home</a></li>
+                  <li class= "" ><a href="about.php" style="color: #D9EDF7;">About</a></li>
                 </ul>
         </div>
 </nav>
@@ -60,14 +60,25 @@
  
             <?php
                 $url = "localhost:8080"; //Put the url here
+                
                 $mathSnippet = $_GET['mathSnippet'];
+                $contextSnippet = $_GET['contextSnippet'];
+                
+                echo '<div class="hr-line-dashed"></div>';
+                echo '<div class="search-result" style = "background:white;">';
+                echo '<center><span><b>Equation Query</b>: $$'.$mathSnippet.'$$</span></center>';
+                echo "<br/>";
+                echo '<center><span><b>Context Query</b>: '.$contextSnippet.'</span></center>';                    
+                echo '</div>';
+
                 $mathSnippet = urlencode($mathSnippet);
                 $mathSnippet = str_replace('+', '%20', $mathSnippet);
-                $contextSnippet = $_GET['contextSnippet'];
                 $contextSnippet = urlencode($contextSnippet);
                 $contextSnippet = str_replace('+', '%20', $contextSnippet);
                 $resultJson = httpGet($url,$mathSnippet,$contextSnippet);
- 
+                
+                
+
                 foreach ($resultJson as $key => $value) {
                     //$rankeq = trim($value['original_eqn'])
                     //if(strlen($rankeq) > 0)
