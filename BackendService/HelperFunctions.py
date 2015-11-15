@@ -481,7 +481,7 @@ def generateIndex(NormalizedMathML):
 
 	for x in unigrams_postinglist:
 		unigrams.add(x)
-
+		
 	for x in bigrams_postinglist:
 		bigrams.add(x)
 

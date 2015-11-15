@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="css/index.css">
 	
   <script src="js/jquery-1.11.0.min.js"></script>
-  <script type="text/javascript" src="js/MathJax.js?config=MML_HTMLorMML-full"></script>
+  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </head>
  
 <nav id="navBar" class="navbar navbar-static" role="navigation">
