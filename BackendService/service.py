@@ -33,6 +33,8 @@ def generateRankedListBasedOnContext(query):
 	global original_metadata
 	global original_eqns
 
+
+	query = re.sub('\W',' ',query)
 	context_query = urllib.unquote(query).decode('utf8')
 
 	query_vector = extractContextWeights(context_query, context_idf_scores, context_unigrams, context_bigrams, context_trigrams)
@@ -158,7 +160,7 @@ def generateRankedListBasedOnEquation(query):
 	# print "Eqns :",len(mathML_eqns)
 
 	simplified_mathML_eqn = simplifyMathML(mathML_eqn)	
-	simplified_mathML_eqns = normalizeQuery(mathML_eqn)
+	simplified_mathML_eqns = normalizeQuery(simplified_mathML_eqn)
 
 	# print "#############"
 	# print "in generateRankedLists : number normalized mathml is ",mathML_eqn
@@ -205,6 +207,7 @@ def generateRankedListBasedOnEquation(query):
 		matched_docs = set()
 		for feature in query_vector:
 			# identify the type of feature
+			print "Feature : ", feature
 			if feature in unigrams:
 				for doc_id, frequency in unigrams_postinglist[feature]:
 					if doc_id not in cosine_similarity:
@@ -346,10 +349,10 @@ def generateRankedListBasedOnEquation(query):
 			sorted_cosine_similarities_list.append((doc_id,score))
 
 	sorted_cosine_similarities_list = sorted(sorted_cosine_similarities_list, key=lambda tup: tup[1], reverse=True)
-
+	# print sorted_cosine_similarities_list
 	# get the best score corresponding to each doc
 
-	ranked_list = {};
+	ranked_list = {}
 	ranked_docs = set()
 
 	# Limit the returned results to 50
@@ -360,7 +363,7 @@ def generateRankedListBasedOnEquation(query):
 		if doc_id not in ranked_docs:
 			i += 1
 			ranked_docs.add(doc_id)
-			print int(doc_id), len(metadata), " Metadata"
+			# print int(doc_id), len(metadata), " Metadata"
 			original_doc_id = metadata[int(doc_id)-1]
 			original_eqn = original_eqns[int(original_doc_id.split(" ")[2]) - 1]
 			original_doc_id = original_doc_id.split(" ")[1]
@@ -373,6 +376,7 @@ def generateRankedListBasedOnEquation(query):
 			tempDict['original_eqn'] = original_eqn
 			tempDict['doc_id'] = doc_id
 			tempDict['score'] = score
+			# print tempDict
 			# ranked_list.append((doc_id,score,int(original_doc_id),original_eqn))
 			ranked_list[i] = tempDict
 		if i == 50:

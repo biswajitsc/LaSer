@@ -67,22 +67,23 @@ def parseMML(mmlinput):
 	return (exppy, symvars)
 
 def simplifyMathML(mathml_eqn) :
-	if (str(mathml_eqn) == '<?xml version="1.0" encoding="UTF-8"?>' or len(mathml_eqn) == 0) :
-		return ""
-	mathml_eqn = mathml_eqn.replace('\n',' ')
-	temp_mathml_eqn = mathml_eqn
-	try :
-		mathml_eqn = mathml_eqn.replace("<m:mo><U+2062></m:mo>","")
-		(expr, symbvars) = parseMML(mathml_eqn)
-		simp_expr = sympy.simplify(expr)
-		c_mathml = sympy.printing.mathml(simp_expr)
-		from sympy.utilities.mathml import c2p
-		p_mathml = c2p(c_mathml)
-		p_mathml = str(p_mathml)
-		p_mathml = p_mathml.replace('\n',' ')
-		return p_mathml
-	except Exception :
-		return ""
+	return mathml_eqn
+	# if (str(mathml_eqn) == '<?xml version="1.0" encoding="UTF-8"?>' or len(mathml_eqn) == 0) :
+	# 	return ""
+	# mathml_eqn = mathml_eqn.replace('\n',' ')
+	# temp_mathml_eqn = mathml_eqn
+	# try :
+	# 	mathml_eqn = mathml_eqn.replace("<m:mo><U+2062></m:mo>","")
+	# 	(expr, symbvars) = parseMML(mathml_eqn)
+	# 	simp_expr = sympy.simplify(expr)
+	# 	c_mathml = sympy.printing.mathml(simp_expr)
+	# 	from sympy.utilities.mathml import c2p
+	# 	p_mathml = c2p(c_mathml)
+	# 	p_mathml = str(p_mathml)
+	# 	p_mathml = p_mathml.replace('\n',' ')
+	# 	return p_mathml
+	# except Exception :
+	# 	return ""
 
 def numberNormalize(mathml_eqn) :
 	# line = '<mn>2.45</mn>   <m:mn>2.45646</m:mn> <mn>2</mn>   <mn>2.45</mn>'
@@ -278,13 +279,15 @@ def convertEquation(mathml_eqn) :
 	except Exception as e:
 		print e, mathml_eqn
 		return mathml_eqn
+
 def extract_MathMLUnigrams(mathML, idf_scores) :
 	unigrams = set()
 	
 	words = mathML.split(' ')
 	for word in words :
 		if (len(word) > 0) :
-			unigrams.add(word)
+			if word != 'display="block">':
+				unigrams.add(word)
 	print "Unigrams of MathML equations Extracted"
 
 	weight_score = {}
