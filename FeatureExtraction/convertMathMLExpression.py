@@ -92,7 +92,8 @@ def convertEquation(mathML) :
 				newExp += variation + ' '
 			expressions.append(newExp)
 		except Exception as e:
-			print e, j, rawEquation
+			# print e, j, rawEquation
+			expressions.append("")
 
 		
 	return expressions

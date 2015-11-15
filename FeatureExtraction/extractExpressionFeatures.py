@@ -53,8 +53,8 @@ def main() :
 		line = line.replace('\n', ' ')
 		symbol = unicode(line, "utf-8")
 		line = symbol.encode('ascii', 'backslashreplace')
-		if len(line) == 0 :
-			continue
+		# if len(line) == 0 :
+		# 	continue
 		# line = '<math' + line
 		line = line.replace('<?xml version="1.0"?>', "")
 		mathML.append(line)
@@ -66,6 +66,7 @@ def main() :
 
 	(unigrams_mathML, unigrams_postinglist, idf_scores) = extract_MathMLUnigrams(mathML)
 	expressions = convertEquation(mathML)
+	
 	print "Num Expressions : ", len(expressions)
 
 	for expression in expressions :

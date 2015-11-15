@@ -33,6 +33,8 @@ def generateRankedListBasedOnContext(query):
 	global original_metadata
 	global original_eqns
 
+
+	query = re.sub('\W',' ',query)
 	context_query = urllib.unquote(query).decode('utf8')
 
 	query_vector = extractContextWeights(context_query, context_idf_scores, context_unigrams, context_bigrams, context_trigrams)
@@ -117,7 +119,7 @@ def generateRankedListBasedOnContext(query):
 
 			eqn = eqn.encode('ascii', 'xmlcharrefreplace')                    
 			tempDict['original_eqn'] = eqn
-			tempDict['doc_id'] = doc_id
+			tempDict['doc_id'] = eqn_id
 			tempDict['score'] = score
 			# ranked_list.append((doc_id,score,int(original_doc_id),original_eqn))
 			ranked_list[i] = tempDict
@@ -158,7 +160,8 @@ def generateRankedListBasedOnEquation(query):
 	# print "Eqns :",len(mathML_eqns)
 
 	simplified_mathML_eqn = simplifyMathML(mathML_eqn)	
-	simplified_mathML_eqns = normalizeQuery(mathML_eqn)
+	# simplified_mathML_eqns = normalizeQuery(simplified_mathML_eqn)
+	simplified_mathML_eqns = []
 
 	# print "#############"
 	# print "in generateRankedLists : number normalized mathml is ",mathML_eqn
@@ -205,6 +208,7 @@ def generateRankedListBasedOnEquation(query):
 		matched_docs = set()
 		for feature in query_vector:
 			# identify the type of feature
+			print "Feature : ", feature
 			if feature in unigrams:
 				for doc_id, frequency in unigrams_postinglist[feature]:
 					if doc_id not in cosine_similarity:
@@ -346,10 +350,10 @@ def generateRankedListBasedOnEquation(query):
 			sorted_cosine_similarities_list.append((doc_id,score))
 
 	sorted_cosine_similarities_list = sorted(sorted_cosine_similarities_list, key=lambda tup: tup[1], reverse=True)
-
+	# print sorted_cosine_similarities_list
 	# get the best score corresponding to each doc
 
-	ranked_list = {};
+	ranked_list = {}
 	ranked_docs = set()
 
 	# Limit the returned results to 50
@@ -360,19 +364,20 @@ def generateRankedListBasedOnEquation(query):
 		if doc_id not in ranked_docs:
 			i += 1
 			ranked_docs.add(doc_id)
-			print int(doc_id), len(metadata), " Metadata"
+			# print int(doc_id), len(metadata), " Metadata"
 			original_doc_id = metadata[int(doc_id)-1]
 			original_eqn = original_eqns[int(original_doc_id.split(" ")[2]) - 1]
-			original_doc_id = original_doc_id.split(" ")[1]
 			tempDict = {}
+			tempDict['doc_id'] = original_doc_id.split(" ")[2].strip('\n')
+			original_doc_id = original_doc_id.split(" ")[1]
 			tempDict['original_doc_id'] = original_doc_id
 			
 			original_eqn = unicode(original_eqn, "utf-8")
 
 			original_eqn = original_eqn.encode('ascii', 'xmlcharrefreplace')                    
 			tempDict['original_eqn'] = original_eqn
-			tempDict['doc_id'] = doc_id
 			tempDict['score'] = score
+			# print tempDict
 			# ranked_list.append((doc_id,score,int(original_doc_id),original_eqn))
 			ranked_list[i] = tempDict
 		if i == 50:
@@ -382,16 +387,27 @@ def generateRankedListBasedOnEquation(query):
 
 def generateRankedList(context_ans,equation_ans):
 
-	
-	ans_list = []
-	i = 0;
+	ans_list2 = {}
+	i = 0
 	for key,item in equation_ans.items():
-		ans_list.append((item['original_doc_id'],item['original_eqn'],item['score'],item['doc_id']))
+		ans_list2[item['doc_id']] = (item['original_doc_id'],item['original_eqn'],0.7*item['score'],item['doc_id'])
 		i += 1
+	
 	for key,item in context_ans.items():
-		ans_list.append((item['original_doc_id'],item['original_eqn'],item['score'],item['doc_id']))
+		if item['doc_id'] in ans_list2.keys():
+			score = ans_list2[item['doc_id']][2] + 0.3*item['score']
+			print item['original_eqn']
+			print ans_list2[item['doc_id']][2], item['score']
+			ans_list2[item['doc_id']] = (item['original_doc_id'],item['original_eqn'],score,item['doc_id'])
+		else:
+			ans_list2[item['doc_id']] = (item['original_doc_id'],item['original_eqn'],0.3*item['score'],item['doc_id'])
 		i += 1
-	ans_list = sorted(ans_list, key=lambda tup: tup[2], reverse=True)
+	
+	ans_list3 = []
+	for key,val in ans_list2.items():
+		ans_list3.append(val)
+
+	ans_list = sorted(ans_list3, key=lambda tup: tup[2], reverse=True)
 
 	ans = {}
 	for i in xrange(0,len(ans_list)):
@@ -400,6 +416,7 @@ def generateRankedList(context_ans,equation_ans):
 		tempDict['original_eqn'] = ans_list[i][1]
 		tempDict['score'] = ans_list[i][2]
 		tempDict['doc_id'] = ans_list[i][3]
+		print tempDict['doc_id']
 		ans[i] = tempDict
 
 	return ans
@@ -410,17 +427,18 @@ class greet:
 	#split the query into equation and context part
 		context_ans = {}
 		equation_ans = {}
-		context_query = query.split('$$$')[1]
-		context_query = context_query.lower()
+		context_query = query.split('$$$')[1].lower()
 		equation_query = query.split('$$$')[0]
-		if context_query:
+		if len(context_query.strip())>0:
 			context_ans = generateRankedListBasedOnContext(context_query)
 		else:
 			print "no context query"
-		if equation_query:
+			context_ans = {}
+		if len(equation_query.strip()) > 0:
 			equation_ans = generateRankedListBasedOnEquation(equation_query)
 		else:
 			print "no equation_query"
+			equation_ans = {}
 		latex_formulae = []
 		#latex_fddormulae.append("a = b")
 		#latex_formulae.append("b = c")
