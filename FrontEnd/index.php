@@ -69,9 +69,9 @@
                 $resultJson = httpGet($url,$mathSnippet,$contextSnippet);
  
                 foreach ($resultJson as $key => $value) {
-                    $rankeq = trim($value['original_eqn'])
-                    if(strlen($rankeq) > 0)
-                        continue;
+                    //$rankeq = trim($value['original_eqn'])
+                    //if(strlen($rankeq) > 0)
+                    //    continue;
                     // echo $value['original_eqn'];
                     echo '<div class="hr-line-dashed"></div>';
                     echo '<div class="search-result">';
