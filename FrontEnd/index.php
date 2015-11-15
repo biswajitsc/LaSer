@@ -79,6 +79,7 @@
                     //echo '<center>'.$key.'</center>';
                     echo '<center><a href='.'http://arxiv.org/abs/hep-th/'.$value['original_doc_id'].' target="_blank">'.$value['original_doc_id'].'</a></center>';
                     echo ''.str_replace('m:', '', $value['original_eqn']).'';
+                    echo '<center><span>'.$value['context'].'</span></center>';
                     // echo '<center><div>'.$value['score'].'</div></center>';
 
                     echo '</div>';
