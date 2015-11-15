@@ -555,7 +555,8 @@ def generateIndex(NormalizedMathML):
 	metadata = open("../../Data/NormalizedMathMLMeta.xml","r").readlines()
 	original_metadata = open("../../Data/MathMLMeta.xml","r").readlines()
 	original_eqns = open("../../Data/MathML.xml","r").readlines()
+	context_lines = open("../../Data/equation_context.txt","r").readlines()
 
-	return (unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns, original_metadata, context_unigrams, context_bigrams, context_trigrams, context_idf_scores, context_unigrams_postinglist, context_bigrams_postinglist, context_trigrams_postinglist)
+	return (unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns, original_metadata, context_unigrams, context_bigrams, context_trigrams, context_idf_scores, context_unigrams_postinglist, context_bigrams_postinglist, context_trigrams_postinglist, context_lines)
 
-(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns, original_metadata, context_unigrams, context_bigrams, context_trigrams, context_idf_scores, context_unigrams_postinglist, context_bigrams_postinglist, context_trigrams_postinglist) = generateIndex("../../Data/NormalizedMathML.xml")
+(unigrams, bigrams, trigrams, idf_scores, unigrams_postinglist, bigrams_postinglist, trigrams_postinglist, metadata, original_eqns, original_metadata, context_unigrams, context_bigrams, context_trigrams, context_idf_scores, context_unigrams_postinglist, context_bigrams_postinglist, context_trigrams_postinglist, context_lines) = generateIndex("../../Data/NormalizedMathML.xml")

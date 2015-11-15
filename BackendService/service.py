@@ -387,6 +387,8 @@ def generateRankedListBasedOnEquation(query):
 
 def generateRankedList(context_ans,equation_ans):
 
+	global context_lines
+
 	ans_list2 = {}
 	i = 0
 	for key,item in equation_ans.items():
@@ -417,6 +419,7 @@ def generateRankedList(context_ans,equation_ans):
 		tempDict['score'] = ans_list[i][2]
 		tempDict['doc_id'] = ans_list[i][3]
 		print tempDict['doc_id']
+		tempDict['context'] = context_lines[tempDict['doc_id'] - 1]
 		ans[i] = tempDict
 
 	return ans
