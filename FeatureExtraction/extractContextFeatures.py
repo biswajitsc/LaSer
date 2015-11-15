@@ -24,6 +24,7 @@ def main() :
 			continue
 		line = re.sub(' +',' ',line)
 		line = line.replace('\t', ' ')
+		line = line.lower()
 		words = line.split(' ')[1:]
 		line = ''
 		for i in range(len(words)):

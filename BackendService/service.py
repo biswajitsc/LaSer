@@ -414,6 +414,7 @@ class greet:
 		context_ans = {}
 		equation_ans = {}
 		context_query = query.split('$$$')[1]
+		context_query = context_query.lower()
 		equation_query = query.split('$$$')[0]
 		if context_query:
 			context_ans = generateRankedListBasedOnContext(context_query)
